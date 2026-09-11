@@ -1,27 +1,40 @@
 # Flow Library
 
-Reusable step-by-step prompts ("flows") for the team. Any LLM can read this file and the flows it links to.
+Our LearnWise flows, written down as plain text so the team can reuse them, copy them into LearnWise, and ask any LLM to draft new ones in the same format.
 
-## How to use a flow
+Every flow has the same three parts, exactly as in LearnWise (Tutor Assistant → Flujos):
 
-Paste this into any LLM chat (Claude, ChatGPT, Kimi):
+1. **Activador**: what starts the flow (e.g. the user sends a message).
+2. **Condiciones**: when the flow applies. A description of the conversation context, plus example user messages that should match and that should not.
+3. **Respuesta**: what the assistant does, as one or more actions (a message, a button...).
 
-> Read https://raw.githubusercontent.com/sebastarre/flow-library/main/README.md
-> and pick the best flow for the task below. Then fetch that flow's URL, follow
-> its steps exactly, and produce the output in the format it specifies.
-> Task: [describe what you need]
-> Inputs: [give the inputs the flow asks for]
-
-If the LLM cannot open URLs, open the flow file yourself, copy its contents, and paste them into the chat instead.
+Field names in the files are the same as in LearnWise, so you can copy a flow field by field.
 
 ## Flows
 
-| Flow | Use it when | Raw URL (give this to the LLM) |
+| Flow | Triggers when | Raw URL (give this to the LLM) |
 |---|---|---|
-| List Cleanup | You have a messy list (names, emails, companies) and want it normalized into a clean table | https://raw.githubusercontent.com/sebastarre/flow-library/main/flows/list-cleanup.md |
-| People Search | You need to find people at a company matching a role, with sources | https://raw.githubusercontent.com/sebastarre/flow-library/main/flows/people-search.md |
-| Company Enrichment | You have a company name and want a profile (size, HQ, industry, news) with sources | https://raw.githubusercontent.com/sebastarre/flow-library/main/flows/company-enrichment.md |
+| Human Help Needed | The user asks to talk to a person or to contact support | https://raw.githubusercontent.com/sebastarre/flow-library/main/flows/human-help-needed.md |
 
-## How to improve a flow
+## Reuse a flow
 
-Open the flow file on GitHub, click the pencil icon, edit, and commit. Everyone gets the new version on their next use (GitHub's raw URLs update within about 5 minutes). See CONTRIBUTING.md.
+Open the flow file and copy each field into LearnWise: Tutor Assistant → Flujos → new flow.
+
+## Draft a new flow with an LLM
+
+Paste this into any LLM chat (Claude, ChatGPT, Kimi):
+
+> Read https://raw.githubusercontent.com/sebastarre/flow-library/main/README.md,
+> then the template and the flows it links to. Write a new LearnWise flow in
+> exactly the same format for this need: [when it should trigger and what the
+> assistant should do].
+
+Template, LearnWise options and writing rules: https://raw.githubusercontent.com/sebastarre/flow-library/main/CONTRIBUTING.md
+
+If the LLM cannot open URLs, paste the contents of CONTRIBUTING.md and one flow file into the chat instead.
+
+Check the draft before using it: same headings as the other flows, at least 5 matching and 3 non-matching examples, and only LearnWise options that exist (listed in CONTRIBUTING.md).
+
+## Improve a flow
+
+Editing a file here does **not** change LearnWise, and changing LearnWise does not change the file. When you change one, change the other the same way. See CONTRIBUTING.md.
