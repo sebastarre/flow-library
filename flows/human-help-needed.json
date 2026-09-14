@@ -3,7 +3,11 @@
   "idioma": "en",
   "categoria": "Chat",
   "descripcion": "The user asks to talk to a person or to contact support. The assistant replies and shows a button to contact support.",
-  "activador": "El usuario envía un mensaje",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
   "condiciones": {
     "logica": "Cualquier condición coincide",
     "lista": [

@@ -3,7 +3,11 @@
   "idioma": "en",
   "categoria": "Tutor",
   "descripcion": "The student brings their own problem, or a partial attempt, and the assistant guides them step by step with questions and hints from the course, without giving the answer.",
-  "activador": "El usuario envía un mensaje",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
   "condiciones": {
     "logica": "Cualquier condición coincide",
     "lista": [

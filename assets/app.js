@@ -1,6 +1,6 @@
 import {
-  ACCIONES, CATEGORIAS, CONTEXTO, IDIOMAS, LIMITES, LOGICAS, SLUG_RE, TIPOS_CONDICION,
-  normalizeFlow, slugify, validateFlow,
+  ACCIONES, ACTIVADORES, ACTIVADOR_MENSAJE, CATEGORIAS, CONDICIONES, CONTEXTO, IDIOMAS, LIMITES, LOGICAS, SLUG_RE, VALORES_EN,
+  guardar, mostrar, normalizeFlow, nuevoItem, nuevoValor, slugify, t, tituloItem, validateFlow, visibleFields,
 } from './validate.js';
 
 const app = document.getElementById('app');
@@ -14,8 +14,8 @@ let refreshPublish = () => {};
 let lastLibraryHash = '#/';
 
 /* ---------- Language ---------- */
-// The flow parts of the page (and the whole flow page) follow the flow's language.
-// Site chrome (library, form instructions) stays in Spanish.
+// The flow page, and the LearnWise fields in the form, follow the flow's language.
+// Site chrome (library, form instructions) stays in Spanish. Field names live in schema.js.
 
 const UI = {
   es: {
@@ -29,21 +29,16 @@ const UI = {
     sub1: 'Defina el evento que inicia este flujo',
     sub2: 'Criterios que deben cumplirse para que el flujo continúe.',
     sub3: 'Defina lo que sucederá si se cumplen el activador y las condiciones.',
-    event: 'Evento', logic: 'Lógica de condiciones', noConditions: 'Sin condiciones: el flujo corre siempre que ocurre el activador.',
+    required: 'Obligatorio', optional: 'Opcional',
+    triggerQuestion: '¿Qué activa el flujo?', addTrigger: 'Agregar un activador',
+    logic: 'Lógica de condiciones', noConditions: 'Sin condiciones: el flujo corre siempre que ocurre el activador.',
     condition: 'Condición', action: 'Acción', config: 'Configuración', otherAction: 'Otra acción',
     matching: 'Ejemplos coincidentes', nonMatching: 'Ejemplos no coincidentes', example: 'Ejemplo',
     examples: (n) => (n === 1 ? '1 ejemplo' : `${n} ejemplos`),
     conditions: (n) => (n === 1 ? '1 condición' : `${n} condiciones`),
     userMessage: 'Mensaje del usuario', explanation: 'Explicación', noExamples: 'Todavía no hay ejemplos cargados.',
     empty: 'Vacío', notSet: 'Sin configurar', on: 'Activado', off: 'Desactivado', checked: 'Marcado', unchecked: 'Sin marcar', yes: 'Sí', no: 'No',
-    escalar: 'Solicitar al usuario escalar para consultas no resueltas',
-    escalarDesc: "Cuando el asistente de IA no sabe la respuesta a una pregunta, presentará el botón de escalamiento 'contactar soporte' al usuario.",
-    mejoras: 'Crear elementos de mejora de conocimientos para consultas no resueltas',
-    mejorasDesc: 'Cuando el asistente de IA no sabe la respuesta a una pregunta, agregará automáticamente un nuevo elemento a su lista de tareas de mejora de conocimientos.',
-    advanced: 'Configuración avanzada', directrices: 'Directrices de búsqueda', estilo: 'Estilo de respuesta',
-    anular: 'Anular estilo de respuesta', anularDesc: 'Si no está marcado, sus instrucciones se agregarán a las instrucciones globales.',
-    instruirIa: 'Instruir a la IA para generar mensaje', seguirGlobales: 'También seguir las instrucciones globales de respuesta', instruccion: 'Instrucción',
-    botonNombre: 'Nombre del botón', botonTipo: 'Tipo de botón', url: 'URL', mostrarIcono: 'Mostrar ícono',
+    at: 'a las', add: 'Agregar',
     addCondition: 'Agregar una condición', addAction: 'Agregar una acción', addExample: 'Agregar ejemplo',
     footer1: 'Los flows se guardan en ', footer2: '. Cambiar un flow acá no cambia LearnWise: hacé el mismo cambio en los dos lados.',
     notFound: 'No encontramos ese flow', notFoundLead: 'Puede que lo hayan renombrado o borrado.',
@@ -59,60 +54,23 @@ const UI = {
     sub1: 'Define the event that starts this flow',
     sub2: 'Criteria that must be met for the flow to continue.',
     sub3: 'Define what happens when the trigger and the conditions are met.',
-    event: 'Event', logic: 'Condition logic', noConditions: 'No conditions: the flow runs every time the trigger happens.',
+    required: 'Required', optional: 'Optional',
+    triggerQuestion: 'What starts the flow?', addTrigger: 'Add a trigger',
+    logic: 'Condition logic', noConditions: 'No conditions: the flow runs every time the trigger happens.',
     condition: 'Condition', action: 'Action', config: 'Configuration', otherAction: 'Other action',
     matching: 'Matching examples', nonMatching: 'Non-matching examples', example: 'Example',
     examples: (n) => (n === 1 ? '1 example' : `${n} examples`),
     conditions: (n) => (n === 1 ? '1 condition' : `${n} conditions`),
     userMessage: 'User message', explanation: 'Explanation', noExamples: 'No examples added yet.',
     empty: 'Empty', notSet: 'Not set', on: 'On', off: 'Off', checked: 'Checked', unchecked: 'Unchecked', yes: 'Yes', no: 'No',
-    escalar: 'Ask the user to escalate unresolved queries',
-    escalarDesc: "When the AI assistant doesn't know the answer to a question, it will show the user the 'contact support' escalation button.",
-    mejoras: 'Create knowledge improvement items for unresolved queries',
-    mejorasDesc: "When the AI assistant doesn't know the answer to a question, it will automatically add a new item to your knowledge improvement task list.",
-    advanced: 'Advanced settings', directrices: 'Search guidelines', estilo: 'Response style',
-    anular: 'Override response style', anularDesc: 'If unchecked, your instructions will be added to the global instructions.',
-    instruirIa: 'Instruct the AI to generate the message', seguirGlobales: 'Also follow the global response instructions', instruccion: 'Instruction',
-    botonNombre: 'Button name', botonTipo: 'Button type', url: 'URL', mostrarIcono: 'Show icon',
+    at: 'at', add: 'Add',
     addCondition: 'Add a condition', addAction: 'Add an action', addExample: 'Add example',
     footer1: 'Flows are stored on ', footer2: ". Changing a flow here doesn't change LearnWise: make the same change in both places.",
     notFound: "We couldn't find that flow", notFoundLead: 'It may have been renamed or deleted.',
   },
 };
 let L = UI.es;
-
-// Same order and texts as "Agregar una acción" in LearnWise. Types without their own fields yet use a free-text "Configuración".
-const CATALOGO_ACCIONES = [
-  { tipo: ACCIONES.MENSAJE, icono: 'message', es: ['Mensaje', 'Enviar una respuesta de texto personalizada'], en: ['Message', 'Send a custom text response'] },
-  { tipo: ACCIONES.BOTON, icono: 'external', es: ['Botón', 'Mostrar un botón o enlace clicable'], en: ['Button', 'Show a clickable button or link'] },
-  { tipo: ACCIONES.BUSCAR, icono: 'search', es: ['Buscar en conocimientos', 'Consultar su base de conocimientos'], en: ['Search knowledge', 'Query your knowledge base'] },
-  { tipo: 'Seguimientos', icono: 'question', es: ['Seguimientos', 'Sugerir preguntas de seguimiento'], en: ['Follow-ups', 'Suggest follow-up questions'] },
-  { tipo: 'Iframe', icono: 'frame', es: ['Iframe', 'Incrustar contenido externo en línea'], en: ['Iframe', 'Embed external content inline'] },
-  { tipo: 'Solicitud API', icono: 'api', es: ['Solicitud API', 'Llamar a un endpoint API externo'], en: ['API request', 'Call an external API endpoint'] },
-  { tipo: 'Enviar correo electrónico', icono: 'at', es: ['Enviar correo electrónico', 'Enviar correo electrónico'], en: ['Send email', 'Send an email'] },
-  { tipo: 'Mejora', icono: 'trend', es: ['Mejora', 'Marcar para seguimiento de revisión'], en: ['Improvement', 'Flag for review follow-up'] },
-  { tipo: 'Transferencia', icono: 'transfer', beta: true, es: ['Transferencia', 'Transferir a otro asistente'], en: ['Transfer', 'Transfer to another assistant'] },
-  { tipo: 'Modo de estudio', icono: 'cap', es: ['Modo de estudio', 'Ingresar al cuestionario de autoevaluación'], en: ['Study mode', 'Enter the self-assessment quiz'] },
-  { tipo: 'Iniciar H5P interactivo', icono: 'puzzle', es: ['Iniciar H5P interactivo', 'Cuestionarios, tarjetas de memoria, arrastrar palabras y más'], en: ['Start interactive H5P', 'Quizzes, flashcards, drag the words and more'] },
-];
-
-// Flow files always store the Spanish option labels; English flows show them translated.
-const VALORES_EN = {
-  'El usuario envía un mensaje': 'User sends a message',
-  'Cualquier condición coincide': 'Any condition matches',
-  'Todas las condiciones coinciden': 'All conditions match',
-  'Contexto de la conversación': 'Conversation context',
-  'Rol de usuario': 'User role',
-  'Datos externos': 'External data',
-  Curso: 'Course',
-  'Programación': 'Schedule',
-  'Mensaje personalizado': 'Custom message',
-  'Enlace externo': 'External link',
-  ...Object.fromEntries(CATALOGO_ACCIONES.filter((c) => c.tipo !== ACCIONES.MENSAJE).map((c) => [c.tipo, c.en[0]])),
-};
-const VALORES_ES = Object.fromEntries(Object.entries(VALORES_EN).map(([es, en]) => [en, es]));
-const mostrar = (lang, v) => (lang === 'en' ? VALORES_EN[v] ?? v : v);
-const guardar = (lang, v) => (lang === 'en' ? VALORES_ES[v] ?? v : v);
+const txt = (texto) => t(texto, L.code);
 
 /* ---------- DOM helpers ---------- */
 
@@ -213,38 +171,75 @@ function copyButton(getPlain, { label = L.copy, getHtml = null, big = false, ico
   return btn;
 }
 
-/* ---------- Rich text (Estilo de respuesta) ---------- */
-// Lines starting with "- " are bullets, indented lines continue the bullet above, *text* is italic, **text** is bold.
+/* ---------- Rich text ---------- */
+// "- " bullets, "1. " numbered lists, "# " headings (up to ####), indented lines continue the item above,
+// *italic*, **bold**, `code` and [text](https://link).
+
+const RICH_HELP = 'Formato: "- " viñeta, "1. " lista numerada, "# " título, *cursiva*, **negrita**, [texto](https://link). Al copiar se pega con formato.';
 
 function escapeHtml(s) {
   return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 }
 
 function richToHtml(text) {
-  const inline = (s) => escapeHtml(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>');
+  const inline = (s) => escapeHtml(s)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
   let html = '';
-  let items = null;
-  const closeList = () => { if (items) html += `<ul>${items.map((i) => `<li>${i}</li>`).join('')}</ul>`; items = null; };
+  let list = null;
+  const closeList = () => {
+    if (list) html += `<${list.tag}>${list.items.map((i) => `<li>${i}</li>`).join('')}</${list.tag}>`;
+    list = null;
+  };
+  const addItem = (tag, content) => {
+    if (list?.tag !== tag) { closeList(); list = { tag, items: [] }; }
+    list.items.push(inline(content));
+  };
   for (const line of text.split(/\r?\n/)) {
     const bullet = line.match(/^\s*[-•]\s+(.*)$/);
-    if (bullet) (items ??= []).push(inline(bullet[1]));
-    else if (items && /^\s{2,}\S/.test(line)) items[items.length - 1] += `<br>${inline(line.trim())}`;
-    else { closeList(); if (line.trim()) html += `<p>${inline(line)}</p>`; }
+    const numbered = line.match(/^\s*\d+[.)]\s+(.*)$/);
+    const heading = line.match(/^(#{1,4})\s+(.*)$/);
+    if (bullet) addItem('ul', bullet[1]);
+    else if (numbered) addItem('ol', numbered[1]);
+    else if (list && /^\s{2,}\S/.test(line)) list.items[list.items.length - 1] += `<br>${inline(line.trim())}`;
+    else {
+      closeList();
+      if (heading) html += `<h${heading[1].length}>${inline(heading[2])}</h${heading[1].length}>`;
+      else if (line.trim()) html += `<p>${inline(line)}</p>`;
+    }
   }
   closeList();
   return html;
 }
 
-const richToPlain = (text) => text.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1');
+const richToPlain = (text) => text
+  .replace(/^(#{1,4})\s+/gm, '')
+  .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1 ($2)')
+  .replace(/`([^`]+)`/g, '$1')
+  .replace(/\*\*(.+?)\*\*/g, '$1')
+  .replace(/\*(.+?)\*/g, '$1');
 
 /* ---------- Shared pieces ---------- */
 
-function stepCard(n, ...content) {
+function stepCard(n, content, badge = null) {
   return h('section', { class: `step step-${n}` },
     h('header', { class: 'step-head' },
       h('span', { class: 'step-num' }, String(n)),
-      h('div', null, h('h2', null, L[`step${n}`]), h('p', null, L[`sub${n}`]))),
+      h('div', null,
+        h('h2', null, L[`step${n}`], badge ? h('span', { class: `step-badge ${badge === L.required ? 'required' : 'optional'}` }, badge) : null),
+        h('p', null, L[`sub${n}`]))),
     h('div', { class: 'step-body' }, content));
+}
+
+function blockHead(kicker, title, tools = null, subtitle = '', beta = false) {
+  return h('div', { class: 'block-head' },
+    h('div', { class: 'block-title' },
+      h('span', { class: 'block-kicker' }, kicker),
+      h('h3', null, title, beta ? h('span', { class: 'beta' }, 'beta') : null),
+      subtitle ? h('p', { class: 'block-sub' }, subtitle) : null),
+    tools);
 }
 
 function topbar() {
@@ -269,6 +264,20 @@ function flowTags(f) {
     h('span', { class: 'lang', title: IDIOMAS[f.idioma] }, f.idioma.toUpperCase()));
 }
 
+const pad = (n) => String(n).padStart(2, '0');
+
+function fechaTexto(v) {
+  if (!v?.fecha) return '';
+  const [y, m, d] = v.fecha.split('-');
+  const fecha = L.code === 'en' ? `${m}/${d}/${y}` : `${d}/${m}/${y}`;
+  let hora = '';
+  if (v.hora) {
+    const [hh, mm] = v.hora.split(':').map(Number);
+    hora = ` ${L.at} ${hh % 12 || 12}:${pad(mm)} ${hh < 12 ? 'AM' : 'PM'}`;
+  }
+  return `${fecha}${hora}${v.zona ? ` (${v.zona})` : ''}`;
+}
+
 /* ---------- Library ---------- */
 
 const filtro = { q: '', idioma: '', cat: '' };
@@ -281,14 +290,19 @@ function libraryHash() {
   return `#/${qs ? `?${qs}` : ''}`;
 }
 
+const buscables = new WeakMap();
 function textoBuscable(f) {
-  const partes = [f.nombre, f.descripcion, f.categoria, IDIOMAS[f.idioma], f.activador];
-  for (const c of f.condiciones.lista) {
-    partes.push(c.tipo, mostrar('en', c.tipo), c.contexto, c.valor);
-    for (const e of [...(c.coincidentes ?? []), ...(c.no_coincidentes ?? [])]) partes.push(e.mensaje);
+  if (!buscables.has(f)) {
+    const partes = [IDIOMAS[f.idioma]];
+    const walk = (x) => {
+      if (typeof x === 'string') partes.push(x, VALORES_EN[x] ?? '');
+      else if (Array.isArray(x)) x.forEach(walk);
+      else if (x && typeof x === 'object') Object.values(x).forEach(walk);
+    };
+    walk(f);
+    buscables.set(f, normalizar(partes.join(' ')));
   }
-  for (const a of f.respuesta) partes.push(a.tipo, mostrar('en', a.tipo));
-  return normalizar(partes.filter(Boolean).join(' '));
+  return buscables.get(f);
 }
 
 function viewLibrary(params) {
@@ -359,24 +373,20 @@ function card(f) {
 
 /* ---------- Flow detail ---------- */
 
-function field(label, value, { rich = false, limit = null, emptyText = L.empty, warn = false } = {}) {
+function field(label, value, { rich = false, limit = null, emptyText = L.empty, warn = false, mono = false, prefix = null, copy = null } = {}) {
   const v = value ?? '';
-  const empty = !v.trim();
+  const empty = !String(v).trim();
   const body = empty
     ? h('div', { class: `field-value ${warn ? 'is-warn' : 'is-empty'}` }, emptyText)
     : rich
       ? h('div', { class: 'field-value rich', html: richToHtml(v) })
-      : h('div', { class: 'field-value' }, v);
+      : h('div', { class: `field-value${mono ? ' mono' : ''}` }, prefix ? h('span', { class: 'affix-inline' }, prefix) : null, v);
   return h('div', { class: 'field' },
     h('div', { class: 'field-head' },
       h('span', { class: 'field-label' }, label),
       h('span', { class: 'field-count' }, limit ? `${v.length}/${limit}` : ''),
-      empty ? null : copyButton(() => (rich ? richToPlain(v) : v), { getHtml: rich ? () => richToHtml(v) : null })),
+      empty ? null : copyButton(() => copy ?? (rich ? richToPlain(v) : v), { getHtml: rich ? () => richToHtml(v) : null })),
     body);
-}
-
-function stateText(on, kind) {
-  return kind === 'check' ? (on ? L.checked : L.unchecked) : (on ? L.on : L.off);
 }
 
 function setting(label, on, desc, kind = 'switch') {
@@ -385,11 +395,7 @@ function setting(label, on, desc, kind = 'switch') {
     : h('span', { class: `switch${on ? ' on' : ''}` });
   return h('div', { class: 'setting' },
     h('div', { class: 'setting-text' }, h('div', { class: 'setting-label' }, label), desc ? h('div', { class: 'setting-desc' }, desc) : null),
-    h('span', { class: 'state' }, stateText(on, kind), mark));
-}
-
-function blockHead(kicker, title, tools) {
-  return h('div', { class: 'block-head' }, h('span', { class: 'block-kicker' }, kicker), h('h3', null, title), tools);
+    h('span', { class: 'state' }, kind === 'check' ? (on ? L.checked : L.unchecked) : (on ? L.on : L.off), mark));
 }
 
 function ejemplosView(list, kind) {
@@ -405,81 +411,111 @@ function ejemplosView(list, kind) {
         : h('p', { class: 'muted' }, L.noExamples)));
 }
 
-function condicionView(c, i) {
-  const head = blockHead(`${L.condition} ${i + 1}`, mostrar(L.code, c.tipo));
-  if (c.tipo !== CONTEXTO) return h('div', { class: 'block' }, head, field(L.config, c.valor));
-  return h('div', { class: 'block' }, head,
-    field(mostrar(L.code, CONTEXTO), c.contexto),
-    ejemplosView(c.coincidentes, 'match'),
-    ejemplosView(c.no_coincidentes, 'nomatch'));
+function listView(label, items) {
+  return h('div', { class: 'field' },
+    h('div', { class: 'field-head' }, h('span', { class: 'field-label' }, label)),
+    items.length
+      ? h('div', { class: 'list-items' }, items.map((x) => h('div', { class: 'list-item' }, h('span', null, x), copyButton(() => x))))
+      : h('div', { class: 'field-value is-empty' }, L.empty));
 }
 
-function accionView(a, i) {
-  const head = blockHead(`${L.action} ${i + 1}`, mostrar(L.code, a.tipo));
-  switch (a.tipo) {
-    case ACCIONES.BUSCAR:
-      return h('div', { class: 'block' }, head,
-        setting(L.escalar, a.escalar_no_resueltas, L.escalarDesc),
-        setting(L.mejoras, a.crear_mejoras, L.mejorasDesc),
-        h('h4', { class: 'sub' }, L.advanced),
-        field(L.directrices, a.directrices_busqueda, { limit: LIMITES.directrices_busqueda }),
-        field(L.estilo, a.estilo_respuesta, { limit: LIMITES.estilo_respuesta, rich: true }),
-        setting(L.anular, a.anular_estilo, L.anularDesc, 'check'));
-    case ACCIONES.MENSAJE:
-      return h('div', { class: 'block' }, head,
-        setting(L.instruirIa, a.instruir_ia),
-        setting(L.seguirGlobales, a.seguir_instrucciones_globales),
-        field(L.instruccion, a.instruccion));
-    case ACCIONES.BOTON:
-      return h('div', { class: 'block' }, head,
-        field(L.botonNombre, a.nombre),
-        field(L.botonTipo, mostrar(L.code, a.tipo_boton)),
-        field(L.url, a.url, { warn: true, emptyText: L.notSet }),
-        setting(L.mostrarIcono, a.mostrar_icono));
-    default:
-      return h('div', { class: 'block' }, head, field(L.config, a.valor));
+function pairsView(f, pairs) {
+  const [c1, c2] = f.cols.map(txt);
+  return h('div', { class: 'field' },
+    h('div', { class: 'field-head' }, h('span', { class: 'field-label' }, txt(f.label))),
+    pairs.length
+      ? h('div', { class: 'pairs' }, pairs.map((p) => h('div', { class: 'pair' }, field(c1, p.nombre), field(c2, p.valor))))
+      : h('div', { class: 'field-value is-empty' }, L.empty));
+}
+
+function fieldView(f, item) {
+  const label = txt(f.label);
+  const v = item[f.key];
+  switch (f.kind) {
+    case 'heading': return h('h4', { class: 'sub' }, txt(f.text));
+    case 'info': return null;
+    case 'toggle': return setting(label, v, txt(f.help));
+    case 'check': return setting(label, v, txt(f.help), 'check');
+    case 'rich': return field(label, v, { rich: true, limit: f.limit });
+    case 'code': return field(label, v, { mono: true, limit: f.limit });
+    case 'select': case 'radio': return field(label, mostrar(L.code, v));
+    case 'number': return field(label, `${v}${f.suffix ? ` ${f.suffix}` : ''}`, { copy: String(v) });
+    case 'datetime': return field(label, fechaTexto(v));
+    case 'list': return listView(label, v);
+    case 'pairs': return pairsView(f, v);
+    case 'examples': return ejemplosView(v, f.match ? 'match' : 'nomatch');
+    default: return field(label, v, { limit: f.limit, prefix: f.prefix, warn: f.emptyWarn, emptyText: f.emptyWarn ? L.notSet : L.empty });
   }
 }
 
+function itemView(specs, item, i, kicker) {
+  const spec = specs.find((s) => s.tipo === item.tipo);
+  if (!spec) return h('div', { class: 'block' }, blockHead(`${kicker} ${i + 1}`, item.tipo), field(L.config, item.valor));
+  return h('div', { class: 'block' },
+    blockHead(`${kicker} ${i + 1}`, tituloItem(spec, item, L.code), null, txt(spec.subtitulo), spec.beta),
+    visibleFields(spec, item).map((f) => fieldView(f, item)));
+}
+
+function activadorView(a) {
+  const spec = ACTIVADORES.find((s) => s.tipo === a.tipo);
+  return h('div', { class: 'trigger' },
+    h('span', { class: 'trigger-name' }, mostrar(L.code, a.tipo)),
+    spec ? visibleFields(spec, a).map((f) => h('span', { class: 'trigger-value', title: txt(f.label) }, `${a[f.key]}${f.suffix ?? ''}`)) : null);
+}
+
+function fieldText(f, item) {
+  const label = txt(f.label);
+  const v = item[f.key];
+  const vacio = `(${L.empty})`;
+  switch (f.kind) {
+    case 'heading': return [`[${txt(f.text)}]`];
+    case 'info': return [];
+    case 'toggle': return [`${label}: ${v ? L.on : L.off}`];
+    case 'check': return [`${label}: ${v ? L.yes : L.no}`];
+    case 'rich': case 'textarea': case 'code': return [`${label}:`, (f.kind === 'rich' ? richToPlain(v) : v) || vacio];
+    case 'select': case 'radio': return [`${label}: ${mostrar(L.code, v)}`];
+    case 'number': return [`${label}: ${v}${f.suffix ?? ''}`];
+    case 'datetime': return [`${label}: ${fechaTexto(v) || vacio}`];
+    case 'list': return [`${label}:`, ...(v.length ? v.map((x) => `- ${x}`) : [`  ${vacio}`])];
+    case 'pairs': return [`${label}:`, ...(v.length ? v.map((p) => `- ${p.nombre}: ${p.valor}`) : [`  ${vacio}`])];
+    case 'examples': {
+      const lines = [`${f.match ? L.matching : L.nonMatching}:`];
+      if (!v.length) lines.push(`  (${L.noExamples})`);
+      for (const e of v) lines.push(`- ${L.userMessage}: ${e.mensaje}`, `  ${L.explanation}: ${e.explicacion}`);
+      return lines;
+    }
+    default: return [`${label}: ${v ? `${f.prefix ?? ''}${v}` : `(${f.emptyWarn ? L.notSet : L.empty})`}`];
+  }
+}
+
+function itemText(specs, item, i, kicker) {
+  const spec = specs.find((s) => s.tipo === item.tipo);
+  if (!spec) return ['', `${kicker} ${i + 1} — ${item.tipo}`, item.valor];
+  return ['', `${kicker} ${i + 1} — ${tituloItem(spec, item, L.code)}`, ...visibleFields(spec, item).flatMap((f) => fieldText(f, item))];
+}
+
 function flowToText(f) {
-  const T = UI[f.idioma];
-  const v = (x) => mostrar(f.idioma, x);
-  const onOff = (x) => (x ? T.on : T.off);
-  const out = [`FLOW: ${f.nombre}`, f.descripcion, '', `1. ${T.step1.toUpperCase()}`, v(f.activador), '', `2. ${T.step2.toUpperCase()}`, `${T.logic}: ${v(f.condiciones.logica)}`];
-  f.condiciones.lista.forEach((c, i) => {
-    out.push('', `${T.condition} ${i + 1} — ${v(c.tipo)}`);
-    if (c.tipo !== CONTEXTO) return out.push(c.valor);
-    out.push(`${v(CONTEXTO)}: ${c.contexto}`);
-    for (const [titulo, lista] of [[T.matching, c.coincidentes], [T.nonMatching, c.no_coincidentes]]) {
-      out.push(`${titulo}:`);
-      if (!lista.length) out.push(`  (${T.noExamples})`);
-      for (const e of lista) out.push(`- ${T.userMessage}: ${e.mensaje}`, `  ${T.explanation}: ${e.explicacion}`);
-    }
-  });
-  out.push('', `3. ${T.step3.toUpperCase()}`);
-  f.respuesta.forEach((a, i) => {
-    out.push('', `${T.action} ${i + 1} — ${v(a.tipo)}`);
-    switch (a.tipo) {
-      case ACCIONES.BUSCAR:
-        out.push(
-          `${T.escalar}: ${onOff(a.escalar_no_resueltas)}`,
-          `${T.mejoras}: ${onOff(a.crear_mejoras)}`,
-          `${T.directrices}:`, a.directrices_busqueda,
-          `${T.estilo}:`, richToPlain(a.estilo_respuesta),
-          `${T.anular}: ${a.anular_estilo ? T.yes : T.no}`);
-        break;
-      case ACCIONES.MENSAJE:
-        out.push(`${T.instruirIa}: ${onOff(a.instruir_ia)}`, `${T.seguirGlobales}: ${onOff(a.seguir_instrucciones_globales)}`, `${T.instruccion}: ${a.instruccion}`);
-        break;
-      case ACCIONES.BOTON:
-        out.push(`${T.botonNombre}: ${a.nombre}`, `${T.botonTipo}: ${v(a.tipo_boton)}`, `${T.url}: ${a.url || `(${T.notSet})`}`, `${T.mostrarIcono}: ${onOff(a.mostrar_icono)}`);
-        break;
-      default:
-        out.push(a.valor);
-    }
-  });
-  if (f.notas) out.push('', `${T.notes}: ${f.notas}`);
-  return out.join('\n');
+  const anterior = L;
+  L = UI[f.idioma];
+  try {
+    const activadores = f.activadores.map((a) => {
+      const spec = ACTIVADORES.find((s) => s.tipo === a.tipo);
+      const extra = spec ? visibleFields(spec, a).map((x) => `${a[x.key]}${x.suffix ?? ''}`).join(' ') : '';
+      return `- ${mostrar(L.code, a.tipo)}${extra ? ` (${extra})` : ''}`;
+    });
+    const out = [
+      `FLOW: ${f.nombre}`, f.descripcion,
+      '', `1. ${L.step1.toUpperCase()}`, ...activadores,
+      '', `2. ${L.step2.toUpperCase()}`, `${L.logic}: ${mostrar(L.code, f.condiciones.logica)}`,
+      ...f.condiciones.lista.flatMap((c, i) => itemText(CONDICIONES, c, i, L.condition)),
+      '', `3. ${L.step3.toUpperCase()}`,
+      ...f.respuesta.flatMap((a, i) => itemText(ACCIONES, a, i, L.action)),
+    ];
+    if (f.notas) out.push('', `${L.notes}: ${f.notas}`);
+    return out.join('\n');
+  } finally {
+    L = anterior;
+  }
 }
 
 function viewFlow(slug) {
@@ -502,13 +538,14 @@ function viewFlow(slug) {
         h('a', { class: 'btn', href: `#/editar/${f.slug}` }, icon('edit'), L.edit))),
     h('p', { class: 'howto' }, icon('info'), h('span', null, L.howto)),
     f.notas ? h('p', { class: 'note' }, h('span', null, h('strong', null, L.note), f.notas)) : null,
-    stepCard(1, field(L.event, mostrar(L.code, f.activador))),
-    stepCard(2,
+    stepCard(1, f.activadores.map(activadorView)),
+    stepCard(2, [
       h('div', { class: 'logic' },
         h('span', { class: 'field-label' }, L.logic),
         h('div', { class: 'radios' }, LOGICAS.map((l) => h('span', { class: `radio${l === logica ? ' on' : ''}` }, h('span', { class: 'dot' }), mostrar(L.code, l))))),
-      lista.length ? lista.map(condicionView) : h('p', { class: 'muted' }, L.noConditions)),
-    stepCard(3, f.respuesta.map(accionView)));
+      lista.length ? lista.map((c, i) => itemView(CONDICIONES, c, i, L.condition)) : h('p', { class: 'muted' }, L.noConditions),
+    ]),
+    stepCard(3, f.respuesta.map((a, i) => itemView(ACCIONES, a, i, L.action))));
 }
 
 function viewNotFound() {
@@ -520,29 +557,13 @@ function viewNotFound() {
 
 /* ---------- Add / edit form ---------- */
 
-const nuevoEjemplo = () => ({ mensaje: '', explicacion: '' });
-
-function nuevaCondicion(tipo) {
-  return tipo === CONTEXTO ? { tipo, contexto: '', coincidentes: [nuevoEjemplo()], no_coincidentes: [nuevoEjemplo()] } : { tipo, valor: '' };
-}
-
-function nuevaAccion(tipo) {
-  switch (tipo) {
-    case ACCIONES.BUSCAR:
-      return { tipo, escalar_no_resueltas: false, crear_mejoras: false, directrices_busqueda: '', estilo_respuesta: '', anular_estilo: false };
-    case ACCIONES.MENSAJE:
-      return { tipo, instruir_ia: true, seguir_instrucciones_globales: true, instruccion: '' };
-    case ACCIONES.BOTON:
-      return { tipo, nombre: '', tipo_boton: 'Enlace externo', url: '', mostrar_icono: false };
-    default:
-      return { tipo, valor: '' };
-  }
-}
+const buscarSpec = (specs, tipo) => specs.find((s) => s.tipo === tipo);
 
 const flowVacio = () => ({
-  nombre: '', idioma: '', categoria: '', descripcion: '', activador: 'El usuario envía un mensaje',
-  condiciones: { logica: LOGICAS[0], lista: [nuevaCondicion(CONTEXTO)] },
-  respuesta: [nuevaAccion(ACCIONES.BUSCAR)],
+  nombre: '', idioma: '', categoria: '', descripcion: '',
+  activadores: [nuevoItem(buscarSpec(ACTIVADORES, ACTIVADOR_MENSAJE))],
+  condiciones: { logica: LOGICAS[0], lista: [nuevoItem(buscarSpec(CONDICIONES, CONTEXTO))] },
+  respuesta: [nuevoItem(buscarSpec(ACCIONES, 'Buscar en conocimientos'))],
   notas: '',
 });
 
@@ -574,11 +595,28 @@ function changed() {
 }
 
 let uid = 0;
-function input(obj, key, { label, placeholder, multiline = false, rows = 3, limit = null, required = false, help = null, list = null, readonly = false, onInput = null, show = (v) => v, parse = (v) => v } = {}) {
-  const id = `f${++uid}`;
+const nextId = () => `f${++uid}`;
+
+function fieldHead(id, label, required, extra = null) {
+  return h('div', { class: 'field-head' },
+    h(id ? 'label' : 'span', { for: id, class: 'field-label' }, label, required ? h('span', { class: 'req' }, ' *') : null),
+    extra);
+}
+
+function bareInput(obj, key, { type = 'text', placeholder, list, min, max, label, show = (v) => v, parse = (v) => v } = {}) {
+  const ctrl = h('input', { type, class: 'input', placeholder, list, min, max, 'aria-label': label, value: show(obj[key] ?? '') });
+  ctrl.addEventListener('input', () => { obj[key] = parse(ctrl.value); changed(); });
+  return ctrl;
+}
+
+function input(obj, key, {
+  label, placeholder, multiline = false, rows = 3, limit = null, required = false, help = null, list = null, readonly = false,
+  onInput = null, show = (v) => v, parse = (v) => v, type = 'text', min, max, prefix = null, suffix = null, mono = false,
+} = {}) {
+  const id = nextId();
   const ctrl = h(multiline ? 'textarea' : 'input', {
-    id, class: 'input', placeholder, rows: multiline ? rows : null, type: multiline ? null : 'text',
-    list, readonly, value: show(obj[key] ?? ''),
+    id, class: `input${mono ? ' mono' : ''}`, placeholder, rows: multiline ? rows : null, type: multiline ? null : type,
+    list, readonly, min, max, value: show(obj[key] ?? ''),
   });
   const counter = limit ? h('span', { class: 'field-count' }) : null;
   const updateCounter = () => {
@@ -593,22 +631,22 @@ function input(obj, key, { label, placeholder, multiline = false, rows = 3, limi
     changed();
   });
   updateCounter();
-  return h('div', { class: 'form-field' },
-    h('div', { class: 'field-head' }, h('label', { for: id, class: 'field-label' }, label, required ? h('span', { class: 'req' }, ' *') : null), counter),
-    help ? h('p', { class: 'help' }, help) : null,
-    ctrl);
+  const control = prefix || suffix
+    ? h('div', { class: 'input-group' }, prefix ? h('span', { class: 'affix' }, prefix) : null, ctrl, suffix ? h('span', { class: 'affix' }, suffix) : null)
+    : ctrl;
+  return h('div', { class: 'form-field' }, fieldHead(id, label, required, counter), help ? h('p', { class: 'help' }, help) : null, control);
 }
 
 function choice(obj, key, label, options) {
   return h('div', { class: 'form-field' },
-    h('span', { class: 'field-label' }, label, h('span', { class: 'req' }, ' *')),
+    fieldHead(null, label, true),
     h('div', { class: 'chips', role: 'radiogroup', 'aria-label': label },
       options.map(([value, text]) => h('label', { class: `chip${obj[key] === value ? ' is-on' : ''}` },
         h('input', { type: 'radio', name: key, value, checked: obj[key] === value, onchange: () => { obj[key] = value; changed(); rerender(); } }),
         text))));
 }
 
-function toggle(obj, key, label, desc, kind = 'switch') {
+function toggle(obj, key, label, desc, kind = 'switch', rerenderOnChange = false) {
   const mark = h('span', { class: kind === 'check' ? 'checkbox' : 'switch' });
   const state = h('span', { class: 'state' });
   const labels = { on: L.on, off: L.off, checked: L.checked, unchecked: L.unchecked };
@@ -618,7 +656,10 @@ function toggle(obj, key, label, desc, kind = 'switch') {
     if (kind === 'check') mark.replaceChildren(on ? icon('check') : '');
     state.replaceChildren(kind === 'check' ? (on ? labels.checked : labels.unchecked) : (on ? labels.on : labels.off), mark);
   };
-  const box = h('input', { type: 'checkbox', checked: obj[key], onchange: (e) => { obj[key] = e.target.checked; paint(); changed(); } });
+  const box = h('input', {
+    type: 'checkbox', checked: obj[key],
+    onchange: (e) => { obj[key] = e.target.checked; paint(); changed(); if (rerenderOnChange) rerender(); },
+  });
   paint();
   return h('label', { class: 'setting' },
     box,
@@ -626,37 +667,70 @@ function toggle(obj, key, label, desc, kind = 'switch') {
     state);
 }
 
+function trashButton(label, onDelete) {
+  return h('button', { type: 'button', class: 'icon-btn danger', title: label, 'aria-label': label, onclick: onDelete }, icon('trash'));
+}
+
 function listTools(list, i, what) {
   const move = (to) => { [list[i], list[to]] = [list[to], list[i]]; changed(); rerender(); };
   return h('div', { class: 'block-tools' },
     h('button', { type: 'button', class: 'icon-btn', title: 'Subir', 'aria-label': `Subir ${what}`, disabled: i === 0, onclick: () => move(i - 1) }, icon('up')),
     h('button', { type: 'button', class: 'icon-btn', title: 'Bajar', 'aria-label': `Bajar ${what}`, disabled: i === list.length - 1, onclick: () => move(i + 1) }, icon('down')),
-    h('button', {
-      type: 'button', class: 'icon-btn danger', title: 'Borrar', 'aria-label': `Borrar ${what}`,
-      onclick: () => { if (confirm(`¿Borrar ${what}?`)) { list.splice(i, 1); changed(); rerender(); } },
-    }, icon('trash')));
+    trashButton(`Borrar ${what}`, () => { if (confirm(`¿Borrar ${what}?`)) { list.splice(i, 1); changed(); rerender(); } }));
 }
 
-function conditionPicker(lista) {
-  return h('div', { class: 'add-row' },
-    h('span', { class: 'field-label' }, L.addCondition),
-    TIPOS_CONDICION.map((tipo) => h('button', {
-      type: 'button', class: 'btn btn-small',
-      onclick: () => { lista.push(nuevaCondicion(tipo)); changed(); rerender(); },
-    }, icon('plus'), mostrar(L.code, tipo))));
+function selectField(obj, key, label, options, { required = false, help = null, onChange }) {
+  const id = nextId();
+  const valores = options.map((o) => o.value);
+  if (obj[key] && !valores.includes(obj[key])) valores.push(obj[key]);
+  const sel = h('select', { id, class: 'input', value: obj[key], onchange: (e) => { obj[key] = e.target.value; onChange(); } },
+    valores.map((v) => h('option', { value: v }, mostrar(L.code, v))));
+  return h('div', { class: 'form-field' }, fieldHead(id, label, required), help ? h('p', { class: 'help' }, help) : null, sel);
 }
 
-function actionPicker(lista) {
-  return h('div', { class: 'add-row' },
-    h('span', { class: 'field-label' }, L.addAction),
-    h('div', { class: 'action-grid' }, CATALOGO_ACCIONES.map((c) => h('button', {
-      type: 'button', class: 'action-option',
-      onclick: () => { lista.push(nuevaAccion(c.tipo)); changed(); rerender(); },
-    },
-    icon(c.icono),
-    h('span', { class: 'action-text' },
-      h('span', { class: 'action-title' }, c[L.code][0], c.beta ? h('span', { class: 'beta' }, 'beta') : null),
-      h('span', { class: 'action-desc' }, c[L.code][1]))))));
+function radioField(obj, key, label, options, onChange) {
+  const name = nextId();
+  return h('div', { class: 'form-field' },
+    fieldHead(null, label, false),
+    h('div', { class: 'radios', role: 'radiogroup', 'aria-label': label }, options.map((o) => h('label', { class: `radio${obj[key] === o.value ? ' on' : ''}` },
+      h('input', { type: 'radio', name, value: o.value, checked: obj[key] === o.value, onchange: () => { obj[key] = o.value; onChange(); rerender(); } }),
+      h('span', { class: 'dot' }), mostrar(L.code, o.value)))));
+}
+
+function listForm(f, arr, label, help) {
+  const item = txt(f.item);
+  return h('div', { class: 'form-field' },
+    fieldHead(null, label, f.required),
+    help ? h('p', { class: 'help' }, help) : null,
+    arr.map((_, j) => h('div', { class: 'row-edit' },
+      bareInput(arr, j, { placeholder: `${item} ${j + 1}`, label: `${item} ${j + 1}` }),
+      trashButton(`Borrar ${item.toLowerCase()} ${j + 1}`, () => { arr.splice(j, 1); changed(); rerender(); }))),
+    h('button', { type: 'button', class: 'btn btn-small', style: 'align-self:flex-start', onclick: () => { arr.push(''); changed(); rerender(); } },
+      icon('plus'), `${L.add} ${item.toLowerCase()}`));
+}
+
+function pairsForm(f, arr, help) {
+  const [c1, c2] = f.cols.map(txt);
+  return h('div', { class: 'form-field' },
+    fieldHead(null, txt(f.label), false),
+    help ? h('p', { class: 'help' }, help) : null,
+    arr.map((p, j) => h('div', { class: 'row-edit' },
+      bareInput(p, 'nombre', { placeholder: c1, label: `${c1} ${j + 1}` }),
+      bareInput(p, 'valor', { placeholder: c2, label: `${c2} ${j + 1}` }),
+      trashButton(`Borrar fila ${j + 1}`, () => { arr.splice(j, 1); changed(); rerender(); }))),
+    h('button', { type: 'button', class: 'btn btn-small', style: 'align-self:flex-start', onclick: () => { arr.push({ nombre: '', valor: '' }); changed(); rerender(); } },
+      icon('plus'), txt(f.add)));
+}
+
+function datetimeForm(v, label, help, required) {
+  return h('div', { class: 'form-field' },
+    fieldHead(null, label, required),
+    help ? h('p', { class: 'help' }, help) : null,
+    h('div', { class: 'datetime' },
+      bareInput(v, 'fecha', { type: 'date', label: `${label}: fecha` }),
+      h('span', { class: 'muted' }, L.at),
+      bareInput(v, 'hora', { type: 'time', label: `${label}: hora` }),
+      bareInput(v, 'zona', { list: 'zonas-horarias', placeholder: 'America/Buenos_Aires', label: `${label}: zona horaria` })));
 }
 
 function ejemplosForm(list, kind) {
@@ -666,69 +740,121 @@ function ejemplosForm(list, kind) {
       list.map((e, j) => h('div', { class: 'example' },
         h('div', { class: 'example-top' },
           h('span', { class: 'muted' }, `${L.example} ${j + 1}`),
-          h('button', {
-            type: 'button', class: 'icon-btn danger', title: 'Borrar ejemplo', 'aria-label': `Borrar ejemplo ${j + 1}`,
-            onclick: () => { list.splice(j, 1); changed(); rerender(); },
-          }, icon('trash'))),
+          trashButton(`Borrar ejemplo ${j + 1}`, () => { list.splice(j, 1); changed(); rerender(); })),
         input(e, 'mensaje', { label: L.userMessage, required: true }),
         input(e, 'explicacion', { label: L.explanation, multiline: true, rows: 2, limit: LIMITES.explicacion }))),
-      h('button', { type: 'button', class: 'btn btn-small', style: 'align-self:flex-end', onclick: () => { list.push(nuevoEjemplo()); changed(); rerender(); } }, icon('plus'), L.addExample)));
+      h('button', { type: 'button', class: 'btn btn-small', style: 'align-self:flex-end', onclick: () => { list.push({ mensaje: '', explicacion: '' }); changed(); rerender(); } }, icon('plus'), L.addExample)));
 }
 
-function condicionForm(c, i, lista) {
-  const head = blockHead(`${L.condition} ${i + 1}`, mostrar(L.code, c.tipo), listTools(lista, i, `la condición ${i + 1}`));
-  if (c.tipo !== CONTEXTO) {
-    return h('div', { class: 'block' }, head,
-      input(c, 'valor', { label: L.config, multiline: true, required: true, help: 'Escribí cómo está configurada esta condición en LearnWise.' }));
-  }
-  return h('div', { class: 'block' }, head,
-    input(c, 'contexto', { label: mostrar(L.code, CONTEXTO), multiline: true, rows: 3, required: true, placeholder: 'Cuándo aplica: qué dice o quiere el usuario, y qué no.' }),
-    ejemplosForm(c.coincidentes, 'match'),
-    ejemplosForm(c.no_coincidentes, 'nomatch'));
-}
-
-function accionForm(a, i, lista) {
-  const esOtra = a.otra || !CATALOGO_ACCIONES.some((c) => c.tipo === a.tipo);
-  const head = blockHead(`${L.action} ${i + 1}`, esOtra ? L.otherAction : mostrar(L.code, a.tipo), listTools(lista, i, `la acción ${i + 1}`));
-  if (esOtra) {
-    return h('div', { class: 'block' }, head,
-      input(a, 'tipo', { label: 'Nombre de la acción', required: true, placeholder: 'Como aparece en LearnWise' }),
-      input(a, 'valor', { label: L.config, multiline: true, help: 'Escribí cada ajuste de esta acción tal como está en LearnWise.' }));
-  }
-  switch (a.tipo) {
-    case ACCIONES.BUSCAR:
-      return h('div', { class: 'block' }, head,
-        toggle(a, 'escalar_no_resueltas', L.escalar, L.escalarDesc),
-        toggle(a, 'crear_mejoras', L.mejoras, L.mejorasDesc),
-        h('h4', { class: 'sub' }, L.advanced),
-        input(a, 'directrices_busqueda', { label: L.directrices, multiline: true, rows: 4, limit: LIMITES.directrices_busqueda }),
-        input(a, 'estilo_respuesta', {
-          label: L.estilo, multiline: true, rows: 12, limit: LIMITES.estilo_respuesta,
-          help: 'Para una viñeta, empezá la línea con "- ". Para cursiva, *así*. Al copiar desde la librería se pegan como viñetas.',
-        }),
-        toggle(a, 'anular_estilo', L.anular, L.anularDesc, 'check'));
-    case ACCIONES.MENSAJE:
-      return h('div', { class: 'block' }, head,
-        toggle(a, 'instruir_ia', L.instruirIa),
-        toggle(a, 'seguir_instrucciones_globales', L.seguirGlobales),
-        input(a, 'instruccion', { label: L.instruccion, multiline: true, required: true }));
-    case ACCIONES.BOTON:
-      return h('div', { class: 'block' }, head,
-        h('div', { class: 'form-grid' },
-          input(a, 'nombre', { label: L.botonNombre, required: true }),
-          input(a, 'tipo_boton', { label: L.botonTipo, required: true, list: 'tipos-boton', show: (v) => mostrar(L.code, v), parse: (v) => guardar(L.code, v) })),
-        input(a, 'url', { label: L.url, placeholder: 'https://… (puede quedar vacía)' }),
-        toggle(a, 'mostrar_icono', L.mostrarIcono));
+function fieldForm(f, item, spec) {
+  if (f.kind === 'heading') return h('h4', { class: 'sub' }, txt(f.text));
+  if (f.kind === 'info') return h('p', { class: 'info-note' }, icon('info'), h('span', null, txt(f.text)));
+  const label = txt(f.label);
+  const help = txt(f.help) || null;
+  const placeholder = txt(f.placeholder) || null;
+  const afecta = spec.fields.some((x) => x.showIf);
+  const alCambiar = () => { changed(); if (afecta) rerender(); };
+  switch (f.kind) {
+    case 'toggle': case 'check':
+      return toggle(item, f.key, label, help, f.kind, afecta);
+    case 'textarea':
+      return input(item, f.key, { label, placeholder, help, required: f.required, multiline: true, rows: f.rows ?? 3, limit: f.limit });
+    case 'rich':
+      return input(item, f.key, { label, placeholder, required: f.required, multiline: true, rows: f.rows ?? 6, limit: f.limit, help: [help, RICH_HELP].filter(Boolean).join(' ') });
+    case 'code':
+      return input(item, f.key, { label, placeholder, help, required: f.required, multiline: true, rows: 6, mono: true });
+    case 'number':
+      return input(item, f.key, { label, help, type: 'number', min: f.min, max: f.max, suffix: f.suffix, show: String, parse: (x) => (x === '' ? 0 : Number(x)) });
+    case 'select':
+      if (f.free) {
+        const listId = nextId();
+        return h('div', null,
+          input(item, f.key, { label, help, required: f.required, list: listId, show: (v) => mostrar(L.code, v), parse: (v) => guardar(L.code, v) }),
+          h('datalist', { id: listId }, f.options.map((o) => h('option', { value: mostrar(L.code, o.value) }))));
+      }
+      return selectField(item, f.key, label, f.options, { required: f.required, help, onChange: alCambiar });
+    case 'radio':
+      return radioField(item, f.key, label, f.options, changed);
+    case 'list':
+      return listForm(f, item[f.key], label, help);
+    case 'pairs':
+      return pairsForm(f, item[f.key], help);
+    case 'datetime':
+      return datetimeForm(item[f.key], label, help, f.required);
+    case 'examples':
+      return ejemplosForm(item[f.key], f.match ? 'match' : 'nomatch');
     default:
-      return h('div', { class: 'block' }, head,
-        input(a, 'valor', { label: L.config, multiline: true, help: 'Esta acción todavía no tiene sus campos propios. Anotá cómo está configurada en LearnWise (puede quedar vacía).' }));
+      return input(item, f.key, {
+        label, placeholder, help, required: f.required, prefix: f.prefix,
+        parse: f.prefix ? (x) => x.replace(/^https?:\/\//i, '') : (x) => x,
+      });
   }
+}
+
+function itemForm(specs, item, i, arr, kicker, what) {
+  const spec = specs.find((s) => s.tipo === item.tipo);
+  const tools = listTools(arr, i, what);
+  if (!spec) {
+    return h('div', { class: 'block' }, blockHead(`${kicker} ${i + 1}`, L.otherAction, tools),
+      input(item, 'tipo', { label: 'Nombre de la acción', required: true, placeholder: 'Como aparece en LearnWise' }),
+      input(item, 'valor', { label: L.config, multiline: true }));
+  }
+  for (const f of spec.fields) if (f.key && item[f.key] === undefined) item[f.key] = nuevoValor(f);
+  return h('div', { class: 'block' },
+    blockHead(`${kicker} ${i + 1}`, tituloItem(spec, item, L.code), tools, txt(spec.subtitulo), spec.beta),
+    visibleFields(spec, item).map((f) => fieldForm(f, item, spec)));
+}
+
+function activadoresForm(arr) {
+  const tipos = arr.map((a) => a.tipo);
+  const disponibles = tipos.includes(ACTIVADOR_MENSAJE)
+    ? []
+    : ACTIVADORES.filter((s) => !tipos.includes(s.tipo) && (arr.length === 0 || s.tipo !== ACTIVADOR_MENSAJE));
+  return [
+    arr.map((a, i) => {
+      const spec = ACTIVADORES.find((s) => s.tipo === a.tipo);
+      if (spec) for (const f of spec.fields) if (a[f.key] === undefined) a[f.key] = nuevoValor(f);
+      return h('div', { class: 'trigger' },
+        h('span', { class: 'trigger-name' }, mostrar(L.code, a.tipo)),
+        spec ? spec.fields.map((f) => h('div', { class: 'input-group' },
+          bareInput(a, f.key, { type: 'number', min: f.min, max: f.max, label: txt(f.label), show: String, parse: (x) => (x === '' ? 0 : Number(x)) }),
+          h('span', { class: 'affix' }, f.suffix))) : null,
+        trashButton(`Borrar activador ${i + 1}`, () => { arr.splice(i, 1); changed(); rerender(); }));
+    }),
+    disponibles.length
+      ? h('div', { class: 'add-row' },
+        h('span', { class: 'field-label' }, arr.length ? L.addTrigger : L.triggerQuestion),
+        disponibles.map((s) => h('button', { type: 'button', class: 'btn btn-small', onclick: () => { arr.push(nuevoItem(s)); changed(); rerender(); } },
+          arr.length ? icon('plus') : null, mostrar(L.code, s.tipo))))
+      : null,
+  ];
+}
+
+function conditionPicker(lista, activadores) {
+  const conMensaje = activadores.length === 0 || activadores.some((a) => a.tipo === ACTIVADOR_MENSAJE);
+  return h('div', { class: 'add-row' },
+    h('span', { class: 'field-label' }, L.addCondition),
+    CONDICIONES.filter((s) => s.tipo !== CONTEXTO || conMensaje).map((s) => h('button', {
+      type: 'button', class: 'btn btn-small',
+      onclick: () => { lista.push(nuevoItem(s)); changed(); rerender(); },
+    }, icon('plus'), mostrar(L.code, s.tipo))));
+}
+
+function actionPicker(lista) {
+  return h('div', { class: 'add-row' },
+    h('span', { class: 'field-label' }, L.addAction),
+    h('div', { class: 'action-grid' }, ACCIONES.map((s) => h('button', {
+      type: 'button', class: 'action-option',
+      onclick: () => { lista.push(nuevoItem(s)); changed(); rerender(); },
+    },
+    icon(s.icono),
+    h('span', { class: 'action-text' },
+      h('span', { class: 'action-title' }, txt(s.boton)[0], s.beta ? h('span', { class: 'beta' }, 'beta') : null),
+      h('span', { class: 'action-desc' }, txt(s.boton)[1]))))));
 }
 
 function draftFlow() {
-  const draft = structuredClone(form.draft);
-  for (const a of draft.respuesta) delete a.otra;
-  return normalizeFlow(draft);
+  return normalizeFlow(structuredClone(form.draft));
 }
 
 function formErrors() {
@@ -788,6 +914,12 @@ function publishPanel() {
     h('p', { class: 'help' }, 'Necesitás una cuenta de GitHub con permiso en el repositorio. Sin permiso, GitHub te ofrece «Propose changes» y el dueño lo aprueba.'));
 }
 
+function zonasHorarias() {
+  let zonas = [];
+  try { zonas = Intl.supportedValuesOf('timeZone'); } catch { /* older browsers */ }
+  return h('datalist', { id: 'zonas-horarias' }, zonas.map((z) => h('option', { value: z })));
+}
+
 function viewForm(mode, slug) {
   const key = `${mode}:${slug ?? ''}`;
   if (form?.key !== key) {
@@ -798,7 +930,10 @@ function viewForm(mode, slug) {
       form = { key, mode, slug, slugTouched: true, draft: { notas: '', ...rest } };
     } else {
       const saved = loadDraft();
-      form = { key, mode, slug: saved?.slug ?? '', slugTouched: saved?.slugTouched ?? false, draft: saved?.draft ?? flowVacio() };
+      form = {
+        key, mode, slug: saved?.slug ?? '', slugTouched: saved?.slugTouched ?? false,
+        draft: saved ? { notas: '', ...normalizeFlow(saved.draft) } : flowVacio(),
+      };
     }
   }
   const { draft } = form;
@@ -826,8 +961,7 @@ function viewForm(mode, slug) {
       mode === 'nuevo'
         ? h('button', { type: 'button', class: 'btn btn-small btn-danger', onclick: () => { if (confirm('¿Borrar todo lo cargado y empezar de cero?')) { clearDraft(); form = null; rerender(); } } }, 'Empezar de cero')
         : null),
-    h('datalist', { id: 'activadores' }, h('option', { value: mostrar(lang, 'El usuario envía un mensaje') })),
-    h('datalist', { id: 'tipos-boton' }, h('option', { value: mostrar(lang, 'Enlace externo') })),
+    zonasHorarias(),
     h('section', { class: 'form-card', lang: 'es' },
       h('h2', null, 'Datos del flow'),
       h('div', { class: 'form-grid' },
@@ -837,18 +971,20 @@ function viewForm(mode, slug) {
       input(draft, 'descripcion', { label: 'Descripción corta', required: true, multiline: true, rows: 2, help: 'Se muestra en la tarjeta de la librería. Una o dos oraciones, en el idioma del flow: cuándo se activa y qué hace.' }),
       slugInput),
     h('div', { lang },
-      stepCard(1, input(draft, 'activador', { label: L.event, required: true, list: 'activadores', show: (v) => mostrar(lang, v), parse: (v) => guardar(lang, v) })),
-      stepCard(2,
+      stepCard(1, activadoresForm(draft.activadores), L.required),
+      stepCard(2, [
         h('div', { class: 'logic' },
           h('span', { class: 'field-label' }, L.logic),
           h('div', { class: 'radios', role: 'radiogroup' }, LOGICAS.map((l) => h('label', { class: `radio${draft.condiciones.logica === l ? ' on' : ''}` },
             h('input', { type: 'radio', name: 'logica', value: l, checked: draft.condiciones.logica === l, onchange: () => { draft.condiciones.logica = l; changed(); rerender(); } }),
             h('span', { class: 'dot' }), mostrar(lang, l))))),
-        draft.condiciones.lista.map((c, i, lista) => condicionForm(c, i, lista)),
-        conditionPicker(draft.condiciones.lista)),
-      stepCard(3,
-        draft.respuesta.map((a, i, lista) => accionForm(a, i, lista)),
-        actionPicker(draft.respuesta))),
+        draft.condiciones.lista.map((c, i, arr) => itemForm(CONDICIONES, c, i, arr, L.condition, `la condición ${i + 1}`)),
+        conditionPicker(draft.condiciones.lista, draft.activadores),
+      ], L.optional),
+      stepCard(3, [
+        draft.respuesta.map((a, i, arr) => itemForm(ACCIONES, a, i, arr, L.action, `la acción ${i + 1}`)),
+        actionPicker(draft.respuesta),
+      ], L.required)),
     h('section', { class: 'form-card', lang: 'es' },
       h('h2', null, 'Notas (opcional)'),
       input(draft, 'notas', { label: 'Algo que haya que saber antes de usarlo', multiline: true, rows: 2, placeholder: 'Ej.: el botón necesita la URL de soporte de cada institución.' })),
@@ -875,9 +1011,8 @@ function render() {
   else if (section === 'editar' && param) view = viewForm('editar', param);
   else if (!section) view = viewLibrary(new URLSearchParams(query));
   else view = viewNotFound();
-  // Header and footer follow the language the view picked.
-  const onFlowPage = section === 'flow';
-  if (!onFlowPage) L = UI.es;
+  // Only the flow page switches the header and footer to the flow's language.
+  if (section !== 'flow') L = UI.es;
   document.documentElement.lang = L.code;
   app.replaceChildren(topbar(), view, footer());
 }
