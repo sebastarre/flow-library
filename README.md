@@ -4,6 +4,8 @@ Flows de LearnWise listos para copiar. Cualquiera con el link puede verlos y cop
 
 **https://sebastarre.github.io/flow-library/**
 
+La página está en inglés por defecto. Arriba a la derecha (EN / ES) se cambia a español, y queda guardado en tu navegador. Los campos de LearnWise de cada flow se muestran siempre en el idioma del flow.
+
 ## Copiar un flow
 
 1. Abrí la librería y elegí un flow. Podés filtrar por idioma (English / Español) y categoría (Chat, Tutor, AI Ops), o buscar por nombre, contexto o mensaje de ejemplo. Los flows en inglés se muestran con toda la página en inglés.

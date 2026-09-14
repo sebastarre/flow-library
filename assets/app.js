@@ -6,6 +6,7 @@ import {
 const app = document.getElementById('app');
 const toastEl = document.getElementById('toast');
 const DRAFT_KEY = 'flow-library:borrador';
+const LANG_KEY = 'flow-library:idioma';
 
 let data = null;
 let loadErrors = null;
@@ -14,17 +15,99 @@ let refreshPublish = () => {};
 let lastLibraryHash = '#/';
 
 /* ---------- Language ---------- */
-// The flow page, and the LearnWise fields in the form, follow the flow's language.
-// Site chrome (library, form instructions) stays in Spanish. Field names live in schema.js.
+// Two languages are in play:
+// - U, the interface language (library, buttons, form instructions), picked in the top bar. English by default.
+// - L, the language of the LearnWise fields of a flow (Trigger, Conditions, field names), which follows the flow's
+//   own language so copied labels match LearnWise. Field names live in schema.js.
 
 const UI = {
   es: {
-    code: 'es',
+    code: 'es', languageLabel: 'Idioma',
+    // Interface
+    heroTitle: 'Flows listos para copiar',
+    heroLead: 'Abrí un flow y copiá cada campo en LearnWise (Tutor Assistant → Flujos). Cada campo tiene su propio botón para copiar.',
+    searchPlaceholder: 'Buscar por nombre, contexto o mensaje de ejemplo…', searchLabel: 'Buscar flows',
+    filterLanguage: 'Idioma', filterCategory: 'Categoría', allLanguages: 'Todos', allCategories: 'Todas',
+    noResults: 'No hay flows que coincidan con estos filtros.',
     allFlows: 'Todos los flows', copy: 'Copiar', copied: 'Copiado', copyLink: 'Copiar link', linkCopied: 'Link copiado',
     copyAll: 'Copiar todo', flowCopied: 'Flow copiado', edit: 'Editar', addFlow: 'Agregar flow',
     copyFailed: 'No se pudo copiar. Seleccioná el texto y copialo a mano.',
     howto: 'En LearnWise andá a Tutor Assistant → Flujos y creá un flujo nuevo. Copiá cada campo con su botón y pegalo en el mismo lugar.',
-    note: 'Ojo: ', notes: 'Notas',
+    note: 'Ojo: ',
+    footer1: 'Los flows se guardan en ', footer2: '. Cambiar un flow acá no cambia LearnWise: hacé el mismo cambio en los dos lados.',
+    notFound: 'No encontramos ese flow', notFoundLead: 'Puede que lo hayan renombrado o borrado.',
+    loadError: 'No se pudieron cargar los flows', loadErrorLead: 'Revisá estos problemas en los archivos de la carpeta flows/:',
+    readError: (msg) => `No se pudo leer flows.json (${msg}).`,
+    backToFlow: 'Volver al flow', editTitle: (n) => `Editar: ${n}`, addTitle: 'Agregar un flow',
+    formLead: 'Completá los campos igual que en LearnWise. Los campos de LearnWise se muestran en el idioma del flow. Al final, la página arma el archivo y te lleva a GitHub para guardarlo.',
+    startOver: 'Empezar de cero', startOverConfirm: '¿Borrar todo lo cargado y empezar de cero?',
+    flowDetails: 'Datos del flow', flowName: 'Nombre del flow', flowNamePlaceholder: 'Como se llama en LearnWise',
+    flowLanguage: 'Idioma del flow', category: 'Categoría',
+    description: 'Descripción corta', descriptionHelp: 'Se muestra en la tarjeta de la librería. Una o dos oraciones, en el idioma del flow: cuándo se activa y qué hace.',
+    fileName: 'Nombre del archivo', fileNameHelpEdit: 'No se puede cambiar al editar.', fileNameHelpNew: 'Se arma solo desde el nombre. Solo minúsculas, números y guiones.',
+    notesTitle: 'Notas (opcional)', notesLabel: 'Algo que haya que saber antes de usarlo', notesPlaceholder: 'Ej.: el botón necesita la URL de soporte de cada institución.',
+    saveTitle: 'Guardar en la librería',
+    saveStepsEdit: ['Tocá el botón: se copia el flow y se abre el archivo en GitHub.', 'En GitHub, hacé clic en el texto, seleccioná todo (Ctrl+A) y pegá (Ctrl+V).', 'Tocá «Commit changes».', 'En 1 o 2 minutos se actualiza la librería.'],
+    saveStepsNew: ['Tocá el botón: se copia el flow y se abre GitHub con el archivo nuevo.', 'Si el editor de GitHub aparece vacío, pegá (Ctrl+V). Si ya tiene el texto, no hace falta.', 'Tocá «Commit changes».', 'En 1 o 2 minutos el flow aparece en la librería.'],
+    saveButtonEdit: 'Copiar y abrir GitHub para guardar', saveButtonNew: 'Copiar y abrir GitHub para publicar',
+    viewFile: 'Ver el archivo', allGood: 'Todo completo. Ya se puede guardar.',
+    saveHelp: 'Necesitás una cuenta de GitHub con permiso en el repositorio. Sin permiso, GitHub te ofrece «Propose changes» y el dueño lo aprueba.',
+    fileCopied: 'Archivo copiado. Terminá en GitHub.', fileNotCopied: 'Abrí GitHub, pero no se pudo copiar: copiá el archivo desde «Ver el archivo».',
+    slugInvalid: 'Nombre del archivo: usá solo minúsculas, números y guiones (por ejemplo "pedido-de-prorroga").',
+    slugTaken: (s) => `Ya existe un flow con el archivo "${s}". Cambiá el nombre del archivo.`,
+    moveUp: 'Subir', moveDown: 'Bajar', remove: 'Borrar', removeConfirm: (what) => `¿Borrar ${what}?`,
+    theCondition: (n) => `la condición ${n}`, theAction: (n) => `la acción ${n}`, theTrigger: (n) => `el activador ${n}`,
+    theExample: (n) => `el ejemplo ${n}`, theRow: (n) => `la fila ${n}`, theItem: (n) => `el ítem ${n}`,
+    actionName: 'Nombre de la acción', actionNamePlaceholder: 'Como aparece en LearnWise',
+    richHelp: 'Formato: "- " viñeta, "1. " lista numerada, "# " título, *cursiva*, **negrita**, [texto](https://link). Al copiar se pega con formato.',
+    date: 'fecha', time: 'hora', timeZone: 'zona horaria',
+  },
+  en: {
+    code: 'en', languageLabel: 'Language',
+    heroTitle: 'Flows ready to copy',
+    heroLead: 'Open a flow and copy each field into LearnWise (Tutor Assistant → Flows). Every field has its own copy button.',
+    searchPlaceholder: 'Search by name, context or example message…', searchLabel: 'Search flows',
+    filterLanguage: 'Language', filterCategory: 'Category', allLanguages: 'All', allCategories: 'All',
+    noResults: 'No flows match these filters.',
+    allFlows: 'All flows', copy: 'Copy', copied: 'Copied', copyLink: 'Copy link', linkCopied: 'Link copied',
+    copyAll: 'Copy all', flowCopied: 'Flow copied', edit: 'Edit', addFlow: 'Add flow',
+    copyFailed: "Couldn't copy. Select the text and copy it manually.",
+    howto: 'In LearnWise, go to Tutor Assistant → Flows and create a new flow. Copy each field with its button and paste it into the same place.',
+    note: 'Note: ',
+    footer1: 'Flows are stored on ', footer2: ". Changing a flow here doesn't change LearnWise: make the same change in both places.",
+    notFound: "We couldn't find that flow", notFoundLead: 'It may have been renamed or deleted.',
+    loadError: "Couldn't load the flows", loadErrorLead: 'Check these problems in the files in the flows/ folder:',
+    readError: (msg) => `Couldn't read flows.json (${msg}).`,
+    backToFlow: 'Back to the flow', editTitle: (n) => `Edit: ${n}`, addTitle: 'Add a flow',
+    formLead: "Fill in the fields as they are in LearnWise. The LearnWise fields show in the flow's language. At the end, the page builds the file and takes you to GitHub to save it.",
+    startOver: 'Start over', startOverConfirm: 'Clear everything and start over?',
+    flowDetails: 'Flow details', flowName: 'Flow name', flowNamePlaceholder: 'As it is named in LearnWise',
+    flowLanguage: 'Flow language', category: 'Category',
+    description: 'Short description', descriptionHelp: "Shown on the library card. One or two sentences in the flow's language: when it triggers and what it does.",
+    fileName: 'File name', fileNameHelpEdit: "Can't be changed when editing.", fileNameHelpNew: 'Built from the name. Lowercase letters, numbers and hyphens only.',
+    notesTitle: 'Notes (optional)', notesLabel: 'Anything to know before using it', notesPlaceholder: "E.g. the button needs each institution's support URL.",
+    saveTitle: 'Save to the library',
+    saveStepsEdit: ['Press the button: the flow is copied and the file opens on GitHub.', 'On GitHub, click the text, select all (Ctrl+A) and paste (Ctrl+V).', 'Press "Commit changes".', 'The library updates in 1 or 2 minutes.'],
+    saveStepsNew: ['Press the button: the flow is copied and GitHub opens with the new file.', "If GitHub's editor is empty, paste (Ctrl+V). If the text is already there, you don't need to.", 'Press "Commit changes".', 'The flow shows up in the library in 1 or 2 minutes.'],
+    saveButtonEdit: 'Copy and open GitHub to save', saveButtonNew: 'Copy and open GitHub to publish',
+    viewFile: 'View the file', allGood: 'Everything is filled in. Ready to save.',
+    saveHelp: 'You need a GitHub account with access to the repository. Without access, GitHub offers "Propose changes" and the owner approves it.',
+    fileCopied: 'File copied. Finish on GitHub.', fileNotCopied: 'GitHub opened, but copying failed: copy the file from "View the file".',
+    slugInvalid: 'File name: use lowercase letters, numbers and hyphens only (for example "extension-request").',
+    slugTaken: (s) => `A flow with the file "${s}" already exists. Change the file name.`,
+    moveUp: 'Move up', moveDown: 'Move down', remove: 'Delete', removeConfirm: (what) => `Delete ${what}?`,
+    theCondition: (n) => `condition ${n}`, theAction: (n) => `action ${n}`, theTrigger: (n) => `trigger ${n}`,
+    theExample: (n) => `example ${n}`, theRow: (n) => `row ${n}`, theItem: (n) => `item ${n}`,
+    actionName: 'Action name', actionNamePlaceholder: 'As shown in LearnWise',
+    richHelp: 'Formatting: "- " bullet, "1. " numbered list, "# " heading, *italic*, **bold**, [text](https://link). It pastes with formatting.',
+    date: 'date', time: 'time', timeZone: 'time zone',
+  },
+};
+
+// LearnWise field labels, per flow language.
+const LW = {
+  es: {
+    code: 'es',
     step1: 'Activador', step2: 'Condiciones', step3: 'Respuesta',
     sub1: 'Defina el evento que inicia este flujo',
     sub2: 'Criterios que deben cumplirse para que el flujo continúe.',
@@ -38,18 +121,11 @@ const UI = {
     conditions: (n) => (n === 1 ? '1 condición' : `${n} condiciones`),
     userMessage: 'Mensaje del usuario', explanation: 'Explicación', noExamples: 'Todavía no hay ejemplos cargados.',
     empty: 'Vacío', notSet: 'Sin configurar', on: 'Activado', off: 'Desactivado', checked: 'Marcado', unchecked: 'Sin marcar', yes: 'Sí', no: 'No',
-    at: 'a las', add: 'Agregar',
+    at: 'a las', add: 'Agregar', notes: 'Notas',
     addCondition: 'Agregar una condición', addAction: 'Agregar una acción', addExample: 'Agregar ejemplo',
-    footer1: 'Los flows se guardan en ', footer2: '. Cambiar un flow acá no cambia LearnWise: hacé el mismo cambio en los dos lados.',
-    notFound: 'No encontramos ese flow', notFoundLead: 'Puede que lo hayan renombrado o borrado.',
   },
   en: {
     code: 'en',
-    allFlows: 'All flows', copy: 'Copy', copied: 'Copied', copyLink: 'Copy link', linkCopied: 'Link copied',
-    copyAll: 'Copy all', flowCopied: 'Flow copied', edit: 'Edit', addFlow: 'Add flow',
-    copyFailed: "Couldn't copy. Select the text and copy it manually.",
-    howto: 'In LearnWise, go to Tutor Assistant → Flows and create a new flow. Copy each field with its button and paste it into the same place.',
-    note: 'Note: ', notes: 'Notes',
     step1: 'Trigger', step2: 'Conditions', step3: 'Response',
     sub1: 'Define the event that starts this flow',
     sub2: 'Criteria that must be met for the flow to continue.',
@@ -63,14 +139,24 @@ const UI = {
     conditions: (n) => (n === 1 ? '1 condition' : `${n} conditions`),
     userMessage: 'User message', explanation: 'Explanation', noExamples: 'No examples added yet.',
     empty: 'Empty', notSet: 'Not set', on: 'On', off: 'Off', checked: 'Checked', unchecked: 'Unchecked', yes: 'Yes', no: 'No',
-    at: 'at', add: 'Add',
+    at: 'at', add: 'Add', notes: 'Notes',
     addCondition: 'Add a condition', addAction: 'Add an action', addExample: 'Add example',
-    footer1: 'Flows are stored on ', footer2: ". Changing a flow here doesn't change LearnWise: make the same change in both places.",
-    notFound: "We couldn't find that flow", notFoundLead: 'It may have been renamed or deleted.',
   },
 };
-let L = UI.es;
+
+function idiomaGuardado() {
+  try { return localStorage.getItem(LANG_KEY); } catch { return null; }
+}
+
+let U = UI[idiomaGuardado()] ?? UI.en;
+let L = LW[U.code];
 const txt = (texto) => t(texto, L.code);
+
+function setUiLang(code) {
+  U = UI[code];
+  try { localStorage.setItem(LANG_KEY, code); } catch { /* storage unavailable */ }
+  rerender();
+}
 
 /* ---------- DOM helpers ---------- */
 
@@ -155,8 +241,8 @@ async function copyText(plain, html) {
   }
 }
 
-function copyButton(getPlain, { label = L.copy, getHtml = null, big = false, iconName = 'copy', done = L.copied } = {}) {
-  const failed = L.copyFailed;
+function copyButton(getPlain, { label = U.copy, getHtml = null, big = false, iconName = 'copy', done = U.copied } = {}) {
+  const failed = U.copyFailed;
   const btn = h('button', { type: 'button', class: big ? 'btn' : 'copy-btn' });
   const idle = () => btn.replaceChildren(icon(iconName), label);
   idle();
@@ -174,8 +260,6 @@ function copyButton(getPlain, { label = L.copy, getHtml = null, big = false, ico
 /* ---------- Rich text ---------- */
 // "- " bullets, "1. " numbered lists, "# " headings (up to ####), indented lines continue the item above,
 // *italic*, **bold**, `code` and [text](https://link).
-
-const RICH_HELP = 'Formato: "- " viñeta, "1. " lista numerada, "# " título, *cursiva*, **negrita**, [texto](https://link). Al copiar se pega con formato.';
 
 function escapeHtml(s) {
   return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -242,18 +326,28 @@ function blockHead(kicker, title, tools = null, subtitle = '', beta = false) {
     tools);
 }
 
+function langSwitch() {
+  return h('div', { class: 'lang-switch', role: 'group', 'aria-label': U.languageLabel },
+    ['en', 'es'].map((code) => h('button', {
+      type: 'button', class: 'lang-btn', lang: code, title: IDIOMAS[code], 'aria-pressed': String(U.code === code),
+      onclick: () => { if (U.code !== code) setUiLang(code); },
+    }, code.toUpperCase())));
+}
+
 function topbar() {
   const onForm = location.hash.startsWith('#/nuevo') || location.hash.startsWith('#/editar');
   return h('header', { class: 'topbar' },
     h('div', { class: 'wrap' },
       h('a', { class: 'brand', href: lastLibraryHash }, h('span', { class: 'brand-mark' }, 'F'), h('span', null, 'Flow Library ', h('small', null, '· LearnWise'))),
-      onForm ? null : h('a', { class: 'btn btn-small', href: '#/nuevo' }, icon('plus'), L.addFlow)));
+      h('div', { class: 'topbar-actions' },
+        langSwitch(),
+        onForm ? null : h('a', { class: 'btn btn-small', href: '#/nuevo' }, icon('plus'), U.addFlow))));
 }
 
 function footer() {
   const repo = data ? `https://github.com/${data.repo}` : null;
   return h('footer', { class: 'footer wrap' },
-    L.footer1, repo ? h('a', { href: repo, target: '_blank', rel: 'noopener' }, 'GitHub') : 'GitHub', L.footer2);
+    U.footer1, repo ? h('a', { href: repo, target: '_blank', rel: 'noopener' }, 'GitHub') : 'GitHub', U.footer2);
 }
 
 const flowLink = (f) => `${location.origin}${location.pathname}#/flow/${f.slug}`;
@@ -325,7 +419,7 @@ function viewLibrary(params) {
     const q = normalizar(filtro.q.trim());
     const items = porIdioma.filter((f) => (!filtro.cat || f.categoria === filtro.cat) && (!q || textoBuscable(f).includes(q)));
     count.textContent = items.length === 1 ? '1 flow' : `${items.length} flows`;
-    grid.replaceChildren(...(items.length ? items.map(card) : [h('div', { class: 'empty' }, 'No hay flows que coincidan con estos filtros.')]));
+    grid.replaceChildren(...(items.length ? items.map(card) : [h('div', { class: 'empty' }, U.noResults)]));
   };
   renderGrid();
 
@@ -335,31 +429,31 @@ function viewLibrary(params) {
 
   return h('main', { class: 'wrap' },
     h('div', { class: 'hero' },
-      h('h1', null, 'Flows listos para copiar'),
-      h('p', { class: 'lead' }, 'Abrí un flow y copiá cada campo en LearnWise (Tutor Assistant → Flujos). Cada campo tiene su propio botón para copiar.')),
+      h('h1', null, U.heroTitle),
+      h('p', { class: 'lead' }, U.heroLead)),
     h('div', { class: 'toolbar' },
       h('label', { class: 'search' }, icon('search'),
         h('input', {
-          type: 'search', placeholder: 'Buscar por nombre, contexto o mensaje de ejemplo…', 'aria-label': 'Buscar flows', value: filtro.q,
+          type: 'search', placeholder: U.searchPlaceholder, 'aria-label': U.searchLabel, value: filtro.q,
           oninput: (e) => { filtro.q = e.target.value; renderGrid(); },
         }))),
     h('div', { class: 'filters' },
       h('div', { class: 'filter-row' },
-        h('span', { class: 'filter-label' }, 'Idioma'),
-        h('div', { class: 'chips', role: 'group', 'aria-label': 'Filtrar por idioma' },
-          option('idioma', '', 'Todos', data.flows.length),
+        h('span', { class: 'filter-label' }, U.filterLanguage),
+        h('div', { class: 'chips', role: 'group', 'aria-label': U.filterLanguage },
+          option('idioma', '', U.allLanguages, data.flows.length),
           Object.entries(IDIOMAS).map(([code, name]) => option('idioma', code, name, data.flows.filter((f) => f.idioma === code).length)))),
       h('div', { class: 'filter-row' },
-        h('span', { class: 'filter-label' }, 'Categoría'),
-        h('div', { class: 'chips', role: 'group', 'aria-label': 'Filtrar por categoría' },
-          option('cat', '', 'Todas', porIdioma.length),
+        h('span', { class: 'filter-label' }, U.filterCategory),
+        h('div', { class: 'chips', role: 'group', 'aria-label': U.filterCategory },
+          option('cat', '', U.allCategories, porIdioma.length),
           CATEGORIAS.map((c) => option('cat', c, c, porIdioma.filter((f) => f.categoria === c).length))))),
     count,
     grid);
 }
 
 function card(f) {
-  const T = UI[f.idioma];
+  const T = LW[f.idioma];
   const ejemplos = f.condiciones.lista.reduce((n, c) => n + (c.coincidentes?.length ?? 0) + (c.no_coincidentes?.length ?? 0), 0);
   return h('a', { class: 'card', href: `#/flow/${f.slug}`, lang: f.idioma },
     flowTags(f),
@@ -494,9 +588,10 @@ function itemText(specs, item, i, kicker) {
   return ['', `${kicker} ${i + 1} — ${tituloItem(spec, item, L.code)}`, ...visibleFields(spec, item).flatMap((f) => fieldText(f, item))];
 }
 
+// The copied text is written entirely in the flow's language.
 function flowToText(f) {
   const anterior = L;
-  L = UI[f.idioma];
+  L = LW[f.idioma];
   try {
     const activadores = f.activadores.map((a) => {
       const spec = ACTIVADORES.find((s) => s.tipo === a.tipo);
@@ -521,38 +616,39 @@ function flowToText(f) {
 function viewFlow(slug) {
   const f = data.flows.find((x) => x.slug === slug);
   if (!f) return viewNotFound();
-  L = UI[f.idioma];
+  L = LW[f.idioma];
   document.title = `${f.nombre} · Flow Library`;
   const { lista, logica } = f.condiciones;
 
-  return h('main', { class: 'wrap', lang: f.idioma },
-    h('a', { class: 'back', href: lastLibraryHash }, icon('back'), L.allFlows),
+  return h('main', { class: 'wrap' },
+    h('a', { class: 'back', href: lastLibraryHash }, icon('back'), U.allFlows),
     h('div', { class: 'flow-head' },
       h('div', null,
         flowTags(f),
-        h('h1', null, f.nombre),
-        h('p', { class: 'lead' }, f.descripcion)),
+        h('h1', { lang: f.idioma }, f.nombre),
+        h('p', { class: 'lead', lang: f.idioma }, f.descripcion)),
       h('div', { class: 'flow-actions' },
-        copyButton(() => flowLink(f), { label: L.copyLink, big: true, iconName: 'link', done: L.linkCopied }),
-        copyButton(() => flowToText(f), { label: L.copyAll, big: true, done: L.flowCopied }),
-        h('a', { class: 'btn', href: `#/editar/${f.slug}` }, icon('edit'), L.edit))),
-    h('p', { class: 'howto' }, icon('info'), h('span', null, L.howto)),
-    f.notas ? h('p', { class: 'note' }, h('span', null, h('strong', null, L.note), f.notas)) : null,
-    stepCard(1, f.activadores.map(activadorView)),
-    stepCard(2, [
-      h('div', { class: 'logic' },
-        h('span', { class: 'field-label' }, L.logic),
-        h('div', { class: 'radios' }, LOGICAS.map((l) => h('span', { class: `radio${l === logica ? ' on' : ''}` }, h('span', { class: 'dot' }), mostrar(L.code, l))))),
-      lista.length ? lista.map((c, i) => itemView(CONDICIONES, c, i, L.condition)) : h('p', { class: 'muted' }, L.noConditions),
-    ]),
-    stepCard(3, f.respuesta.map((a, i) => itemView(ACCIONES, a, i, L.action))));
+        copyButton(() => flowLink(f), { label: U.copyLink, big: true, iconName: 'link', done: U.linkCopied }),
+        copyButton(() => flowToText(f), { label: U.copyAll, big: true, done: U.flowCopied }),
+        h('a', { class: 'btn', href: `#/editar/${f.slug}` }, icon('edit'), U.edit))),
+    h('p', { class: 'howto' }, icon('info'), h('span', null, U.howto)),
+    f.notas ? h('p', { class: 'note' }, h('span', null, h('strong', null, U.note), h('span', { lang: f.idioma }, f.notas))) : null,
+    h('div', { lang: f.idioma },
+      stepCard(1, f.activadores.map(activadorView)),
+      stepCard(2, [
+        h('div', { class: 'logic' },
+          h('span', { class: 'field-label' }, L.logic),
+          h('div', { class: 'radios' }, LOGICAS.map((l) => h('span', { class: `radio${l === logica ? ' on' : ''}` }, h('span', { class: 'dot' }), mostrar(L.code, l))))),
+        lista.length ? lista.map((c, i) => itemView(CONDICIONES, c, i, L.condition)) : h('p', { class: 'muted' }, L.noConditions),
+      ]),
+      stepCard(3, f.respuesta.map((a, i) => itemView(ACCIONES, a, i, L.action)))));
 }
 
 function viewNotFound() {
   document.title = 'Flow Library';
   return h('main', { class: 'wrap' },
-    h('div', { class: 'hero' }, h('h1', null, L.notFound), h('p', { class: 'lead' }, L.notFoundLead)),
-    h('a', { class: 'btn', href: '#/' }, icon('back'), L.allFlows));
+    h('div', { class: 'hero' }, h('h1', null, U.notFound), h('p', { class: 'lead' }, U.notFoundLead)),
+    h('a', { class: 'btn', href: '#/' }, icon('back'), U.allFlows));
 }
 
 /* ---------- Add / edit form ---------- */
@@ -667,16 +763,17 @@ function toggle(obj, key, label, desc, kind = 'switch', rerenderOnChange = false
     state);
 }
 
-function trashButton(label, onDelete) {
+function trashButton(what, onDelete) {
+  const label = `${U.remove} ${what}`;
   return h('button', { type: 'button', class: 'icon-btn danger', title: label, 'aria-label': label, onclick: onDelete }, icon('trash'));
 }
 
 function listTools(list, i, what) {
   const move = (to) => { [list[i], list[to]] = [list[to], list[i]]; changed(); rerender(); };
   return h('div', { class: 'block-tools' },
-    h('button', { type: 'button', class: 'icon-btn', title: 'Subir', 'aria-label': `Subir ${what}`, disabled: i === 0, onclick: () => move(i - 1) }, icon('up')),
-    h('button', { type: 'button', class: 'icon-btn', title: 'Bajar', 'aria-label': `Bajar ${what}`, disabled: i === list.length - 1, onclick: () => move(i + 1) }, icon('down')),
-    trashButton(`Borrar ${what}`, () => { if (confirm(`¿Borrar ${what}?`)) { list.splice(i, 1); changed(); rerender(); } }));
+    h('button', { type: 'button', class: 'icon-btn', title: U.moveUp, 'aria-label': `${U.moveUp} ${what}`, disabled: i === 0, onclick: () => move(i - 1) }, icon('up')),
+    h('button', { type: 'button', class: 'icon-btn', title: U.moveDown, 'aria-label': `${U.moveDown} ${what}`, disabled: i === list.length - 1, onclick: () => move(i + 1) }, icon('down')),
+    trashButton(what, () => { if (confirm(U.removeConfirm(what))) { list.splice(i, 1); changed(); rerender(); } }));
 }
 
 function selectField(obj, key, label, options, { required = false, help = null, onChange }) {
@@ -704,7 +801,7 @@ function listForm(f, arr, label, help) {
     help ? h('p', { class: 'help' }, help) : null,
     arr.map((_, j) => h('div', { class: 'row-edit' },
       bareInput(arr, j, { placeholder: `${item} ${j + 1}`, label: `${item} ${j + 1}` }),
-      trashButton(`Borrar ${item.toLowerCase()} ${j + 1}`, () => { arr.splice(j, 1); changed(); rerender(); }))),
+      trashButton(U.theItem(j + 1), () => { arr.splice(j, 1); changed(); rerender(); }))),
     h('button', { type: 'button', class: 'btn btn-small', style: 'align-self:flex-start', onclick: () => { arr.push(''); changed(); rerender(); } },
       icon('plus'), `${L.add} ${item.toLowerCase()}`));
 }
@@ -717,7 +814,7 @@ function pairsForm(f, arr, help) {
     arr.map((p, j) => h('div', { class: 'row-edit' },
       bareInput(p, 'nombre', { placeholder: c1, label: `${c1} ${j + 1}` }),
       bareInput(p, 'valor', { placeholder: c2, label: `${c2} ${j + 1}` }),
-      trashButton(`Borrar fila ${j + 1}`, () => { arr.splice(j, 1); changed(); rerender(); }))),
+      trashButton(U.theRow(j + 1), () => { arr.splice(j, 1); changed(); rerender(); }))),
     h('button', { type: 'button', class: 'btn btn-small', style: 'align-self:flex-start', onclick: () => { arr.push({ nombre: '', valor: '' }); changed(); rerender(); } },
       icon('plus'), txt(f.add)));
 }
@@ -727,10 +824,10 @@ function datetimeForm(v, label, help, required) {
     fieldHead(null, label, required),
     help ? h('p', { class: 'help' }, help) : null,
     h('div', { class: 'datetime' },
-      bareInput(v, 'fecha', { type: 'date', label: `${label}: fecha` }),
+      bareInput(v, 'fecha', { type: 'date', label: `${label}: ${U.date}` }),
       h('span', { class: 'muted' }, L.at),
-      bareInput(v, 'hora', { type: 'time', label: `${label}: hora` }),
-      bareInput(v, 'zona', { list: 'zonas-horarias', placeholder: 'America/Buenos_Aires', label: `${label}: zona horaria` })));
+      bareInput(v, 'hora', { type: 'time', label: `${label}: ${U.time}` }),
+      bareInput(v, 'zona', { list: 'zonas-horarias', placeholder: 'America/Buenos_Aires', label: `${label}: ${U.timeZone}` })));
 }
 
 function ejemplosForm(list, kind) {
@@ -740,7 +837,7 @@ function ejemplosForm(list, kind) {
       list.map((e, j) => h('div', { class: 'example' },
         h('div', { class: 'example-top' },
           h('span', { class: 'muted' }, `${L.example} ${j + 1}`),
-          trashButton(`Borrar ejemplo ${j + 1}`, () => { list.splice(j, 1); changed(); rerender(); })),
+          trashButton(U.theExample(j + 1), () => { list.splice(j, 1); changed(); rerender(); })),
         input(e, 'mensaje', { label: L.userMessage, required: true }),
         input(e, 'explicacion', { label: L.explanation, multiline: true, rows: 2, limit: LIMITES.explicacion }))),
       h('button', { type: 'button', class: 'btn btn-small', style: 'align-self:flex-end', onclick: () => { list.push({ mensaje: '', explicacion: '' }); changed(); rerender(); } }, icon('plus'), L.addExample)));
@@ -760,7 +857,7 @@ function fieldForm(f, item, spec) {
     case 'textarea':
       return input(item, f.key, { label, placeholder, help, required: f.required, multiline: true, rows: f.rows ?? 3, limit: f.limit });
     case 'rich':
-      return input(item, f.key, { label, placeholder, required: f.required, multiline: true, rows: f.rows ?? 6, limit: f.limit, help: [help, RICH_HELP].filter(Boolean).join(' ') });
+      return input(item, f.key, { label, placeholder, required: f.required, multiline: true, rows: f.rows ?? 6, limit: f.limit, help: [help, U.richHelp].filter(Boolean).join(' ') });
     case 'code':
       return input(item, f.key, { label, placeholder, help, required: f.required, multiline: true, rows: 6, mono: true });
     case 'number':
@@ -796,7 +893,7 @@ function itemForm(specs, item, i, arr, kicker, what) {
   const tools = listTools(arr, i, what);
   if (!spec) {
     return h('div', { class: 'block' }, blockHead(`${kicker} ${i + 1}`, L.otherAction, tools),
-      input(item, 'tipo', { label: 'Nombre de la acción', required: true, placeholder: 'Como aparece en LearnWise' }),
+      input(item, 'tipo', { label: U.actionName, required: true, placeholder: U.actionNamePlaceholder }),
       input(item, 'valor', { label: L.config, multiline: true }));
   }
   for (const f of spec.fields) if (f.key && item[f.key] === undefined) item[f.key] = nuevoValor(f);
@@ -819,7 +916,7 @@ function activadoresForm(arr) {
         spec ? spec.fields.map((f) => h('div', { class: 'input-group' },
           bareInput(a, f.key, { type: 'number', min: f.min, max: f.max, label: txt(f.label), show: String, parse: (x) => (x === '' ? 0 : Number(x)) }),
           h('span', { class: 'affix' }, f.suffix))) : null,
-        trashButton(`Borrar activador ${i + 1}`, () => { arr.splice(i, 1); changed(); rerender(); }));
+        trashButton(U.theTrigger(i + 1), () => { arr.splice(i, 1); changed(); rerender(); }));
     }),
     disponibles.length
       ? h('div', { class: 'add-row' },
@@ -858,10 +955,10 @@ function draftFlow() {
 }
 
 function formErrors() {
-  const errores = validateFlow(draftFlow());
+  const errores = validateFlow(draftFlow(), U.code);
   if (form.mode === 'nuevo') {
-    if (!SLUG_RE.test(form.slug)) errores.unshift('Nombre del archivo: usá solo minúsculas, números y guiones (por ejemplo "pedido-de-prorroga").');
-    else if (data.flows.some((f) => f.slug === form.slug)) errores.unshift(`Ya existe un flow con el archivo "${form.slug}". Cambiá el nombre del archivo.`);
+    if (!SLUG_RE.test(form.slug)) errores.unshift(U.slugInvalid);
+    else if (data.flows.some((f) => f.slug === form.slug)) errores.unshift(U.slugTaken(form.slug));
   }
   return errores;
 }
@@ -885,33 +982,29 @@ function publishPanel() {
       const text = fileContent();
       const ok = await copyText(text);
       window.open(githubUrl(text), '_blank', 'noopener');
-      toast(ok ? 'Archivo copiado. Terminá en GitHub.' : 'Abrí GitHub, pero no se pudo copiar: copiá el archivo desde «Ver el archivo».');
+      toast(ok ? U.fileCopied : U.fileNotCopied);
     },
-  }, icon('external'), form.mode === 'editar' ? 'Copiar y abrir GitHub para guardar' : 'Copiar y abrir GitHub para publicar');
+  }, icon('external'), form.mode === 'editar' ? U.saveButtonEdit : U.saveButtonNew);
 
-  const panelDetails = h('details', null, h('summary', null, 'Ver el archivo'), pre);
+  const panelDetails = h('details', null, h('summary', null, U.viewFile), pre);
   refreshPublish = () => {
     const errores = formErrors();
     status.replaceChildren(errores.length
       ? h('ul', { class: 'errors' }, errores.map((e) => h('li', null, e)))
-      : h('p', { class: 'ok' }, 'Todo completo. Ya se puede guardar.'));
+      : h('p', { class: 'ok' }, U.allGood));
     btn.disabled = errores.length > 0;
     if (panelDetails.open) pre.textContent = fileContent();
   };
   panelDetails.addEventListener('toggle', () => { if (panelDetails.open) pre.textContent = fileContent(); });
   refreshPublish();
 
-  const pasos = form.mode === 'editar'
-    ? ['Tocá el botón: se copia el flow y se abre el archivo en GitHub.', 'En GitHub, hacé clic en el texto, seleccioná todo (Ctrl+A) y pegá (Ctrl+V).', 'Tocá «Commit changes».', 'En 1 o 2 minutos se actualiza la librería.']
-    : ['Tocá el botón: se copia el flow y se abre GitHub con el archivo nuevo.', 'Si el editor de GitHub aparece vacío, pegá (Ctrl+V). Si ya tiene el texto, no hace falta.', 'Tocá «Commit changes».', 'En 1 o 2 minutos el flow aparece en la librería.'];
-
-  return h('section', { class: 'publish', lang: 'es' },
-    h('h2', null, 'Guardar en la librería'),
-    h('ol', null, pasos.map((p) => h('li', null, p))),
+  return h('section', { class: 'publish' },
+    h('h2', null, U.saveTitle),
+    h('ol', null, (form.mode === 'editar' ? U.saveStepsEdit : U.saveStepsNew).map((p) => h('li', null, p))),
     status,
     btn,
     panelDetails,
-    h('p', { class: 'help' }, 'Necesitás una cuenta de GitHub con permiso en el repositorio. Sin permiso, GitHub te ofrece «Propose changes» y el dueño lo aprueba.'));
+    h('p', { class: 'help' }, U.saveHelp));
 }
 
 function zonasHorarias() {
@@ -937,38 +1030,38 @@ function viewForm(mode, slug) {
     }
   }
   const { draft } = form;
-  const lang = Object.hasOwn(IDIOMAS, draft.idioma ?? '') ? draft.idioma : 'es';
-  L = UI[lang];
-  document.title = `${mode === 'editar' ? 'Editar flow' : 'Agregar flow'} · Flow Library`;
+  const lang = Object.hasOwn(IDIOMAS, draft.idioma ?? '') ? draft.idioma : U.code;
+  L = LW[lang];
+  document.title = `${mode === 'editar' ? U.edit : U.addFlow} · Flow Library`;
 
   const slugInput = input(form, 'slug', {
-    label: 'Nombre del archivo', required: mode === 'nuevo', readonly: mode === 'editar',
-    help: mode === 'editar' ? 'No se puede cambiar al editar.' : 'Se arma solo desde el nombre. Solo minúsculas, números y guiones.',
+    label: U.fileName, required: mode === 'nuevo', readonly: mode === 'editar',
+    help: mode === 'editar' ? U.fileNameHelpEdit : U.fileNameHelpNew,
     onInput: () => { form.slugTouched = true; },
   });
   const slugCtrl = slugInput.querySelector('input');
   const nombreInput = input(draft, 'nombre', {
-    label: 'Nombre del flow', required: true, placeholder: 'Como se llama en LearnWise',
+    label: U.flowName, required: true, placeholder: U.flowNamePlaceholder,
     onInput: (v) => { if (mode === 'nuevo' && !form.slugTouched) { form.slug = slugify(v); slugCtrl.value = form.slug; } },
   });
 
   return h('main', { class: 'wrap' },
-    h('a', { class: 'back', href: mode === 'editar' ? `#/flow/${slug}` : lastLibraryHash }, icon('back'), mode === 'editar' ? 'Volver al flow' : 'Todos los flows'),
-    h('div', { class: 'form-intro', lang: 'es' },
+    h('a', { class: 'back', href: mode === 'editar' ? `#/flow/${slug}` : lastLibraryHash }, icon('back'), mode === 'editar' ? U.backToFlow : U.allFlows),
+    h('div', { class: 'form-intro' },
       h('div', null,
-        h('h1', { style: 'font-size:clamp(24px,4.5vw,30px);letter-spacing:-0.02em;line-height:1.2' }, mode === 'editar' ? `Editar: ${data.flows.find((f) => f.slug === slug)?.nombre}` : 'Agregar un flow'),
-        h('p', { class: 'lead' }, 'Completá los campos igual que en LearnWise. Si el flow está en inglés, los campos se muestran en inglés. Al final, la página arma el archivo y te lleva a GitHub para guardarlo.')),
+        h('h1', { style: 'font-size:clamp(24px,4.5vw,30px);letter-spacing:-0.02em;line-height:1.2' }, mode === 'editar' ? U.editTitle(data.flows.find((f) => f.slug === slug)?.nombre) : U.addTitle),
+        h('p', { class: 'lead' }, U.formLead)),
       mode === 'nuevo'
-        ? h('button', { type: 'button', class: 'btn btn-small btn-danger', onclick: () => { if (confirm('¿Borrar todo lo cargado y empezar de cero?')) { clearDraft(); form = null; rerender(); } } }, 'Empezar de cero')
+        ? h('button', { type: 'button', class: 'btn btn-small btn-danger', onclick: () => { if (confirm(U.startOverConfirm)) { clearDraft(); form = null; rerender(); } } }, U.startOver)
         : null),
     zonasHorarias(),
-    h('section', { class: 'form-card', lang: 'es' },
-      h('h2', null, 'Datos del flow'),
+    h('section', { class: 'form-card' },
+      h('h2', null, U.flowDetails),
       h('div', { class: 'form-grid' },
         nombreInput,
-        choice(draft, 'idioma', 'Idioma del flow', Object.entries(IDIOMAS)),
-        choice(draft, 'categoria', 'Categoría', CATEGORIAS.map((c) => [c, c]))),
-      input(draft, 'descripcion', { label: 'Descripción corta', required: true, multiline: true, rows: 2, help: 'Se muestra en la tarjeta de la librería. Una o dos oraciones, en el idioma del flow: cuándo se activa y qué hace.' }),
+        choice(draft, 'idioma', U.flowLanguage, Object.entries(IDIOMAS)),
+        choice(draft, 'categoria', U.category, CATEGORIAS.map((c) => [c, c]))),
+      input(draft, 'descripcion', { label: U.description, required: true, multiline: true, rows: 2, help: U.descriptionHelp }),
       slugInput),
     h('div', { lang },
       stepCard(1, activadoresForm(draft.activadores), L.required),
@@ -978,16 +1071,16 @@ function viewForm(mode, slug) {
           h('div', { class: 'radios', role: 'radiogroup' }, LOGICAS.map((l) => h('label', { class: `radio${draft.condiciones.logica === l ? ' on' : ''}` },
             h('input', { type: 'radio', name: 'logica', value: l, checked: draft.condiciones.logica === l, onchange: () => { draft.condiciones.logica = l; changed(); rerender(); } }),
             h('span', { class: 'dot' }), mostrar(lang, l))))),
-        draft.condiciones.lista.map((c, i, arr) => itemForm(CONDICIONES, c, i, arr, L.condition, `la condición ${i + 1}`)),
+        draft.condiciones.lista.map((c, i, arr) => itemForm(CONDICIONES, c, i, arr, L.condition, U.theCondition(i + 1))),
         conditionPicker(draft.condiciones.lista, draft.activadores),
       ], L.optional),
       stepCard(3, [
-        draft.respuesta.map((a, i, arr) => itemForm(ACCIONES, a, i, arr, L.action, `la acción ${i + 1}`)),
+        draft.respuesta.map((a, i, arr) => itemForm(ACCIONES, a, i, arr, L.action, U.theAction(i + 1))),
         actionPicker(draft.respuesta),
       ], L.required)),
-    h('section', { class: 'form-card', lang: 'es' },
-      h('h2', null, 'Notas (opcional)'),
-      input(draft, 'notas', { label: 'Algo que haya que saber antes de usarlo', multiline: true, rows: 2, placeholder: 'Ej.: el botón necesita la URL de soporte de cada institución.' })),
+    h('section', { class: 'form-card' },
+      h('h2', null, U.notesTitle),
+      input(draft, 'notas', { label: U.notesLabel, multiline: true, rows: 2, placeholder: U.notesPlaceholder })),
     publishPanel());
 }
 
@@ -995,14 +1088,14 @@ function viewForm(mode, slug) {
 
 function viewErrors() {
   return h('main', { class: 'wrap' },
-    h('div', { class: 'hero' }, h('h1', null, 'No se pudieron cargar los flows'), h('p', { class: 'lead' }, 'Revisá estos problemas en los archivos de la carpeta flows/:')),
+    h('div', { class: 'hero' }, h('h1', null, U.loadError), h('p', { class: 'lead' }, U.loadErrorLead)),
     h('ul', { class: 'errors' }, loadErrors.map((e) => h('li', null, e))));
 }
 
 function render() {
   const [path, query = ''] = location.hash.replace(/^#\/?/, '').split('?');
   const [section, param] = path.split('/').map(decodeURIComponent);
-  L = UI.es;
+  L = LW[U.code];
   if (section !== 'nuevo' && section !== 'editar') refreshPublish = () => {};
   let view;
   if (loadErrors) view = viewErrors();
@@ -1011,9 +1104,7 @@ function render() {
   else if (section === 'editar' && param) view = viewForm('editar', param);
   else if (!section) view = viewLibrary(new URLSearchParams(query));
   else view = viewNotFound();
-  // Only the flow page switches the header and footer to the flow's language.
-  if (section !== 'flow') L = UI.es;
-  document.documentElement.lang = L.code;
+  document.documentElement.lang = U.code;
   app.replaceChildren(topbar(), view, footer());
 }
 
@@ -1025,6 +1116,6 @@ try {
   if (!res.ok) loadErrors = body.errors ?? [`Error ${res.status}`];
   else data = body;
 } catch (err) {
-  loadErrors = [`No se pudo leer flows.json (${err.message}).`];
+  loadErrors = [U.readError(err.message)];
 }
 render();
