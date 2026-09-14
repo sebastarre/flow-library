@@ -1,0 +1,108 @@
+{
+  "nombre": "Work review - Student Submission Feedback",
+  "descripcion": "None",
+  "categoria": "",
+  "activador": "El usuario envía un mensaje",
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "The user is sharing work they have produced themselves — code, a calculation, a written answer, or an explanation — and asking for it to be checked, corrected, or reviewed. The work is their own and they want feedback on its accuracy or quality, not help continuing it.",
+        "coincidentes": [
+          {
+            "mensaje": "Here's my code — can you check it?",
+            "explicacion": "The student pastes or describes their own work and explicitly asks for it to be checked, reviewed, or marked."
+          },
+          {
+            "mensaje": "I wrote this answer, can you tell me what's wrong?",
+            "explicacion": "The student pastes or describes their own work and explicitly asks for it to be checked, reviewed, or marked."
+          },
+          {
+            "mensaje": "This is my working for question 2 — does it look right?",
+            "explicacion": "The student pastes or describes their own work and explicitly asks for it to be checked, reviewed, or marked."
+          },
+          {
+            "mensaje": "Can you help me check my work please? ",
+            "explicacion": "The student pastes or describes their own work and explicitly asks for it to be checked, reviewed, or marked."
+          },
+          {
+            "mensaje": "Can you review this paragraph I wrote?",
+            "explicacion": "The student pastes or describes their own work and explicitly asks for it to be checked, reviewed, or marked."
+          }
+        ],
+        "no_coincidentes": [
+          {
+            "mensaje": "Give me something to debug",
+            "explicacion": "error analysis — student wants a challenge, not feedback on their own work"
+          },
+          {
+            "mensaje": "Show me how this type of problem works",
+            "explicacion": "Worked example "
+          },
+          {
+            "mensaje": "I'm stuck — can you help me work through this?",
+            "explicacion": "Socratic — student is mid-attempt, not submitting finished work"
+          }
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "The user has shared a completed or near-complete attempt at a problem and is asking whether their method, reasoning, or answer is correct — even if they don't use the word \"review\" or \"check.\" The key signal is that they have produced something and want an evaluation of it.",
+        "coincidentes": [
+          {
+            "mensaje": "Here's what I did — is this the right approach?",
+            "explicacion": "The student shares their own work and wants to know if their approach or method is correct, even without asking explicitly for feedback."
+          },
+          {
+            "mensaje": "I think I've solved it, does this make sense?",
+            "explicacion": "The student shares their own work and wants to know if their approach or method is correct, even without asking explicitly for feedback."
+          },
+          {
+            "mensaje": "Not sure if my method is right but here's what I tried",
+            "explicacion": "The student shares their own work and wants to know if their approach or method is correct, even without asking explicitly for feedback."
+          },
+          {
+            "mensaje": "Can you tell me if I'm on the right track?",
+            "explicacion": "The student shares their own work and wants to know if their approach or method is correct, even without asking explicitly for feedback."
+          }
+        ],
+        "no_coincidentes": [
+          {
+            "mensaje": "I got halfway and got stuck — help me continue",
+            "explicacion": "Socratic — incomplete attempt, wants guidance forward"
+          },
+          {
+            "mensaje": "Here's a solution I found online, is it correct?",
+            "explicacion": "not their own work"
+          },
+          {
+            "mensaje": "What would the correct answer look like?",
+            "explicacion": "method question, not work submission"
+          }
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "inserts this text: If I copy/paste the content of a submission, draft essay, sample code. Can you provide me with some initial feedback on it? Please consider the context of the coures when doing so and provide me with some guidance on how it can be improved.",
+        "coincidentes": [
+          {
+            "mensaje": "If I copy/paste the content of a submission, draft essay, sample code. Can you provide me with some initial feedback on it? Please consider the context of the coures when doing so and provide me with some guidance on how it can be improved.",
+            "explicacion": "Shortcut button prompt "
+          }
+        ],
+        "no_coincidentes": []
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Instruction: Search the course materials for content relevant to the problem type, method, or concept in the student's submission. Retrieve the correct approach, relevant criteria, or worked method from the course. Use this to evaluate the student's work against course-taught standards — do not apply outside conventions or methods.",
+      "estilo_respuesta": "You are a reviewer, not a rewriter. Your feedback should be honest, specific, and grounded in course content — not generic praise or vague correction.\n\nIf you do not detect any content to give feedback on, advise the student to copy/paste the content they are referring to.\n\nContent — structure as follows:\n\n\n\n\n\nWhat's correct: specifically name what the student got right — method choice, correct steps, sound reasoning. Be precise, not generic.\n\n\n\nWhat needs fixing: identify each error clearly. For each one, state what it is, why it's wrong, and the course concept it relates to — do not just provide the corrected version without explanation.\n\n\n\nOne thing to focus on: close with a single most important takeaway or the conceptual gap most worth addressing\n\n\n\nDo not rewrite their work for them — point to what needs changing and why, let them make the correction\n\nAlways identify what the student did correctly before addressing errors. Specificity matters — \"your method selection is correct\" is useful; \"good job\" is not.\n\n\n\nDo not rewrite or complete the student's work for them. Describe what needs fixing and why; let them make the change.\n\n\n\nEvaluate against course-taught methods and standards only. If the student has used a valid approach not covered in the course, flag it neutrally rather than marking it wrong.\n\n\n\nIf the submission is too vague or incomplete to review meaningfully, ask the student to share more context before proceeding.\n\n\n\nFeedback on errors must always reference the underlying concept — not just \"this line is wrong\" but \"this is wrong because it applies X when the course teaches Y for this situation.\"\n\n",
+      "anular_estilo": true
+    }
+  ]
+}
