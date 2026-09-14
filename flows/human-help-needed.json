@@ -1,0 +1,67 @@
+{
+  "nombre": "Human Help Needed",
+  "descripcion": "El usuario pide hablar con una persona o contactar a soporte. El asistente responde y muestra un botón para contactar a soporte.",
+  "categoria": "Soporte",
+  "activador": "El usuario envía un mensaje",
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "User explicitly asks for human help, wants to contact support, escalate to a person, or otherwise indicates wanting to speak with a human agent rather than the AI assistant.",
+        "coincidentes": [
+          {
+            "mensaje": "I need to talk to a real person",
+            "explicacion": "Direct request to speak with a human rather than the AI"
+          },
+          {
+            "mensaje": "Can I escalate this to support?",
+            "explicacion": "Explicit request for escalation to human support"
+          },
+          {
+            "mensaje": "I want to contact support",
+            "explicacion": "Direct request to contact human support"
+          },
+          {
+            "mensaje": "This isn't working, I need actual help",
+            "explicacion": "Frustrated user explicitly asking for better assistance"
+          },
+          {
+            "mensaje": "Transfer me to an agent",
+            "explicacion": "Clear request to be transferred to a human agent"
+          }
+        ],
+        "no_coincidentes": [
+          {
+            "mensaje": "Can you help me with my homework?",
+            "explicacion": "General request for help with a topic, not asking for human assistance"
+          },
+          {
+            "mensaje": "I need help finding my transcript",
+            "explicacion": "Request for help with a specific task, not asking for human assistance"
+          },
+          {
+            "mensaje": "How do I contact the admissions office?",
+            "explicacion": "Question about how to contact an office, not a request for immediate human help"
+          }
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "instruir_ia": true,
+      "seguir_instrucciones_globales": true,
+      "instruccion": "Sure! Click the button below to contact support."
+    },
+    {
+      "tipo": "Botón",
+      "nombre": "Contact Support",
+      "tipo_boton": "Enlace externo",
+      "url": "",
+      "mostrar_icono": false
+    }
+  ],
+  "notas": "Es un flow integrado de LearnWise. El botón no tiene URL: poné la URL de soporte de cada institución, si no el botón no lleva a ningún lado."
+}

@@ -1,0 +1,59 @@
+{
+  "nombre": "Guided Problem Solving",
+  "descripcion": "El estudiante trae un problema propio, o un intento a medias, y el asistente lo guía paso a paso con preguntas y pistas del curso, sin darle la respuesta.",
+  "categoria": "Tutoría",
+  "activador": "El usuario envía un mensaje",
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "The user is sharing their own specific problem, question, or exercise and asking for help solving it. They are not asking for a demonstration of a method, nor requesting a practice challenge — they have a real task in front of them and are stuck or unsure how to proceed.",
+        "coincidentes": [
+          {
+            "mensaje": "I'm stuck on this question — can you help?",
+            "explicacion": "The student shares their own specific problem or question and is asking for help solving it."
+          },
+          {
+            "mensaje": "Here's the problem I've been given, I don't know where to start",
+            "explicacion": "The student shares their own specific problem or question and is asking for help solving it."
+          },
+          {
+            "mensaje": "Can you help me work through this?",
+            "explicacion": "The student shares their own specific problem or question and is asking for help solving it."
+          }
+        ],
+        "no_coincidentes": [
+          {
+            "mensaje": "Show me how to solve this type of problem",
+            "explicacion": "worked example — student wants a demonstration, not help with their own work"
+          },
+          {
+            "mensaje": "Give me something to debug",
+            "explicacion": "error analysis — student wants a challenge, not help with their own problem"
+          },
+          {
+            "mensaje": "What is the formula for X?",
+            "explicacion": "factual lookup, no problem to solve"
+          }
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "The user has made a partial attempt at a problem and is sharing their working or reasoning so far. They are stuck at a specific point, unsure whether their approach is correct, or want help continuing — not just a yes/no verdict on their answer.",
+        "coincidentes": [],
+        "no_coincidentes": []
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Search the course materials for content relevant to the problem type, method, or concept the student is working on. Retrieve explanations, relevant examples, and method guidance from the course only — do not draw on outside knowledge. This will inform the hints and guiding questions you ask.",
+      "estilo_respuesta": "Content — structure as follows:\n- First, ask the student what they've already tried or where specifically they're stuck (if they haven't said)\n- Once you know their starting point, ask a single targeted question that nudges them toward the next step — draw the question from course concepts\n- If they're stuck at a decision point, offer a binary prompt: \"Which of these two approaches do you think applies here, and why?\"\n- After each student response, reflect back what they got right, then ask the next guiding question\n- Never advance more than one step at a time\n- Only provide a direct explanation if the student is genuinely blocked after two or more attempts at a step\n  Never give the answer or full solution, even if the student asks directly. Respond with a question or the smallest possible hint instead.\n- Ask one question at a time. Do not front-load multiple hints or steps.\n- All hints and guiding questions must be grounded in course content. If the course doesn't cover what the student needs, say so clearly rather than introducing outside material.\n- If the student has made an attempt, always acknowledge what they got right before addressing what's wrong — specificity matters: name *what* they did correctly.\n- Adjust the granularity of hints to the student's responses — if they're close, ask a finer question; if they're lost, zoom out to the broader concept first.",
+      "anular_estilo": true
+    }
+  ]
+}

@@ -1,40 +1,46 @@
-# Flow Library
+# Librería de flows
 
-Our LearnWise flows, written down as plain text so the team can reuse them, copy them into LearnWise, and ask any LLM to draft new ones in the same format.
+Flows de LearnWise listos para copiar. Cualquiera con el link puede verlos y copiarlos:
 
-Every flow has the same three parts, exactly as in LearnWise (Tutor Assistant → Flujos):
+**https://sebastarre.github.io/flow-library/**
 
-1. **Activador**: what starts the flow (e.g. the user sends a message).
-2. **Condiciones**: when the flow applies. A description of the conversation context, plus example user messages that should match and that should not.
-3. **Respuesta**: what the assistant does, as one or more actions (a message, a button...).
+## Copiar un flow
 
-Field names in the files are the same as in LearnWise, so you can copy a flow field by field.
+1. Abrí la librería y elegí un flow (podés buscar por nombre, contexto o mensaje de ejemplo).
+2. En LearnWise, andá a Tutor Assistant → Flujos y creá un flujo nuevo.
+3. Cada campo del flow tiene su botón **Copiar**. Copiá y pegá campo por campo, en el mismo orden: Activador, Condiciones y Respuesta.
 
-## Flows
+Cada flow tiene su propio link (botón **Copiar link**) para mandarlo directo. **Copiar todo** copia el flow entero como texto.
 
-| Flow | Triggers when | Raw URL (give this to the LLM) |
-|---|---|---|
-| Human Help Needed | The user asks to talk to a person or to contact support | https://raw.githubusercontent.com/sebastarre/flow-library/main/flows/human-help-needed.md |
+## Agregar un flow
 
-## Reuse a flow
+1. En la librería, tocá **Agregar flow**.
+2. Completá el formulario con los mismos campos que tiene el flujo en LearnWise. Lo que vas cargando queda guardado en tu navegador.
+3. Cuando no falte nada, tocá **Copiar y abrir GitHub para publicar**.
+4. En GitHub, pegá el texto si el editor aparece vacío y tocá **Commit changes**.
+5. En 1 o 2 minutos el flow aparece en la librería.
 
-Open the flow file and copy each field into LearnWise: Tutor Assistant → Flujos → new flow.
+Para guardar hace falta una cuenta de GitHub con permiso en este repositorio. Sin permiso, GitHub ofrece **Propose changes** y el dueño lo aprueba.
 
-## Draft a new flow with an LLM
+## Editar un flow
 
-Paste this into any LLM chat (Claude, ChatGPT, Kimi):
+Abrí el flow, tocá **Editar**, cambiá lo que haga falta y tocá **Copiar y abrir GitHub para guardar**. En GitHub, seleccioná todo el texto, pegá encima y tocá **Commit changes**.
 
-> Read https://raw.githubusercontent.com/sebastarre/flow-library/main/README.md,
-> then the template and the flows it links to. Write a new LearnWise flow in
-> exactly the same format for this need: [when it should trigger and what the
-> assistant should do].
+Cambiar un flow acá **no** cambia LearnWise, y cambiarlo en LearnWise no cambia la librería. Cuando cambies uno, cambiá el otro igual.
 
-Template, LearnWise options and writing rules: https://raw.githubusercontent.com/sebastarre/flow-library/main/CONTRIBUTING.md
+## Qué hay en el repositorio
 
-If the LLM cannot open URLs, paste the contents of CONTRIBUTING.md and one flow file into the chat instead.
+| Carpeta / archivo | Qué es |
+|---|---|
+| `flows/` | Un archivo `.json` por flow. Es lo único que cambia al agregar o editar flows. |
+| `index.html`, `assets/` | La página de la librería. |
+| `scripts/` | Revisa los flows y arma la página. |
+| `.github/workflows/pages.yml` | Publica la página cada vez que cambia algo en `main`. |
 
-Check the draft before using it: same headings as the other flows, at least 5 matching and 3 non-matching examples, and only LearnWise options that exist (listed in CONTRIBUTING.md).
+Si un flow tiene un error, la publicación falla y la librería sigue mostrando la versión anterior. El error aparece en la pestaña **Actions** del repositorio.
 
-## Improve a flow
+Para verla en tu computadora: `node scripts/serve.mjs` y abrí http://localhost:4173.
 
-Editing a file here does **not** change LearnWise, and changing LearnWise does not change the file. When you change one, change the other the same way. See CONTRIBUTING.md.
+## Es público
+
+Todo lo que se sube acá lo puede ver cualquiera. No subas nombres de clientes, URLs internas ni datos personales.
