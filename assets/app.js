@@ -8,6 +8,21 @@ const toastEl = document.getElementById('toast');
 const DRAFT_KEY = 'flow-library:borrador';
 const OTRA_ACCION = 'Otra acción';
 
+// Same order and texts as "Agregar una acción" in LearnWise. Types without their own fields yet use a free-text "Configuración".
+const CATALOGO_ACCIONES = [
+  { label: 'Mensaje', tipo: ACCIONES.MENSAJE, descripcion: 'Enviar una respuesta de texto personalizada', icono: 'message' },
+  { label: 'Botón', tipo: ACCIONES.BOTON, descripcion: 'Mostrar un botón o enlace clicable', icono: 'external' },
+  { label: 'Buscar en conocimientos', tipo: ACCIONES.BUSCAR, descripcion: 'Consultar su base de conocimientos', icono: 'search' },
+  { label: 'Seguimientos', tipo: 'Seguimientos', descripcion: 'Sugerir preguntas de seguimiento', icono: 'question' },
+  { label: 'Iframe', tipo: 'Iframe', descripcion: 'Incrustar contenido externo en línea', icono: 'frame' },
+  { label: 'Solicitud API', tipo: 'Solicitud API', descripcion: 'Llamar a un endpoint API externo', icono: 'api' },
+  { label: 'Enviar correo electrónico', tipo: 'Enviar correo electrónico', descripcion: 'Enviar correo electrónico', icono: 'at' },
+  { label: 'Mejora', tipo: 'Mejora', descripcion: 'Marcar para seguimiento de revisión', icono: 'trend' },
+  { label: 'Transferencia', tipo: 'Transferencia', descripcion: 'Transferir a otro asistente', icono: 'transfer', beta: true },
+  { label: 'Modo de estudio', tipo: 'Modo de estudio', descripcion: 'Ingresar al cuestionario de autoevaluación', icono: 'cap' },
+  { label: 'Iniciar H5P interactivo', tipo: 'Iniciar H5P interactivo', descripcion: 'Cuestionarios, tarjetas de memoria, arrastrar palabras y más', icono: 'puzzle' },
+];
+
 let data = null;
 let loadErrors = null;
 let form = null;
@@ -48,6 +63,15 @@ const PATHS = {
   up: '<path d="M6 15l6-6 6 6"/>',
   down: '<path d="M6 9l6 6 6-6"/>',
   external: '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+  message: '<path d="M20 11.5a8 8 0 0 1-11.6 7.1L4 20l1.4-4.2A8 8 0 1 1 20 11.5z"/>',
+  question: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.3M12 17h.01"/>',
+  frame: '<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M10 10l-2 2 2 2M14 10l2 2-2 2"/>',
+  api: '<text x="12" y="15" text-anchor="middle" font-size="8.5" font-weight="700" font-family="system-ui, sans-serif" fill="currentColor" stroke="none">API</text>',
+  at: '<circle cx="12" cy="12" r="3.5"/><path d="M15.5 8.5V13a2.5 2.5 0 0 0 5 0v-1a8.5 8.5 0 1 0-3.3 6.7"/>',
+  trend: '<path d="M3 16l5-5 4 3 8-8"/><path d="M3 20h18"/>',
+  transfer: '<circle cx="6" cy="18" r="2"/><rect x="16" y="4" width="4" height="4" rx="1"/><path d="M6 16V9a3 3 0 0 1 3-3h7"/>',
+  cap: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5M22 9v5"/>',
+  puzzle: '<path d="M10 4a2 2 0 1 1 4 0v2h4v4h-1.5a2 2 0 1 0 0 4H18v4h-4v-1.5a2 2 0 1 0-4 0V18H6v-4h1.5a2 2 0 1 0 0-4H6V6h4z"/>',
 };
 
 function icon(name) {
@@ -405,7 +429,7 @@ function nuevaAccion(tipo) {
     case ACCIONES.BOTON:
       return { tipo, nombre: '', tipo_boton: 'Enlace externo', url: '', mostrar_icono: false };
     default:
-      return { tipo: '', valor: '', otra: true };
+      return { tipo, valor: '' };
   }
 }
 
@@ -497,6 +521,19 @@ function listTools(list, i, what) {
     }, icon('trash')));
 }
 
+function actionPicker(lista) {
+  return h('div', { class: 'add-row' },
+    h('span', { class: 'field-label' }, 'Agregar una acción'),
+    h('div', { class: 'action-grid' }, CATALOGO_ACCIONES.map((c) => h('button', {
+      type: 'button', class: 'action-option',
+      onclick: () => { lista.push(nuevaAccion(c.tipo)); changed(); rerender(); },
+    },
+    icon(c.icono),
+    h('span', { class: 'action-text' },
+      h('span', { class: 'action-title' }, c.label, c.beta ? h('span', { class: 'beta' }, 'beta') : null),
+      h('span', { class: 'action-desc' }, c.descripcion))))));
+}
+
 function addRow(label, options, onAdd) {
   return h('div', { class: 'add-row' },
     h('span', { class: 'field-label' }, label),
@@ -533,12 +570,12 @@ function condicionForm(c, i, lista) {
 }
 
 function accionForm(a, i, lista) {
-  const esOtra = a.otra || !TIPOS_ACCION.includes(a.tipo);
+  const esOtra = a.otra || !CATALOGO_ACCIONES.some((c) => c.tipo === a.tipo);
   const head = blockHead(`Acción ${i + 1}`, esOtra ? OTRA_ACCION : a.tipo, listTools(lista, i, `la acción ${i + 1}`));
   if (esOtra) {
     return h('div', { class: 'block' }, head,
       input(a, 'tipo', { label: 'Nombre de la acción', required: true, placeholder: 'Como aparece en LearnWise' }),
-      input(a, 'valor', { label: 'Configuración', multiline: true, required: true, help: 'Escribí cada ajuste de esta acción tal como está en LearnWise.' }));
+      input(a, 'valor', { label: 'Configuración', multiline: true, help: 'Escribí cada ajuste de esta acción tal como está en LearnWise.' }));
   }
   switch (a.tipo) {
     case ACCIONES.BUSCAR:
@@ -565,7 +602,8 @@ function accionForm(a, i, lista) {
         input(a, 'url', { label: 'URL', placeholder: 'https://… (puede quedar vacía)' }),
         toggle(a, 'mostrar_icono', 'Mostrar ícono'));
     default:
-      return null;
+      return h('div', { class: 'block' }, head,
+        input(a, 'valor', { label: 'Configuración', multiline: true, help: 'Esta acción todavía no tiene sus campos propios. Anotá cómo está configurada en LearnWise (puede quedar vacía).' }));
   }
 }
 
@@ -688,7 +726,7 @@ function viewForm(mode, slug) {
       addRow('Agregar una condición', TIPOS_CONDICION, (tipo) => draft.condiciones.lista.push(nuevaCondicion(tipo)))),
     stepCard(3, 'Respuesta',
       draft.respuesta.map((a, i, lista) => accionForm(a, i, lista)),
-      addRow('Agregar una acción', [...TIPOS_ACCION, OTRA_ACCION], (tipo) => draft.respuesta.push(nuevaAccion(tipo)))),
+      actionPicker(draft.respuesta)),
     h('section', { class: 'form-card' },
       h('h2', null, 'Notas (opcional)'),
       input(draft, 'notas', { label: 'Algo que haya que saber antes de usarlo', multiline: true, rows: 2, placeholder: 'Ej.: el botón necesita la URL de soporte de cada institución.' })),

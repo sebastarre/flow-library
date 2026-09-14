@@ -254,6 +254,20 @@ textarea.input { resize: vertical; line-height: 1.5; }
 .input[readonly] { background: var(--surface-2); color: var(--muted); }
 .add-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .add-row .field-label { width: 100%; }
+.action-grid { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 8px; }
+.action-option {
+  display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; text-align: left;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--surface); cursor: pointer;
+  transition: border-color .15s, background-color .15s;
+}
+.action-option:hover { border-color: var(--border-strong); background: var(--surface-2); }
+.action-option .icon { margin-top: 2px; color: var(--muted); }
+.action-option .icon svg { width: 18px; height: 18px; }
+.action-text { display: flex; flex-direction: column; min-width: 0; }
+.action-title { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 550; }
+.action-desc { font-size: 12.5px; color: var(--muted); }
+.beta { font-size: 11px; font-weight: 600; padding: 0 7px; border-radius: 999px; border: 1px solid #7c3aed; color: #7c3aed; line-height: 16px; }
+@media (prefers-color-scheme: dark) { .beta { border-color: #b69cff; color: #b69cff; } }
 .form-intro { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; padding-block: 16px 20px; }
 
 .publish { margin-block: 8px 16px; padding: 20px; border-radius: var(--radius); border: 1.5px solid var(--accent); background: var(--surface); display: flex; flex-direction: column; gap: 14px; }

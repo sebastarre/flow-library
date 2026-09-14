@@ -144,7 +144,7 @@ export function validateFlow(f) {
         need(esBool(a.mostrar_icono), `${donde}: "mostrar_icono" tiene que ser true o false.`);
         break;
       default:
-        need(texto(a.valor), `${donde}: falta la configuración.`);
+        need(typeof a.valor === 'string', `${donde}: la configuración tiene que ser texto (puede quedar vacía).`);
     }
   });
 
