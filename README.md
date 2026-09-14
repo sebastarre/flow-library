@@ -6,7 +6,7 @@ Flows de LearnWise listos para copiar. Cualquiera con el link puede verlos y cop
 
 ## Copiar un flow
 
-1. Abrí la librería y elegí un flow (podés buscar por nombre, contexto o mensaje de ejemplo).
+1. Abrí la librería y elegí un flow. Podés filtrar por idioma (English / Español) y categoría (Chat, Tutor, AI Ops), o buscar por nombre, contexto o mensaje de ejemplo. Los flows en inglés se muestran con toda la página en inglés.
 2. En LearnWise, andá a Tutor Assistant → Flujos y creá un flujo nuevo.
 3. Cada campo del flow tiene su botón **Copiar**. Copiá y pegá campo por campo, en el mismo orden: Activador, Condiciones y Respuesta.
 
@@ -15,7 +15,7 @@ Cada flow tiene su propio link (botón **Copiar link**) para mandarlo directo. *
 ## Agregar un flow
 
 1. En la librería, tocá **Agregar flow**.
-2. Completá el formulario con los mismos campos que tiene el flujo en LearnWise. Lo que vas cargando queda guardado en tu navegador.
+2. Elegí el idioma y la categoría, y completá el formulario con los mismos campos que tiene el flujo en LearnWise. Lo que vas cargando queda guardado en tu navegador.
 3. Cuando no falte nada, tocá **Copiar y abrir GitHub para publicar**.
 4. En GitHub, pegá el texto si el editor aparece vacío y tocá **Commit changes**.
 5. En 1 o 2 minutos el flow aparece en la librería.

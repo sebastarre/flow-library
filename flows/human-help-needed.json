@@ -1,7 +1,8 @@
 {
   "nombre": "Human Help Needed",
-  "descripcion": "El usuario pide hablar con una persona o contactar a soporte. El asistente responde y muestra un botón para contactar a soporte.",
-  "categoria": "Soporte",
+  "idioma": "en",
+  "categoria": "Chat",
+  "descripcion": "The user asks to talk to a person or to contact support. The assistant replies and shows a button to contact support.",
   "activador": "El usuario envía un mensaje",
   "condiciones": {
     "logica": "Cualquier condición coincide",
@@ -63,5 +64,5 @@
       "mostrar_icono": false
     }
   ],
-  "notas": "Es un flow integrado de LearnWise. El botón no tiene URL: poné la URL de soporte de cada institución, si no el botón no lleva a ningún lado."
+  "notas": "Built-in LearnWise flow. The button has no URL: add each institution's support URL, otherwise the button goes nowhere."
 }

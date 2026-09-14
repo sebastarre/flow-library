@@ -1,32 +1,118 @@
 import {
-  ACCIONES, CONTEXTO, LIMITES, LOGICAS, SLUG_RE, TIPOS_ACCION, TIPOS_CONDICION,
+  ACCIONES, CATEGORIAS, CONTEXTO, IDIOMAS, LIMITES, LOGICAS, SLUG_RE, TIPOS_CONDICION,
   normalizeFlow, slugify, validateFlow,
 } from './validate.js';
 
 const app = document.getElementById('app');
 const toastEl = document.getElementById('toast');
 const DRAFT_KEY = 'flow-library:borrador';
-const OTRA_ACCION = 'Otra acción';
-
-// Same order and texts as "Agregar una acción" in LearnWise. Types without their own fields yet use a free-text "Configuración".
-const CATALOGO_ACCIONES = [
-  { label: 'Mensaje', tipo: ACCIONES.MENSAJE, descripcion: 'Enviar una respuesta de texto personalizada', icono: 'message' },
-  { label: 'Botón', tipo: ACCIONES.BOTON, descripcion: 'Mostrar un botón o enlace clicable', icono: 'external' },
-  { label: 'Buscar en conocimientos', tipo: ACCIONES.BUSCAR, descripcion: 'Consultar su base de conocimientos', icono: 'search' },
-  { label: 'Seguimientos', tipo: 'Seguimientos', descripcion: 'Sugerir preguntas de seguimiento', icono: 'question' },
-  { label: 'Iframe', tipo: 'Iframe', descripcion: 'Incrustar contenido externo en línea', icono: 'frame' },
-  { label: 'Solicitud API', tipo: 'Solicitud API', descripcion: 'Llamar a un endpoint API externo', icono: 'api' },
-  { label: 'Enviar correo electrónico', tipo: 'Enviar correo electrónico', descripcion: 'Enviar correo electrónico', icono: 'at' },
-  { label: 'Mejora', tipo: 'Mejora', descripcion: 'Marcar para seguimiento de revisión', icono: 'trend' },
-  { label: 'Transferencia', tipo: 'Transferencia', descripcion: 'Transferir a otro asistente', icono: 'transfer', beta: true },
-  { label: 'Modo de estudio', tipo: 'Modo de estudio', descripcion: 'Ingresar al cuestionario de autoevaluación', icono: 'cap' },
-  { label: 'Iniciar H5P interactivo', tipo: 'Iniciar H5P interactivo', descripcion: 'Cuestionarios, tarjetas de memoria, arrastrar palabras y más', icono: 'puzzle' },
-];
 
 let data = null;
 let loadErrors = null;
 let form = null;
 let refreshPublish = () => {};
+let lastLibraryHash = '#/';
+
+/* ---------- Language ---------- */
+// The flow parts of the page (and the whole flow page) follow the flow's language.
+// Site chrome (library, form instructions) stays in Spanish.
+
+const UI = {
+  es: {
+    code: 'es',
+    allFlows: 'Todos los flows', copy: 'Copiar', copied: 'Copiado', copyLink: 'Copiar link', linkCopied: 'Link copiado',
+    copyAll: 'Copiar todo', flowCopied: 'Flow copiado', edit: 'Editar', addFlow: 'Agregar flow',
+    copyFailed: 'No se pudo copiar. Seleccioná el texto y copialo a mano.',
+    howto: 'En LearnWise andá a Tutor Assistant → Flujos y creá un flujo nuevo. Copiá cada campo con su botón y pegalo en el mismo lugar.',
+    note: 'Ojo: ', notes: 'Notas',
+    step1: 'Activador', step2: 'Condiciones', step3: 'Respuesta',
+    sub1: 'Defina el evento que inicia este flujo',
+    sub2: 'Criterios que deben cumplirse para que el flujo continúe.',
+    sub3: 'Defina lo que sucederá si se cumplen el activador y las condiciones.',
+    event: 'Evento', logic: 'Lógica de condiciones', noConditions: 'Sin condiciones: el flujo corre siempre que ocurre el activador.',
+    condition: 'Condición', action: 'Acción', config: 'Configuración', otherAction: 'Otra acción',
+    matching: 'Ejemplos coincidentes', nonMatching: 'Ejemplos no coincidentes', example: 'Ejemplo',
+    examples: (n) => (n === 1 ? '1 ejemplo' : `${n} ejemplos`),
+    conditions: (n) => (n === 1 ? '1 condición' : `${n} condiciones`),
+    userMessage: 'Mensaje del usuario', explanation: 'Explicación', noExamples: 'Todavía no hay ejemplos cargados.',
+    empty: 'Vacío', notSet: 'Sin configurar', on: 'Activado', off: 'Desactivado', checked: 'Marcado', unchecked: 'Sin marcar', yes: 'Sí', no: 'No',
+    escalar: 'Solicitar al usuario escalar para consultas no resueltas',
+    escalarDesc: "Cuando el asistente de IA no sabe la respuesta a una pregunta, presentará el botón de escalamiento 'contactar soporte' al usuario.",
+    mejoras: 'Crear elementos de mejora de conocimientos para consultas no resueltas',
+    mejorasDesc: 'Cuando el asistente de IA no sabe la respuesta a una pregunta, agregará automáticamente un nuevo elemento a su lista de tareas de mejora de conocimientos.',
+    advanced: 'Configuración avanzada', directrices: 'Directrices de búsqueda', estilo: 'Estilo de respuesta',
+    anular: 'Anular estilo de respuesta', anularDesc: 'Si no está marcado, sus instrucciones se agregarán a las instrucciones globales.',
+    instruirIa: 'Instruir a la IA para generar mensaje', seguirGlobales: 'También seguir las instrucciones globales de respuesta', instruccion: 'Instrucción',
+    botonNombre: 'Nombre del botón', botonTipo: 'Tipo de botón', url: 'URL', mostrarIcono: 'Mostrar ícono',
+    addCondition: 'Agregar una condición', addAction: 'Agregar una acción', addExample: 'Agregar ejemplo',
+    footer1: 'Los flows se guardan en ', footer2: '. Cambiar un flow acá no cambia LearnWise: hacé el mismo cambio en los dos lados.',
+    notFound: 'No encontramos ese flow', notFoundLead: 'Puede que lo hayan renombrado o borrado.',
+  },
+  en: {
+    code: 'en',
+    allFlows: 'All flows', copy: 'Copy', copied: 'Copied', copyLink: 'Copy link', linkCopied: 'Link copied',
+    copyAll: 'Copy all', flowCopied: 'Flow copied', edit: 'Edit', addFlow: 'Add flow',
+    copyFailed: "Couldn't copy. Select the text and copy it manually.",
+    howto: 'In LearnWise, go to Tutor Assistant → Flows and create a new flow. Copy each field with its button and paste it into the same place.',
+    note: 'Note: ', notes: 'Notes',
+    step1: 'Trigger', step2: 'Conditions', step3: 'Response',
+    sub1: 'Define the event that starts this flow',
+    sub2: 'Criteria that must be met for the flow to continue.',
+    sub3: 'Define what happens when the trigger and the conditions are met.',
+    event: 'Event', logic: 'Condition logic', noConditions: 'No conditions: the flow runs every time the trigger happens.',
+    condition: 'Condition', action: 'Action', config: 'Configuration', otherAction: 'Other action',
+    matching: 'Matching examples', nonMatching: 'Non-matching examples', example: 'Example',
+    examples: (n) => (n === 1 ? '1 example' : `${n} examples`),
+    conditions: (n) => (n === 1 ? '1 condition' : `${n} conditions`),
+    userMessage: 'User message', explanation: 'Explanation', noExamples: 'No examples added yet.',
+    empty: 'Empty', notSet: 'Not set', on: 'On', off: 'Off', checked: 'Checked', unchecked: 'Unchecked', yes: 'Yes', no: 'No',
+    escalar: 'Ask the user to escalate unresolved queries',
+    escalarDesc: "When the AI assistant doesn't know the answer to a question, it will show the user the 'contact support' escalation button.",
+    mejoras: 'Create knowledge improvement items for unresolved queries',
+    mejorasDesc: "When the AI assistant doesn't know the answer to a question, it will automatically add a new item to your knowledge improvement task list.",
+    advanced: 'Advanced settings', directrices: 'Search guidelines', estilo: 'Response style',
+    anular: 'Override response style', anularDesc: 'If unchecked, your instructions will be added to the global instructions.',
+    instruirIa: 'Instruct the AI to generate the message', seguirGlobales: 'Also follow the global response instructions', instruccion: 'Instruction',
+    botonNombre: 'Button name', botonTipo: 'Button type', url: 'URL', mostrarIcono: 'Show icon',
+    addCondition: 'Add a condition', addAction: 'Add an action', addExample: 'Add example',
+    footer1: 'Flows are stored on ', footer2: ". Changing a flow here doesn't change LearnWise: make the same change in both places.",
+    notFound: "We couldn't find that flow", notFoundLead: 'It may have been renamed or deleted.',
+  },
+};
+let L = UI.es;
+
+// Same order and texts as "Agregar una acción" in LearnWise. Types without their own fields yet use a free-text "Configuración".
+const CATALOGO_ACCIONES = [
+  { tipo: ACCIONES.MENSAJE, icono: 'message', es: ['Mensaje', 'Enviar una respuesta de texto personalizada'], en: ['Message', 'Send a custom text response'] },
+  { tipo: ACCIONES.BOTON, icono: 'external', es: ['Botón', 'Mostrar un botón o enlace clicable'], en: ['Button', 'Show a clickable button or link'] },
+  { tipo: ACCIONES.BUSCAR, icono: 'search', es: ['Buscar en conocimientos', 'Consultar su base de conocimientos'], en: ['Search knowledge', 'Query your knowledge base'] },
+  { tipo: 'Seguimientos', icono: 'question', es: ['Seguimientos', 'Sugerir preguntas de seguimiento'], en: ['Follow-ups', 'Suggest follow-up questions'] },
+  { tipo: 'Iframe', icono: 'frame', es: ['Iframe', 'Incrustar contenido externo en línea'], en: ['Iframe', 'Embed external content inline'] },
+  { tipo: 'Solicitud API', icono: 'api', es: ['Solicitud API', 'Llamar a un endpoint API externo'], en: ['API request', 'Call an external API endpoint'] },
+  { tipo: 'Enviar correo electrónico', icono: 'at', es: ['Enviar correo electrónico', 'Enviar correo electrónico'], en: ['Send email', 'Send an email'] },
+  { tipo: 'Mejora', icono: 'trend', es: ['Mejora', 'Marcar para seguimiento de revisión'], en: ['Improvement', 'Flag for review follow-up'] },
+  { tipo: 'Transferencia', icono: 'transfer', beta: true, es: ['Transferencia', 'Transferir a otro asistente'], en: ['Transfer', 'Transfer to another assistant'] },
+  { tipo: 'Modo de estudio', icono: 'cap', es: ['Modo de estudio', 'Ingresar al cuestionario de autoevaluación'], en: ['Study mode', 'Enter the self-assessment quiz'] },
+  { tipo: 'Iniciar H5P interactivo', icono: 'puzzle', es: ['Iniciar H5P interactivo', 'Cuestionarios, tarjetas de memoria, arrastrar palabras y más'], en: ['Start interactive H5P', 'Quizzes, flashcards, drag the words and more'] },
+];
+
+// Flow files always store the Spanish option labels; English flows show them translated.
+const VALORES_EN = {
+  'El usuario envía un mensaje': 'User sends a message',
+  'Cualquier condición coincide': 'Any condition matches',
+  'Todas las condiciones coinciden': 'All conditions match',
+  'Contexto de la conversación': 'Conversation context',
+  'Rol de usuario': 'User role',
+  'Datos externos': 'External data',
+  Curso: 'Course',
+  'Programación': 'Schedule',
+  'Mensaje personalizado': 'Custom message',
+  'Enlace externo': 'External link',
+  ...Object.fromEntries(CATALOGO_ACCIONES.filter((c) => c.tipo !== ACCIONES.MENSAJE).map((c) => [c.tipo, c.en[0]])),
+};
+const VALORES_ES = Object.fromEntries(Object.entries(VALORES_EN).map(([es, en]) => [en, es]));
+const mostrar = (lang, v) => (lang === 'en' ? VALORES_EN[v] ?? v : v);
+const guardar = (lang, v) => (lang === 'en' ? VALORES_ES[v] ?? v : v);
 
 /* ---------- DOM helpers ---------- */
 
@@ -111,13 +197,14 @@ async function copyText(plain, html) {
   }
 }
 
-function copyButton(getPlain, { label = 'Copiar', getHtml = null, big = false, iconName = 'copy', done = 'Copiado' } = {}) {
+function copyButton(getPlain, { label = L.copy, getHtml = null, big = false, iconName = 'copy', done = L.copied } = {}) {
+  const failed = L.copyFailed;
   const btn = h('button', { type: 'button', class: big ? 'btn' : 'copy-btn' });
   const idle = () => btn.replaceChildren(icon(iconName), label);
   idle();
   btn.addEventListener('click', async () => {
     const ok = await copyText(getPlain(), getHtml?.());
-    if (!ok) return toast('No se pudo copiar. Seleccioná el texto y copialo a mano.');
+    if (!ok) return toast(failed);
     btn.replaceChildren(icon('check'), done);
     btn.classList.add('is-done');
     toast(done);
@@ -152,22 +239,11 @@ const richToPlain = (text) => text.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.
 
 /* ---------- Shared pieces ---------- */
 
-const SUBTITULOS = {
-  1: 'Defina el evento que inicia este flujo',
-  2: 'Criterios que deben cumplirse para que el flujo continúe.',
-  3: 'Defina lo que sucederá si se cumplen el activador y las condiciones.',
-};
-const DESCRIPCIONES = {
-  escalar_no_resueltas: "Cuando el asistente de IA no sabe la respuesta a una pregunta, presentará el botón de escalamiento 'contactar soporte' al usuario.",
-  crear_mejoras: 'Cuando el asistente de IA no sabe la respuesta a una pregunta, agregará automáticamente un nuevo elemento a su lista de tareas de mejora de conocimientos.',
-  anular_estilo: 'Si no está marcado, sus instrucciones se agregarán a las instrucciones globales.',
-};
-
-function stepCard(n, title, ...content) {
+function stepCard(n, ...content) {
   return h('section', { class: `step step-${n}` },
     h('header', { class: 'step-head' },
       h('span', { class: 'step-num' }, String(n)),
-      h('div', null, h('h2', null, title), h('p', null, SUBTITULOS[n]))),
+      h('div', null, h('h2', null, L[`step${n}`]), h('p', null, L[`sub${n}`]))),
     h('div', { class: 'step-body' }, content));
 }
 
@@ -175,54 +251,73 @@ function topbar() {
   const onForm = location.hash.startsWith('#/nuevo') || location.hash.startsWith('#/editar');
   return h('header', { class: 'topbar' },
     h('div', { class: 'wrap' },
-      h('a', { class: 'brand', href: '#/' }, h('span', { class: 'brand-mark' }, 'F'), h('span', null, 'Librería de flows ', h('small', null, '· LearnWise'))),
-      onForm ? null : h('a', { class: 'btn btn-small', href: '#/nuevo' }, icon('plus'), 'Agregar flow')));
+      h('a', { class: 'brand', href: lastLibraryHash }, h('span', { class: 'brand-mark' }, 'F'), h('span', null, 'Flow Library ', h('small', null, '· LearnWise'))),
+      onForm ? null : h('a', { class: 'btn btn-small', href: '#/nuevo' }, icon('plus'), L.addFlow)));
 }
 
 function footer() {
   const repo = data ? `https://github.com/${data.repo}` : null;
   return h('footer', { class: 'footer wrap' },
-    'Los flows se guardan en ', repo ? h('a', { href: repo, target: '_blank', rel: 'noopener' }, 'GitHub') : 'GitHub',
-    '. Cambiar un flow acá no cambia LearnWise: hacé el mismo cambio en los dos lados.');
+    L.footer1, repo ? h('a', { href: repo, target: '_blank', rel: 'noopener' }, 'GitHub') : 'GitHub', L.footer2);
 }
 
 const flowLink = (f) => `${location.origin}${location.pathname}#/flow/${f.slug}`;
 
+function flowTags(f) {
+  return h('div', { class: 'card-tags' },
+    h('span', { class: 'tag' }, f.categoria),
+    h('span', { class: 'lang', title: IDIOMAS[f.idioma] }, f.idioma.toUpperCase()));
+}
+
 /* ---------- Library ---------- */
 
-const filtro = { q: '', cat: '' };
+const filtro = { q: '', idioma: '', cat: '' };
+
+function libraryHash() {
+  const params = new URLSearchParams();
+  if (filtro.idioma) params.set('idioma', filtro.idioma);
+  if (filtro.cat) params.set('cat', filtro.cat);
+  const qs = params.toString();
+  return `#/${qs ? `?${qs}` : ''}`;
+}
 
 function textoBuscable(f) {
-  const partes = [f.nombre, f.descripcion, f.categoria, f.activador];
+  const partes = [f.nombre, f.descripcion, f.categoria, IDIOMAS[f.idioma], f.activador];
   for (const c of f.condiciones.lista) {
-    partes.push(c.tipo, c.contexto, c.valor);
+    partes.push(c.tipo, mostrar('en', c.tipo), c.contexto, c.valor);
     for (const e of [...(c.coincidentes ?? []), ...(c.no_coincidentes ?? [])]) partes.push(e.mensaje);
   }
-  for (const a of f.respuesta) partes.push(a.tipo);
+  for (const a of f.respuesta) partes.push(a.tipo, mostrar('en', a.tipo));
   return normalizar(partes.filter(Boolean).join(' '));
 }
 
-function viewLibrary() {
-  document.title = 'Librería de flows';
-  const categorias = [...new Set(data.flows.map((f) => f.categoria).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+function viewLibrary(params) {
+  document.title = 'Flow Library';
+  filtro.idioma = Object.hasOwn(IDIOMAS, params.get('idioma') ?? '') ? params.get('idioma') : '';
+  filtro.cat = CATEGORIAS.includes(params.get('cat')) ? params.get('cat') : '';
+  lastLibraryHash = libraryHash();
+
+  const setFiltro = (key, value) => {
+    filtro[key] = value;
+    history.replaceState(null, '', libraryHash());
+    rerender();
+  };
+
+  const porIdioma = data.flows.filter((f) => !filtro.idioma || f.idioma === filtro.idioma);
   const grid = h('div', { class: 'grid' });
   const count = h('p', { class: 'result-count', 'aria-live': 'polite' });
 
   const renderGrid = () => {
     const q = normalizar(filtro.q.trim());
-    const items = data.flows.filter((f) => (!filtro.cat || f.categoria === filtro.cat) && (!q || textoBuscable(f).includes(q)));
+    const items = porIdioma.filter((f) => (!filtro.cat || f.categoria === filtro.cat) && (!q || textoBuscable(f).includes(q)));
     count.textContent = items.length === 1 ? '1 flow' : `${items.length} flows`;
-    grid.replaceChildren(...(items.length ? items.map(card) : [h('div', { class: 'empty' }, 'No hay flows que coincidan con la búsqueda.')]));
+    grid.replaceChildren(...(items.length ? items.map(card) : [h('div', { class: 'empty' }, 'No hay flows que coincidan con estos filtros.')]));
   };
-
-  const chips = h('div', { class: 'chips', role: 'group', 'aria-label': 'Filtrar por categoría' });
-  const renderChips = () => chips.replaceChildren(...['', ...categorias].map((cat) =>
-    h('button', {
-      type: 'button', class: 'chip', 'aria-pressed': String(filtro.cat === cat),
-      onclick: () => { filtro.cat = cat; renderChips(); renderGrid(); },
-    }, cat || 'Todas')));
-  renderChips();
   renderGrid();
+
+  const option = (key, value, label, n) => h('button', {
+    type: 'button', class: 'chip', 'aria-pressed': String(filtro[key] === value), onclick: () => setFiltro(key, value),
+  }, label, h('span', { class: 'chip-count' }, String(n)));
 
   return h('main', { class: 'wrap' },
     h('div', { class: 'hero' },
@@ -233,28 +328,38 @@ function viewLibrary() {
         h('input', {
           type: 'search', placeholder: 'Buscar por nombre, contexto o mensaje de ejemplo…', 'aria-label': 'Buscar flows', value: filtro.q,
           oninput: (e) => { filtro.q = e.target.value; renderGrid(); },
-        })),
-      categorias.length > 1 ? chips : null),
+        }))),
+    h('div', { class: 'filters' },
+      h('div', { class: 'filter-row' },
+        h('span', { class: 'filter-label' }, 'Idioma'),
+        h('div', { class: 'chips', role: 'group', 'aria-label': 'Filtrar por idioma' },
+          option('idioma', '', 'Todos', data.flows.length),
+          Object.entries(IDIOMAS).map(([code, name]) => option('idioma', code, name, data.flows.filter((f) => f.idioma === code).length)))),
+      h('div', { class: 'filter-row' },
+        h('span', { class: 'filter-label' }, 'Categoría'),
+        h('div', { class: 'chips', role: 'group', 'aria-label': 'Filtrar por categoría' },
+          option('cat', '', 'Todas', porIdioma.length),
+          CATEGORIAS.map((c) => option('cat', c, c, porIdioma.filter((f) => f.categoria === c).length))))),
     count,
     grid);
 }
 
 function card(f) {
+  const T = UI[f.idioma];
   const ejemplos = f.condiciones.lista.reduce((n, c) => n + (c.coincidentes?.length ?? 0) + (c.no_coincidentes?.length ?? 0), 0);
-  const plural = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
-  return h('a', { class: 'card', href: `#/flow/${f.slug}` },
-    f.categoria ? h('span', { class: 'tag' }, f.categoria) : null,
+  return h('a', { class: 'card', href: `#/flow/${f.slug}`, lang: f.idioma },
+    flowTags(f),
     h('h3', null, f.nombre),
     h('p', null, f.descripcion),
     h('div', { class: 'card-meta' },
-      h('span', { class: 'meta-pill' }, plural(f.condiciones.lista.length, 'condición', 'condiciones')),
-      ejemplos ? h('span', { class: 'meta-pill' }, plural(ejemplos, 'ejemplo', 'ejemplos')) : null,
-      f.respuesta.map((a) => h('span', { class: 'meta-pill' }, a.tipo))));
+      h('span', { class: 'meta-pill' }, T.conditions(f.condiciones.lista.length)),
+      ejemplos ? h('span', { class: 'meta-pill' }, T.examples(ejemplos)) : null,
+      f.respuesta.map((a) => h('span', { class: 'meta-pill' }, mostrar(f.idioma, a.tipo)))));
 }
 
 /* ---------- Flow detail ---------- */
 
-function field(label, value, { rich = false, limit = null, emptyText = 'Vacío', warn = false } = {}) {
+function field(label, value, { rich = false, limit = null, emptyText = L.empty, warn = false } = {}) {
   const v = value ?? '';
   const empty = !v.trim();
   const body = empty
@@ -270,13 +375,17 @@ function field(label, value, { rich = false, limit = null, emptyText = 'Vacío',
     body);
 }
 
+function stateText(on, kind) {
+  return kind === 'check' ? (on ? L.checked : L.unchecked) : (on ? L.on : L.off);
+}
+
 function setting(label, on, desc, kind = 'switch') {
   const mark = kind === 'check'
     ? h('span', { class: `checkbox${on ? ' on' : ''}` }, on ? icon('check') : null)
     : h('span', { class: `switch${on ? ' on' : ''}` });
   return h('div', { class: 'setting' },
     h('div', { class: 'setting-text' }, h('div', { class: 'setting-label' }, label), desc ? h('div', { class: 'setting-desc' }, desc) : null),
-    h('span', { class: 'state' }, kind === 'check' ? (on ? 'Marcado' : 'Sin marcar') : (on ? 'Activado' : 'Desactivado'), mark));
+    h('span', { class: 'state' }, stateText(on, kind), mark));
 }
 
 function blockHead(kicker, title, tools) {
@@ -284,132 +393,129 @@ function blockHead(kicker, title, tools) {
 }
 
 function ejemplosView(list, kind) {
-  const label = kind === 'match' ? 'Ejemplos coincidentes' : 'Ejemplos no coincidentes';
   return h('details', { class: 'examples', open: list.length > 0 },
     h('summary', null,
-      h('span', { class: `badge ${kind}` }, label),
-      h('span', { class: 'muted' }, list.length === 1 ? '1 ejemplo' : `${list.length} ejemplos`)),
+      h('span', { class: `badge ${kind}` }, kind === 'match' ? L.matching : L.nonMatching),
+      h('span', { class: 'muted' }, L.examples(list.length))),
     h('div', { class: 'examples-body' },
       list.length
         ? h('ol', { class: 'example-list' }, list.map((e) => h('li', { class: 'example' },
-          field('Mensaje del usuario', e.mensaje),
-          field('Explicación', e.explicacion, { limit: LIMITES.explicacion }))))
-        : h('p', { class: 'muted' }, 'Todavía no hay ejemplos cargados.')));
+          field(L.userMessage, e.mensaje),
+          field(L.explanation, e.explicacion, { limit: LIMITES.explicacion }))))
+        : h('p', { class: 'muted' }, L.noExamples)));
 }
 
 function condicionView(c, i) {
-  const head = blockHead(`Condición ${i + 1}`, c.tipo);
-  if (c.tipo !== CONTEXTO) return h('div', { class: 'block' }, head, field('Configuración', c.valor));
+  const head = blockHead(`${L.condition} ${i + 1}`, mostrar(L.code, c.tipo));
+  if (c.tipo !== CONTEXTO) return h('div', { class: 'block' }, head, field(L.config, c.valor));
   return h('div', { class: 'block' }, head,
-    field('Contexto de la conversación', c.contexto),
+    field(mostrar(L.code, CONTEXTO), c.contexto),
     ejemplosView(c.coincidentes, 'match'),
     ejemplosView(c.no_coincidentes, 'nomatch'));
 }
 
 function accionView(a, i) {
-  const head = blockHead(`Acción ${i + 1}`, a.tipo);
+  const head = blockHead(`${L.action} ${i + 1}`, mostrar(L.code, a.tipo));
   switch (a.tipo) {
     case ACCIONES.BUSCAR:
       return h('div', { class: 'block' }, head,
-        setting('Solicitar al usuario escalar para consultas no resueltas', a.escalar_no_resueltas, DESCRIPCIONES.escalar_no_resueltas),
-        setting('Crear elementos de mejora de conocimientos para consultas no resueltas', a.crear_mejoras, DESCRIPCIONES.crear_mejoras),
-        h('h4', { class: 'sub' }, 'Configuración avanzada'),
-        field('Directrices de búsqueda', a.directrices_busqueda, { limit: LIMITES.directrices_busqueda }),
-        field('Estilo de respuesta', a.estilo_respuesta, { limit: LIMITES.estilo_respuesta, rich: true }),
-        setting('Anular estilo de respuesta', a.anular_estilo, DESCRIPCIONES.anular_estilo, 'check'));
+        setting(L.escalar, a.escalar_no_resueltas, L.escalarDesc),
+        setting(L.mejoras, a.crear_mejoras, L.mejorasDesc),
+        h('h4', { class: 'sub' }, L.advanced),
+        field(L.directrices, a.directrices_busqueda, { limit: LIMITES.directrices_busqueda }),
+        field(L.estilo, a.estilo_respuesta, { limit: LIMITES.estilo_respuesta, rich: true }),
+        setting(L.anular, a.anular_estilo, L.anularDesc, 'check'));
     case ACCIONES.MENSAJE:
       return h('div', { class: 'block' }, head,
-        setting('Instruir a la IA para generar mensaje', a.instruir_ia),
-        setting('También seguir las instrucciones globales de respuesta', a.seguir_instrucciones_globales),
-        field('Instrucción', a.instruccion));
+        setting(L.instruirIa, a.instruir_ia),
+        setting(L.seguirGlobales, a.seguir_instrucciones_globales),
+        field(L.instruccion, a.instruccion));
     case ACCIONES.BOTON:
       return h('div', { class: 'block' }, head,
-        field('Nombre del botón', a.nombre),
-        field('Tipo de botón', a.tipo_boton),
-        field('URL', a.url, { warn: true, emptyText: 'Sin configurar' }),
-        setting('Mostrar ícono', a.mostrar_icono));
+        field(L.botonNombre, a.nombre),
+        field(L.botonTipo, mostrar(L.code, a.tipo_boton)),
+        field(L.url, a.url, { warn: true, emptyText: L.notSet }),
+        setting(L.mostrarIcono, a.mostrar_icono));
     default:
-      return h('div', { class: 'block' }, head, field('Configuración', a.valor));
+      return h('div', { class: 'block' }, head, field(L.config, a.valor));
   }
 }
 
-const onOff = (v) => (v ? 'Activado' : 'Desactivado');
-
 function flowToText(f) {
-  const out = [`FLOW: ${f.nombre}`, f.descripcion, '', '1. ACTIVADOR', f.activador, '', '2. CONDICIONES', `Lógica de condiciones: ${f.condiciones.logica}`];
+  const T = UI[f.idioma];
+  const v = (x) => mostrar(f.idioma, x);
+  const onOff = (x) => (x ? T.on : T.off);
+  const out = [`FLOW: ${f.nombre}`, f.descripcion, '', `1. ${T.step1.toUpperCase()}`, v(f.activador), '', `2. ${T.step2.toUpperCase()}`, `${T.logic}: ${v(f.condiciones.logica)}`];
   f.condiciones.lista.forEach((c, i) => {
-    out.push('', `Condición ${i + 1} — ${c.tipo}`);
+    out.push('', `${T.condition} ${i + 1} — ${v(c.tipo)}`);
     if (c.tipo !== CONTEXTO) return out.push(c.valor);
-    out.push(`Contexto: ${c.contexto}`);
-    for (const [titulo, lista] of [['Ejemplos coincidentes', c.coincidentes], ['Ejemplos no coincidentes', c.no_coincidentes]]) {
+    out.push(`${v(CONTEXTO)}: ${c.contexto}`);
+    for (const [titulo, lista] of [[T.matching, c.coincidentes], [T.nonMatching, c.no_coincidentes]]) {
       out.push(`${titulo}:`);
-      if (!lista.length) out.push('  (sin ejemplos)');
-      for (const e of lista) out.push(`- Mensaje del usuario: ${e.mensaje}`, `  Explicación: ${e.explicacion}`);
+      if (!lista.length) out.push(`  (${T.noExamples})`);
+      for (const e of lista) out.push(`- ${T.userMessage}: ${e.mensaje}`, `  ${T.explanation}: ${e.explicacion}`);
     }
   });
-  out.push('', '3. RESPUESTA');
+  out.push('', `3. ${T.step3.toUpperCase()}`);
   f.respuesta.forEach((a, i) => {
-    out.push('', `Acción ${i + 1} — ${a.tipo}`);
+    out.push('', `${T.action} ${i + 1} — ${v(a.tipo)}`);
     switch (a.tipo) {
       case ACCIONES.BUSCAR:
         out.push(
-          `Solicitar al usuario escalar para consultas no resueltas: ${onOff(a.escalar_no_resueltas)}`,
-          `Crear elementos de mejora de conocimientos para consultas no resueltas: ${onOff(a.crear_mejoras)}`,
-          'Directrices de búsqueda:', a.directrices_busqueda,
-          'Estilo de respuesta:', richToPlain(a.estilo_respuesta),
-          `Anular estilo de respuesta: ${a.anular_estilo ? 'Sí' : 'No'}`);
+          `${T.escalar}: ${onOff(a.escalar_no_resueltas)}`,
+          `${T.mejoras}: ${onOff(a.crear_mejoras)}`,
+          `${T.directrices}:`, a.directrices_busqueda,
+          `${T.estilo}:`, richToPlain(a.estilo_respuesta),
+          `${T.anular}: ${a.anular_estilo ? T.yes : T.no}`);
         break;
       case ACCIONES.MENSAJE:
-        out.push(
-          `Instruir a la IA para generar mensaje: ${onOff(a.instruir_ia)}`,
-          `También seguir las instrucciones globales de respuesta: ${onOff(a.seguir_instrucciones_globales)}`,
-          `Instrucción: ${a.instruccion}`);
+        out.push(`${T.instruirIa}: ${onOff(a.instruir_ia)}`, `${T.seguirGlobales}: ${onOff(a.seguir_instrucciones_globales)}`, `${T.instruccion}: ${a.instruccion}`);
         break;
       case ACCIONES.BOTON:
-        out.push(`Nombre del botón: ${a.nombre}`, `Tipo de botón: ${a.tipo_boton}`, `URL: ${a.url || '(sin configurar)'}`, `Mostrar ícono: ${onOff(a.mostrar_icono)}`);
+        out.push(`${T.botonNombre}: ${a.nombre}`, `${T.botonTipo}: ${v(a.tipo_boton)}`, `${T.url}: ${a.url || `(${T.notSet})`}`, `${T.mostrarIcono}: ${onOff(a.mostrar_icono)}`);
         break;
       default:
         out.push(a.valor);
     }
   });
-  if (f.notas) out.push('', `Notas: ${f.notas}`);
+  if (f.notas) out.push('', `${T.notes}: ${f.notas}`);
   return out.join('\n');
 }
 
 function viewFlow(slug) {
   const f = data.flows.find((x) => x.slug === slug);
   if (!f) return viewNotFound();
-  document.title = `${f.nombre} · Librería de flows`;
+  L = UI[f.idioma];
+  document.title = `${f.nombre} · Flow Library`;
   const { lista, logica } = f.condiciones;
 
-  return h('main', { class: 'wrap' },
-    h('a', { class: 'back', href: '#/' }, icon('back'), 'Todos los flows'),
+  return h('main', { class: 'wrap', lang: f.idioma },
+    h('a', { class: 'back', href: lastLibraryHash }, icon('back'), L.allFlows),
     h('div', { class: 'flow-head' },
       h('div', null,
-        f.categoria ? h('span', { class: 'tag' }, f.categoria) : null,
+        flowTags(f),
         h('h1', null, f.nombre),
         h('p', { class: 'lead' }, f.descripcion)),
       h('div', { class: 'flow-actions' },
-        copyButton(() => flowLink(f), { label: 'Copiar link', big: true, iconName: 'link', done: 'Link copiado' }),
-        copyButton(() => flowToText(f), { label: 'Copiar todo', big: true, done: 'Flow copiado' }),
-        h('a', { class: 'btn', href: `#/editar/${f.slug}` }, icon('edit'), 'Editar'))),
-    h('p', { class: 'howto' }, icon('info'),
-      h('span', null, 'En LearnWise andá a Tutor Assistant → Flujos y creá un flujo nuevo. Copiá cada campo con su botón y pegalo en el mismo lugar.')),
-    f.notas ? h('p', { class: 'note' }, h('span', null, h('strong', null, 'Ojo: '), f.notas)) : null,
-    stepCard(1, 'Activador', field('Evento', f.activador)),
-    stepCard(2, 'Condiciones',
+        copyButton(() => flowLink(f), { label: L.copyLink, big: true, iconName: 'link', done: L.linkCopied }),
+        copyButton(() => flowToText(f), { label: L.copyAll, big: true, done: L.flowCopied }),
+        h('a', { class: 'btn', href: `#/editar/${f.slug}` }, icon('edit'), L.edit))),
+    h('p', { class: 'howto' }, icon('info'), h('span', null, L.howto)),
+    f.notas ? h('p', { class: 'note' }, h('span', null, h('strong', null, L.note), f.notas)) : null,
+    stepCard(1, field(L.event, mostrar(L.code, f.activador))),
+    stepCard(2,
       h('div', { class: 'logic' },
-        h('span', { class: 'field-label' }, 'Lógica de condiciones'),
-        h('div', { class: 'radios' }, LOGICAS.map((l) => h('span', { class: `radio${l === logica ? ' on' : ''}` }, h('span', { class: 'dot' }), l)))),
-      lista.length ? lista.map(condicionView) : h('p', { class: 'muted' }, 'Sin condiciones: el flujo corre siempre que ocurre el activador.')),
-    stepCard(3, 'Respuesta', f.respuesta.map(accionView)));
+        h('span', { class: 'field-label' }, L.logic),
+        h('div', { class: 'radios' }, LOGICAS.map((l) => h('span', { class: `radio${l === logica ? ' on' : ''}` }, h('span', { class: 'dot' }), mostrar(L.code, l))))),
+      lista.length ? lista.map(condicionView) : h('p', { class: 'muted' }, L.noConditions)),
+    stepCard(3, f.respuesta.map(accionView)));
 }
 
 function viewNotFound() {
-  document.title = 'No encontrado · Librería de flows';
+  document.title = 'Flow Library';
   return h('main', { class: 'wrap' },
-    h('div', { class: 'hero' }, h('h1', null, 'No encontramos ese flow'), h('p', { class: 'lead' }, 'Puede que lo hayan renombrado o borrado.')),
-    h('a', { class: 'btn', href: '#/' }, icon('back'), 'Ver todos los flows'));
+    h('div', { class: 'hero' }, h('h1', null, L.notFound), h('p', { class: 'lead' }, L.notFoundLead)),
+    h('a', { class: 'btn', href: '#/' }, icon('back'), L.allFlows));
 }
 
 /* ---------- Add / edit form ---------- */
@@ -434,7 +540,7 @@ function nuevaAccion(tipo) {
 }
 
 const flowVacio = () => ({
-  nombre: '', descripcion: '', categoria: '', activador: 'El usuario envía un mensaje',
+  nombre: '', idioma: '', categoria: '', descripcion: '', activador: 'El usuario envía un mensaje',
   condiciones: { logica: LOGICAS[0], lista: [nuevaCondicion(CONTEXTO)] },
   respuesta: [nuevaAccion(ACCIONES.BUSCAR)],
   notas: '',
@@ -468,11 +574,11 @@ function changed() {
 }
 
 let uid = 0;
-function input(obj, key, { label, placeholder, multiline = false, rows = 3, limit = null, required = false, help = null, list = null, readonly = false, onInput = null } = {}) {
+function input(obj, key, { label, placeholder, multiline = false, rows = 3, limit = null, required = false, help = null, list = null, readonly = false, onInput = null, show = (v) => v, parse = (v) => v } = {}) {
   const id = `f${++uid}`;
   const ctrl = h(multiline ? 'textarea' : 'input', {
     id, class: 'input', placeholder, rows: multiline ? rows : null, type: multiline ? null : 'text',
-    list, readonly, value: obj[key] ?? '',
+    list, readonly, value: show(obj[key] ?? ''),
   });
   const counter = limit ? h('span', { class: 'field-count' }) : null;
   const updateCounter = () => {
@@ -481,7 +587,7 @@ function input(obj, key, { label, placeholder, multiline = false, rows = 3, limi
     counter.classList.toggle('over', ctrl.value.length > limit);
   };
   ctrl.addEventListener('input', () => {
-    obj[key] = ctrl.value;
+    obj[key] = parse(ctrl.value);
     updateCounter();
     onInput?.(ctrl.value);
     changed();
@@ -493,14 +599,24 @@ function input(obj, key, { label, placeholder, multiline = false, rows = 3, limi
     ctrl);
 }
 
+function choice(obj, key, label, options) {
+  return h('div', { class: 'form-field' },
+    h('span', { class: 'field-label' }, label, h('span', { class: 'req' }, ' *')),
+    h('div', { class: 'chips', role: 'radiogroup', 'aria-label': label },
+      options.map(([value, text]) => h('label', { class: `chip${obj[key] === value ? ' is-on' : ''}` },
+        h('input', { type: 'radio', name: key, value, checked: obj[key] === value, onchange: () => { obj[key] = value; changed(); rerender(); } }),
+        text))));
+}
+
 function toggle(obj, key, label, desc, kind = 'switch') {
   const mark = h('span', { class: kind === 'check' ? 'checkbox' : 'switch' });
   const state = h('span', { class: 'state' });
+  const labels = { on: L.on, off: L.off, checked: L.checked, unchecked: L.unchecked };
   const paint = () => {
     const on = obj[key];
     mark.classList.toggle('on', on);
     if (kind === 'check') mark.replaceChildren(on ? icon('check') : '');
-    state.replaceChildren(kind === 'check' ? (on ? 'Marcado' : 'Sin marcar') : (on ? 'Activado' : 'Desactivado'), mark);
+    state.replaceChildren(kind === 'check' ? (on ? labels.checked : labels.unchecked) : (on ? labels.on : labels.off), mark);
   };
   const box = h('input', { type: 'checkbox', checked: obj[key], onchange: (e) => { obj[key] = e.target.checked; paint(); changed(); } });
   paint();
@@ -521,89 +637,91 @@ function listTools(list, i, what) {
     }, icon('trash')));
 }
 
+function conditionPicker(lista) {
+  return h('div', { class: 'add-row' },
+    h('span', { class: 'field-label' }, L.addCondition),
+    TIPOS_CONDICION.map((tipo) => h('button', {
+      type: 'button', class: 'btn btn-small',
+      onclick: () => { lista.push(nuevaCondicion(tipo)); changed(); rerender(); },
+    }, icon('plus'), mostrar(L.code, tipo))));
+}
+
 function actionPicker(lista) {
   return h('div', { class: 'add-row' },
-    h('span', { class: 'field-label' }, 'Agregar una acción'),
+    h('span', { class: 'field-label' }, L.addAction),
     h('div', { class: 'action-grid' }, CATALOGO_ACCIONES.map((c) => h('button', {
       type: 'button', class: 'action-option',
       onclick: () => { lista.push(nuevaAccion(c.tipo)); changed(); rerender(); },
     },
     icon(c.icono),
     h('span', { class: 'action-text' },
-      h('span', { class: 'action-title' }, c.label, c.beta ? h('span', { class: 'beta' }, 'beta') : null),
-      h('span', { class: 'action-desc' }, c.descripcion))))));
-}
-
-function addRow(label, options, onAdd) {
-  return h('div', { class: 'add-row' },
-    h('span', { class: 'field-label' }, label),
-    options.map((o) => h('button', { type: 'button', class: 'btn btn-small', onclick: () => { onAdd(o); changed(); rerender(); } }, icon('plus'), o)));
+      h('span', { class: 'action-title' }, c[L.code][0], c.beta ? h('span', { class: 'beta' }, 'beta') : null),
+      h('span', { class: 'action-desc' }, c[L.code][1]))))));
 }
 
 function ejemplosForm(list, kind) {
-  const label = kind === 'match' ? 'Ejemplos coincidentes' : 'Ejemplos no coincidentes';
   return h('details', { class: 'examples', open: true },
-    h('summary', null, h('span', { class: `badge ${kind}` }, label), h('span', { class: 'muted' }, list.length === 1 ? '1 ejemplo' : `${list.length} ejemplos`)),
+    h('summary', null, h('span', { class: `badge ${kind}` }, kind === 'match' ? L.matching : L.nonMatching), h('span', { class: 'muted' }, L.examples(list.length))),
     h('div', { class: 'examples-body' },
       list.map((e, j) => h('div', { class: 'example' },
         h('div', { class: 'example-top' },
-          h('span', { class: 'muted' }, `Ejemplo ${j + 1}`),
+          h('span', { class: 'muted' }, `${L.example} ${j + 1}`),
           h('button', {
             type: 'button', class: 'icon-btn danger', title: 'Borrar ejemplo', 'aria-label': `Borrar ejemplo ${j + 1}`,
             onclick: () => { list.splice(j, 1); changed(); rerender(); },
           }, icon('trash'))),
-        input(e, 'mensaje', { label: 'Mensaje del usuario', required: true }),
-        input(e, 'explicacion', { label: 'Explicación', multiline: true, rows: 2, limit: LIMITES.explicacion }))),
-      h('button', { type: 'button', class: 'btn btn-small', style: 'align-self:flex-end', onclick: () => { list.push(nuevoEjemplo()); changed(); rerender(); } }, icon('plus'), 'Agregar ejemplo')));
+        input(e, 'mensaje', { label: L.userMessage, required: true }),
+        input(e, 'explicacion', { label: L.explanation, multiline: true, rows: 2, limit: LIMITES.explicacion }))),
+      h('button', { type: 'button', class: 'btn btn-small', style: 'align-self:flex-end', onclick: () => { list.push(nuevoEjemplo()); changed(); rerender(); } }, icon('plus'), L.addExample)));
 }
 
 function condicionForm(c, i, lista) {
-  const head = blockHead(`Condición ${i + 1}`, c.tipo, listTools(lista, i, `la condición ${i + 1}`));
+  const head = blockHead(`${L.condition} ${i + 1}`, mostrar(L.code, c.tipo), listTools(lista, i, `la condición ${i + 1}`));
   if (c.tipo !== CONTEXTO) {
     return h('div', { class: 'block' }, head,
-      input(c, 'valor', { label: 'Configuración', multiline: true, required: true, help: 'Escribí cómo está configurada esta condición en LearnWise.' }));
+      input(c, 'valor', { label: L.config, multiline: true, required: true, help: 'Escribí cómo está configurada esta condición en LearnWise.' }));
   }
   return h('div', { class: 'block' }, head,
-    input(c, 'contexto', { label: 'Contexto de la conversación', multiline: true, rows: 3, required: true, placeholder: 'Cuándo aplica: qué dice o quiere el usuario, y qué no.' }),
+    input(c, 'contexto', { label: mostrar(L.code, CONTEXTO), multiline: true, rows: 3, required: true, placeholder: 'Cuándo aplica: qué dice o quiere el usuario, y qué no.' }),
     ejemplosForm(c.coincidentes, 'match'),
     ejemplosForm(c.no_coincidentes, 'nomatch'));
 }
 
 function accionForm(a, i, lista) {
   const esOtra = a.otra || !CATALOGO_ACCIONES.some((c) => c.tipo === a.tipo);
-  const head = blockHead(`Acción ${i + 1}`, esOtra ? OTRA_ACCION : a.tipo, listTools(lista, i, `la acción ${i + 1}`));
+  const head = blockHead(`${L.action} ${i + 1}`, esOtra ? L.otherAction : mostrar(L.code, a.tipo), listTools(lista, i, `la acción ${i + 1}`));
   if (esOtra) {
     return h('div', { class: 'block' }, head,
       input(a, 'tipo', { label: 'Nombre de la acción', required: true, placeholder: 'Como aparece en LearnWise' }),
-      input(a, 'valor', { label: 'Configuración', multiline: true, help: 'Escribí cada ajuste de esta acción tal como está en LearnWise.' }));
+      input(a, 'valor', { label: L.config, multiline: true, help: 'Escribí cada ajuste de esta acción tal como está en LearnWise.' }));
   }
   switch (a.tipo) {
     case ACCIONES.BUSCAR:
       return h('div', { class: 'block' }, head,
-        toggle(a, 'escalar_no_resueltas', 'Solicitar al usuario escalar para consultas no resueltas', DESCRIPCIONES.escalar_no_resueltas),
-        toggle(a, 'crear_mejoras', 'Crear elementos de mejora de conocimientos para consultas no resueltas', DESCRIPCIONES.crear_mejoras),
-        h('h4', { class: 'sub' }, 'Configuración avanzada'),
-        input(a, 'directrices_busqueda', { label: 'Directrices de búsqueda', multiline: true, rows: 4, limit: LIMITES.directrices_busqueda }),
+        toggle(a, 'escalar_no_resueltas', L.escalar, L.escalarDesc),
+        toggle(a, 'crear_mejoras', L.mejoras, L.mejorasDesc),
+        h('h4', { class: 'sub' }, L.advanced),
+        input(a, 'directrices_busqueda', { label: L.directrices, multiline: true, rows: 4, limit: LIMITES.directrices_busqueda }),
         input(a, 'estilo_respuesta', {
-          label: 'Estilo de respuesta', multiline: true, rows: 12, limit: LIMITES.estilo_respuesta,
+          label: L.estilo, multiline: true, rows: 12, limit: LIMITES.estilo_respuesta,
           help: 'Para una viñeta, empezá la línea con "- ". Para cursiva, *así*. Al copiar desde la librería se pegan como viñetas.',
         }),
-        toggle(a, 'anular_estilo', 'Anular estilo de respuesta', DESCRIPCIONES.anular_estilo, 'check'));
+        toggle(a, 'anular_estilo', L.anular, L.anularDesc, 'check'));
     case ACCIONES.MENSAJE:
       return h('div', { class: 'block' }, head,
-        toggle(a, 'instruir_ia', 'Instruir a la IA para generar mensaje'),
-        toggle(a, 'seguir_instrucciones_globales', 'También seguir las instrucciones globales de respuesta'),
-        input(a, 'instruccion', { label: 'Instrucción', multiline: true, required: true }));
+        toggle(a, 'instruir_ia', L.instruirIa),
+        toggle(a, 'seguir_instrucciones_globales', L.seguirGlobales),
+        input(a, 'instruccion', { label: L.instruccion, multiline: true, required: true }));
     case ACCIONES.BOTON:
       return h('div', { class: 'block' }, head,
         h('div', { class: 'form-grid' },
-          input(a, 'nombre', { label: 'Nombre del botón', required: true }),
-          input(a, 'tipo_boton', { label: 'Tipo de botón', required: true, list: 'tipos-boton' })),
-        input(a, 'url', { label: 'URL', placeholder: 'https://… (puede quedar vacía)' }),
-        toggle(a, 'mostrar_icono', 'Mostrar ícono'));
+          input(a, 'nombre', { label: L.botonNombre, required: true }),
+          input(a, 'tipo_boton', { label: L.botonTipo, required: true, list: 'tipos-boton', show: (v) => mostrar(L.code, v), parse: (v) => guardar(L.code, v) })),
+        input(a, 'url', { label: L.url, placeholder: 'https://… (puede quedar vacía)' }),
+        toggle(a, 'mostrar_icono', L.mostrarIcono));
     default:
       return h('div', { class: 'block' }, head,
-        input(a, 'valor', { label: 'Configuración', multiline: true, help: 'Esta acción todavía no tiene sus campos propios. Anotá cómo está configurada en LearnWise (puede quedar vacía).' }));
+        input(a, 'valor', { label: L.config, multiline: true, help: 'Esta acción todavía no tiene sus campos propios. Anotá cómo está configurada en LearnWise (puede quedar vacía).' }));
   }
 }
 
@@ -661,7 +779,7 @@ function publishPanel() {
     ? ['Tocá el botón: se copia el flow y se abre el archivo en GitHub.', 'En GitHub, hacé clic en el texto, seleccioná todo (Ctrl+A) y pegá (Ctrl+V).', 'Tocá «Commit changes».', 'En 1 o 2 minutos se actualiza la librería.']
     : ['Tocá el botón: se copia el flow y se abre GitHub con el archivo nuevo.', 'Si el editor de GitHub aparece vacío, pegá (Ctrl+V). Si ya tiene el texto, no hace falta.', 'Tocá «Commit changes».', 'En 1 o 2 minutos el flow aparece en la librería.'];
 
-  return h('section', { class: 'publish' },
+  return h('section', { class: 'publish', lang: 'es' },
     h('h2', null, 'Guardar en la librería'),
     h('ol', null, pasos.map((p) => h('li', null, p))),
     status,
@@ -684,8 +802,9 @@ function viewForm(mode, slug) {
     }
   }
   const { draft } = form;
-  document.title = `${mode === 'editar' ? 'Editar flow' : 'Agregar flow'} · Librería de flows`;
-  const categorias = [...new Set(data.flows.map((f) => f.categoria).filter(Boolean))];
+  const lang = Object.hasOwn(IDIOMAS, draft.idioma ?? '') ? draft.idioma : 'es';
+  L = UI[lang];
+  document.title = `${mode === 'editar' ? 'Editar flow' : 'Agregar flow'} · Flow Library`;
 
   const slugInput = input(form, 'slug', {
     label: 'Nombre del archivo', required: mode === 'nuevo', readonly: mode === 'editar',
@@ -699,35 +818,38 @@ function viewForm(mode, slug) {
   });
 
   return h('main', { class: 'wrap' },
-    h('a', { class: 'back', href: mode === 'editar' ? `#/flow/${slug}` : '#/' }, icon('back'), mode === 'editar' ? 'Volver al flow' : 'Todos los flows'),
-    h('div', { class: 'form-intro' },
+    h('a', { class: 'back', href: mode === 'editar' ? `#/flow/${slug}` : lastLibraryHash }, icon('back'), mode === 'editar' ? 'Volver al flow' : 'Todos los flows'),
+    h('div', { class: 'form-intro', lang: 'es' },
       h('div', null,
         h('h1', { style: 'font-size:clamp(24px,4.5vw,30px);letter-spacing:-0.02em;line-height:1.2' }, mode === 'editar' ? `Editar: ${data.flows.find((f) => f.slug === slug)?.nombre}` : 'Agregar un flow'),
-        h('p', { class: 'lead' }, 'Completá los campos igual que en LearnWise. Al final, la página arma el archivo y te lleva a GitHub para guardarlo.')),
+        h('p', { class: 'lead' }, 'Completá los campos igual que en LearnWise. Si el flow está en inglés, los campos se muestran en inglés. Al final, la página arma el archivo y te lleva a GitHub para guardarlo.')),
       mode === 'nuevo'
         ? h('button', { type: 'button', class: 'btn btn-small btn-danger', onclick: () => { if (confirm('¿Borrar todo lo cargado y empezar de cero?')) { clearDraft(); form = null; rerender(); } } }, 'Empezar de cero')
         : null),
-    h('datalist', { id: 'categorias' }, categorias.map((c) => h('option', { value: c }))),
-    h('datalist', { id: 'activadores' }, h('option', { value: 'El usuario envía un mensaje' })),
-    h('datalist', { id: 'tipos-boton' }, h('option', { value: 'Enlace externo' })),
-    h('section', { class: 'form-card' },
+    h('datalist', { id: 'activadores' }, h('option', { value: mostrar(lang, 'El usuario envía un mensaje') })),
+    h('datalist', { id: 'tipos-boton' }, h('option', { value: mostrar(lang, 'Enlace externo') })),
+    h('section', { class: 'form-card', lang: 'es' },
       h('h2', null, 'Datos del flow'),
-      h('div', { class: 'form-grid' }, nombreInput, input(draft, 'categoria', { label: 'Categoría', list: 'categorias', placeholder: 'Ej.: Tutoría, Soporte' })),
-      input(draft, 'descripcion', { label: 'Descripción corta', required: true, multiline: true, rows: 2, help: 'Se muestra en la tarjeta de la librería. Una o dos oraciones: cuándo se activa y qué hace.' }),
+      h('div', { class: 'form-grid' },
+        nombreInput,
+        choice(draft, 'idioma', 'Idioma del flow', Object.entries(IDIOMAS)),
+        choice(draft, 'categoria', 'Categoría', CATEGORIAS.map((c) => [c, c]))),
+      input(draft, 'descripcion', { label: 'Descripción corta', required: true, multiline: true, rows: 2, help: 'Se muestra en la tarjeta de la librería. Una o dos oraciones, en el idioma del flow: cuándo se activa y qué hace.' }),
       slugInput),
-    stepCard(1, 'Activador', input(draft, 'activador', { label: 'Evento', required: true, list: 'activadores' })),
-    stepCard(2, 'Condiciones',
-      h('div', { class: 'logic' },
-        h('span', { class: 'field-label' }, 'Lógica de condiciones'),
-        h('div', { class: 'radios', role: 'radiogroup' }, LOGICAS.map((l) => h('label', { class: `radio${draft.condiciones.logica === l ? ' on' : ''}` },
-          h('input', { type: 'radio', name: 'logica', value: l, checked: draft.condiciones.logica === l, onchange: () => { draft.condiciones.logica = l; changed(); rerender(); } }),
-          h('span', { class: 'dot' }), l)))),
-      draft.condiciones.lista.map((c, i, lista) => condicionForm(c, i, lista)),
-      addRow('Agregar una condición', TIPOS_CONDICION, (tipo) => draft.condiciones.lista.push(nuevaCondicion(tipo)))),
-    stepCard(3, 'Respuesta',
-      draft.respuesta.map((a, i, lista) => accionForm(a, i, lista)),
-      actionPicker(draft.respuesta)),
-    h('section', { class: 'form-card' },
+    h('div', { lang },
+      stepCard(1, input(draft, 'activador', { label: L.event, required: true, list: 'activadores', show: (v) => mostrar(lang, v), parse: (v) => guardar(lang, v) })),
+      stepCard(2,
+        h('div', { class: 'logic' },
+          h('span', { class: 'field-label' }, L.logic),
+          h('div', { class: 'radios', role: 'radiogroup' }, LOGICAS.map((l) => h('label', { class: `radio${draft.condiciones.logica === l ? ' on' : ''}` },
+            h('input', { type: 'radio', name: 'logica', value: l, checked: draft.condiciones.logica === l, onchange: () => { draft.condiciones.logica = l; changed(); rerender(); } }),
+            h('span', { class: 'dot' }), mostrar(lang, l))))),
+        draft.condiciones.lista.map((c, i, lista) => condicionForm(c, i, lista)),
+        conditionPicker(draft.condiciones.lista)),
+      stepCard(3,
+        draft.respuesta.map((a, i, lista) => accionForm(a, i, lista)),
+        actionPicker(draft.respuesta))),
+    h('section', { class: 'form-card', lang: 'es' },
       h('h2', null, 'Notas (opcional)'),
       input(draft, 'notas', { label: 'Algo que haya que saber antes de usarlo', multiline: true, rows: 2, placeholder: 'Ej.: el botón necesita la URL de soporte de cada institución.' })),
     publishPanel());
@@ -742,15 +864,21 @@ function viewErrors() {
 }
 
 function render() {
-  const [section, param] = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
+  const [path, query = ''] = location.hash.replace(/^#\/?/, '').split('?');
+  const [section, param] = path.split('/').map(decodeURIComponent);
+  L = UI.es;
   if (section !== 'nuevo' && section !== 'editar') refreshPublish = () => {};
   let view;
   if (loadErrors) view = viewErrors();
   else if (section === 'flow' && param) view = viewFlow(param);
   else if (section === 'nuevo') view = viewForm('nuevo');
   else if (section === 'editar' && param) view = viewForm('editar', param);
-  else if (!section) view = viewLibrary();
+  else if (!section) view = viewLibrary(new URLSearchParams(query));
   else view = viewNotFound();
+  // Header and footer follow the language the view picked.
+  const onFlowPage = section === 'flow';
+  if (!onFlowPage) L = UI.es;
+  document.documentElement.lang = L.code;
   app.replaceChildren(topbar(), view, footer());
 }
 

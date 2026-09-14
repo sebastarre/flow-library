@@ -132,6 +132,18 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); font-size: 13.5px; cursor: pointer; }
 .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+.filters { display: flex; flex-direction: column; gap: 10px; padding-bottom: 18px; }
+.filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.filter-label { min-width: 72px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.chip { display: inline-flex; align-items: center; gap: 7px; position: relative; }
+.chip-count { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip.is-on { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+.chip[aria-pressed="true"] .chip-count, .chip.is-on .chip-count { color: inherit; opacity: .75; }
+label.chip { cursor: pointer; }
+label.chip input { position: absolute; opacity: 0; pointer-events: none; }
+label.chip:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.card-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.lang { font-size: 11px; font-weight: 700; letter-spacing: .05em; padding: 1px 7px; border-radius: 6px; border: 1px solid var(--border-strong); color: var(--muted); }
 .result-count { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 14px; }

@@ -1,6 +1,8 @@
 // Flow format shared by the website (browser) and the build script (Node).
 // Field names and option labels match the LearnWise UI (Tutor Assistant → Flujos).
 
+export const IDIOMAS = { en: 'English', es: 'Español' };
+export const CATEGORIAS = ['Chat', 'Tutor', 'AI Ops'];
 export const CONTEXTO = 'Contexto de la conversación';
 export const TIPOS_CONDICION = [CONTEXTO, 'Rol de usuario', 'URL', 'Datos externos', 'Curso', 'Programación'];
 export const LOGICAS = ['Cualquier condición coincide', 'Todas las condiciones coinciden'];
@@ -35,8 +37,9 @@ export function normalizeFlow(flow) {
   const c = f.condiciones ?? {};
   const out = {
     nombre: str(f.nombre),
-    descripcion: str(f.descripcion),
+    idioma: str(f.idioma),
     categoria: str(f.categoria),
+    descripcion: str(f.descripcion),
     activador: str(f.activador),
     condiciones: { logica: str(c.logica), lista: lista(c.lista).map(normalizeCondicion) },
     respuesta: lista(f.respuesta).map(normalizeAccion),
@@ -91,7 +94,8 @@ export function validateFlow(f) {
 
   need(texto(f.nombre), 'Falta el nombre del flow.');
   need(texto(f.descripcion), 'Falta la descripción corta.');
-  need(opcional(f.categoria), 'La categoría tiene que ser texto.');
+  need(Object.hasOwn(IDIOMAS, f.idioma), `Elegí el idioma del flow ("${Object.keys(IDIOMAS).join('" o "')}").`);
+  need(CATEGORIAS.includes(f.categoria), `Elegí la categoría: ${CATEGORIAS.join(', ')}.`);
   need(opcional(f.notas), 'Las notas tienen que ser texto.');
   need(texto(f.activador), 'Falta el activador.');
 

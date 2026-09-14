@@ -1,7 +1,8 @@
 {
   "nombre": "Work review - Student Submission Feedback",
-  "descripcion": "None",
-  "categoria": "",
+  "idioma": "en",
+  "categoria": "Tutor",
+  "descripcion": "The student shares work they produced (code, a calculation, a written answer) and asks for it to be checked. The assistant reviews it against the course: what is correct, what needs fixing and why, without rewriting it.",
   "activador": "El usuario envía un mensaje",
   "condiciones": {
     "logica": "Cualquier condición coincide",

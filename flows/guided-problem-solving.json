@@ -1,7 +1,8 @@
 {
   "nombre": "Guided Problem Solving",
-  "descripcion": "El estudiante trae un problema propio, o un intento a medias, y el asistente lo guía paso a paso con preguntas y pistas del curso, sin darle la respuesta.",
-  "categoria": "Tutoría",
+  "idioma": "en",
+  "categoria": "Tutor",
+  "descripcion": "The student brings their own problem, or a partial attempt, and the assistant guides them step by step with questions and hints from the course, without giving the answer.",
   "activador": "El usuario envía un mensaje",
   "condiciones": {
     "logica": "Cualquier condición coincide",
