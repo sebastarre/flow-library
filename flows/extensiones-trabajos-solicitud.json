@@ -41,7 +41,7 @@
     {
       "tipo": "Solicitud API",
       "metodo": "POST",
-      "url": "",
+      "url": "https://api.institution.edu/extensions/request",
       "autenticacion": "No Authentication",
       "encabezados": [],
       "parametros": [],

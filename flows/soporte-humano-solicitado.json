@@ -29,14 +29,15 @@
   "respuesta": [
     {
       "tipo": "Mensaje personalizado",
-      "mensaje": "Entendido. Voy a conectarte con un miembro del equipo de soporte que podrá ayudarte mejor. Por favor espera mientras se gestiona tu solicitud.",
-      "anular_estilo": false
+      "instruccion": "Entendido. Voy a conectarte con un instructor que podrá ayudarte mejor. Por favor espera mientras se gestiona tu solicitud.",
+      "instruir_ia": false,
+      "seguir_instrucciones_globales": false
     },
     {
-      "tipo": "Enlace externo",
-      "texto_boton": "Contactar Soporte",
-      "url": "https://your-support-url.com/contact",
-      "abrir_en_nueva_ventana": true
+      "tipo": "Botón",
+      "nombre": "Contactar Soporte",
+      "tipo_boton": "Enlace externo",
+      "url": "https://your-support-url.com/contact"
     }
   ],
   "notas": "Flow que escala automáticamente a soporte humano cuando el estudiante lo solicita. Incluye un enlace a la página de contacto de soporte. La URL del enlace necesita configurarse con la institución."
