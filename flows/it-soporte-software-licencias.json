@@ -1,0 +1,40 @@
+{
+  "nombre": "Soporte IT - Software y Licencias",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "El usuario tiene preguntas sobre software disponible, licencias, instalación de programas, o acceso a herramientas de la institución.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario solicita información sobre software disponible, licencias, cómo instalar un programa, o acceso a herramientas institucionales.",
+        "coincidentes": [
+          {"mensaje": "¿Qué software tenemos disponible para [herramienta]?", "explicacion": "Pregunta sobre software disponible"},
+          {"mensaje": "¿Cómo instalo [programa]?", "explicacion": "Solicita ayuda con instalación"},
+          {"mensaje": "¿Tenemos licencia para usar este software?", "explicacion": "Pregunta sobre licencias"},
+          {"mensaje": "¿Dónde descargo [herramienta]?", "explicacion": "Solicita acceso a herramienta"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Mi software se cerró abruptamente", "explicacion": "Problema técnico, no solicitud de información"},
+          {"mensaje": "No sé cómo usar este programa", "explicacion": "Solicitud de tutorial, no disponibilidad"},
+          {"mensaje": "¿Cuál es el mejor software para X?", "explicacion": "Pregunta de recomendación general"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar en la base de conocimientos catálogo de software disponible, procedimientos de instalación, información de licencias, y links de descarga para herramientas institucionales.",
+      "estilo_respuesta": "Proporciona información clara sobre disponibilidad:\n- Confirma si el software/herramienta está disponible para el usuario\n- Proporciona enlace de descarga o instrucciones de acceso\n- Incluye información sobre licencias o restricciones\n- Proporciona pasos básicos de instalación si están disponibles\n- Menciona requisitos del sistema si es relevante\n- Ofrece contacto de soporte para problemas de instalación",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow para información sobre software y licencias disponibles. Basado en búsqueda de conocimientos."
+}

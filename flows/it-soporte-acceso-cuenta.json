@@ -1,0 +1,43 @@
+{
+  "nombre": "Soporte IT - Problemas de Acceso a Cuenta",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "El usuario tiene problemas para acceder a su cuenta, olvidó contraseña, o no puede conectarse a sistemas de la institución.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario reporta que no puede acceder a su cuenta, olvidó su contraseña, o está recibiendo errores de autenticación.",
+        "coincidentes": [
+          {"mensaje": "Olvidé mi contraseña", "explicacion": "Problema de contraseña"},
+          {"mensaje": "No puedo entrar a mi cuenta", "explicacion": "Problema de acceso"},
+          {"mensaje": "Recibo error de autenticación al iniciar sesión", "explicacion": "Error de autenticación"},
+          {"mensaje": "¿Cómo reseteo mi contraseña?", "explicacion": "Solicita reset de contraseña"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Cómo cambio mi contraseña?", "explicacion": "Cambio de contraseña conocida, no reset"},
+          {"mensaje": "¿Cuáles son las políticas de contraseña?", "explicacion": "Pregunta de política"},
+          {"mensaje": "Mi computadora no funciona", "explicacion": "Problema de hardware"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "mensaje": "Entiendo que tienes problemas para acceder a tu cuenta. Voy a ayudarte a resolver esto. Por favor, sigue estos pasos:\n\n1. Intenta usar el enlace 'Olvidé mi contraseña' en la página de inicio de sesión\n2. Si eso no funciona, contacta con soporte IT\n\nEspera mientras te conecto con un especialista.",
+      "anular_estilo": false
+    },
+    {
+      "tipo": "Botón",
+      "texto_boton": "Contactar Soporte IT",
+      "url": "https://your-it-support-url.com/account-access",
+      "abrir_en_nueva_ventana": true
+    }
+  ],
+  "notas": "Flow para problemas de acceso a cuenta. Proporciona orientación básica y escalamiento a soporte. URL de soporte necesita configuración institucional."
+}
