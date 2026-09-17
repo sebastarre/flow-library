@@ -1,0 +1,54 @@
+{
+  "nombre": "Escenario de Juego de Rol/Simulación",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El estudiante quiere practicar en un escenario simulado, participar en un juego de rol, o practicar habilidades en un contexto realista. El asistente proporciona un escenario inmersivo o rol para el aprendizaje experiencial.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario solicita específicamente practicar en un escenario simulado, un juego de rol, una situación de rol (roleplay), o un ejercicio de simulación donde toman un papel o actúan en una situación del mundo real.",
+        "coincidentes": [
+          {"mensaje": "¿Puedes hacerme un juego de rol donde yo soy el cliente?", "explicacion": "Solicita escenario de roleplay"},
+          {"mensaje": "Quiero practicar una entrevista de trabajo simulada", "explicacion": "Pide simulación de situación real"},
+          {"mensaje": "Hagamos una simulación donde tú eres X y yo soy Y", "explicacion": "Propone escenario de rol"},
+          {"mensaje": "Quiero practicar mi presentación en una situación simulada", "explicacion": "Solicita escenario de práctica experiencial"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Cuál es la teoría de las negociaciones?", "explicacion": "Solicitud de concepto, no simulación"},
+          {"mensaje": "Ayúdame a entender cómo funcionan los entrevistadores", "explicacion": "Pregunta conceptual, no práctica de rol"},
+          {"mensaje": "¿Cómo debería manejar una situación difícil?", "explicacion": "Solicitud de consejo, no simulación"}
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario indica que quiere aprender haciendo, practicando un rol, o experimentando una situación interactiva relacionada con el contenido del curso.",
+        "coincidentes": [
+          {"mensaje": "Dame un caso práctico donde debo aplicar lo que aprendí", "explicacion": "Solicita escenario de aplicación práctica"},
+          {"mensaje": "Simulemos una consulta con un cliente", "explicacion": "Propone simulación profesional"},
+          {"mensaje": "Quiero practicar mis habilidades de comunicación en un escenario real", "explicacion": "Solicita práctica situacional"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Cuáles son las habilidades de comunicación importantes?", "explicacion": "Pregunta teórica, no práctica"},
+          {"mensaje": "Explícame cómo hacer una consulta", "explicacion": "Solicitud de explicación, no simulación"},
+          {"mensaje": "¿Qué debería saber sobre comunicación?", "explicacion": "Pregunta de conocimiento conceptual"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar en los materiales del curso escenarios de caso de estudio, ejercicios de rol, simulaciones, ejemplos prácticos del mundo real, o guías para ejercicios interactivos. Si el usuario especificó un tema o rol particular, buscar material relevante a ese contexto.",
+      "estilo_respuesta": "Estructura como un escenario inmersivo:\n- Establece el contexto claramente: 'Eres [rol], y estás en esta situación: [escenario]'\n- Describe la situación inicial de manera detallada pero concisa\n- Define qué rol juega el asistente (ej: cliente, entrevistador, supervisor, etc.)\n- Proporciona instrucciones claras sobre qué debe hacer o practicar el estudiante\n- Cuando el estudiante responda, reacciona de manera realista al rol, manteniendo la inmersión\n- Después de la interacción, proporciona retroalimentación constructiva basada en lo que el estudiante hizo\n- Si el estudiante se atasca, ofrece sugerencias sutiles sin romper el escenario\n- Al final, reflexiona sobre lo que el estudiante aprendió del ejercicio",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow que proporciona escenarios inmersivos y juegos de rol para aprendizaje experiencial. El estudiante practica habilidades en contextos realistas. Basado completamente en búsqueda de conocimientos."
+}

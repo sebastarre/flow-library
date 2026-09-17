@@ -1,0 +1,43 @@
+{
+  "nombre": "Soporte Humano Solicitado",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El estudiante solicita explícitamente ayuda humana, quiere contactar con soporte, escalarse a una persona, o indica que necesita atención de un instructor en lugar de ayuda automatizada.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está pidiendo explícitamente hablar con un humano, contactar con soporte, hablar con un instructor o profesor, o indica que necesita atención humana porque el asistente no puede ayudar adecuadamente.",
+        "coincidentes": [
+          {"mensaje": "Necesito hablar con un profesor", "explicacion": "Solicitud explícita de contacto humano"},
+          {"mensaje": "¿Puedo hablar con alguien del equipo de soporte?", "explicacion": "Pide atención de soporte humano"},
+          {"mensaje": "Esto es demasiado complicado para un chatbot, necesito un instructor", "explicacion": "Indica que necesita atención humana"},
+          {"mensaje": "Quiero esclalarme a un humano", "explicacion": "Solicitud explícita de escalamiento"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Puedes ayudarme con esto?", "explicacion": "Solicitud de ayuda general, no específicamente humana"},
+          {"mensaje": "Tengo una pregunta sobre el contenido", "explicacion": "Pregunta académica estándar"},
+          {"mensaje": "Gracias por tu ayuda", "explicacion": "Expresión de gratitud, no solicitud de soporte humano"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "mensaje": "Entendido. Voy a conectarte con un miembro del equipo de soporte que podrá ayudarte mejor. Por favor espera mientras se gestiona tu solicitud.",
+      "anular_estilo": false
+    },
+    {
+      "tipo": "Enlace externo",
+      "texto_boton": "Contactar Soporte",
+      "url": "https://your-support-url.com/contact",
+      "abrir_en_nueva_ventana": true
+    }
+  ],
+  "notas": "Flow que escala automáticamente a soporte humano cuando el estudiante lo solicita. Incluye un enlace a la página de contacto de soporte. La URL del enlace necesita configurarse con la institución."
+}

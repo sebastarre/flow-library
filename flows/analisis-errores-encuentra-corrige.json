@@ -1,0 +1,63 @@
+{
+  "nombre": "Análisis de Errores - Encuentra y Corrige los Errores",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El estudiante está pidiendo practicar cómo encontrar o corregir errores en un ejemplo; no en su propio trabajo. Quiere ejercitarse en análisis crítico y corrección de código/cálculos/argumentos de muestra.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está pidiendo practicar cómo encontrar o corregir errores en un ejemplo; no en su propio trabajo. Esto incluye solicitudes para depurar código (debugging) de muestra, detectar errores en cálculos de ejemplo, criticar argumentos proporcionados, identificar falacias de muestra.",
+        "coincidentes": [
+          {"mensaje": "Dame algo para depurar (debug)", "explicacion": "Solicita práctica de debugging"},
+          {"mensaje": "¿Puedo practicar a encontrar errores en un código?", "explicacion": "Pide ejercicio de análisis de errores"},
+          {"mensaje": "Muéstrame un cálculo con errores e intentaré encontrarlos", "explicacion": "Quiere practicar encontrar errores matemáticos"},
+          {"mensaje": "Quiero practicar la revisión de una respuesta", "explicacion": "Solicita ejercicio de revisión crítica"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Mi código no funciona; ¿me puedes ayudar?", "explicacion": "Solicitud de ayuda con su trabajo, no ejercicio de análisis"},
+          {"mensaje": "Muéstrame cómo resolver este tipo de problema", "explicacion": "Pide demostración de cómo resolver, no análisis de errores"},
+          {"mensaje": "¿Es correcta mi respuesta?", "explicacion": "Verificación simple de su trabajo, no ejercicio de análisis"}
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario solicita específicamente un desafío de análisis de errores, un problema intencionadamente erróneo para practicar detección crítica. Puede incluir solicitudes para estadísticas erróneas, funciones con bugs, argumentos defectuosos o crítica académica.",
+        "coincidentes": [
+          {"mensaje": "Ponme a prueba en detectar estadísticas erróneas", "explicacion": "Solicita desafío de análisis de datos"},
+          {"mensaje": "Dame una función con errores para corregir", "explicacion": "Pide código con bugs para practicar"},
+          {"mensaje": "Dame un argumento erróneo para criticar", "explicacion": "Solicita ejercicio de análisis lógico"},
+          {"mensaje": "Quiero practicar mi ojo crítico con algunos cálculos", "explicacion": "Pide ejercicio de pensamiento crítico"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Ponme a prueba sobre la teoría", "explicacion": "Solicita prueba conceptual, no análisis de errores"},
+          {"mensaje": "Guíame a través de un ejemplo", "explicacion": "Pide explicación paso a paso, no análisis independiente"},
+          {"mensaje": "¿Cuáles son los errores comunes que cometen los estudiantes?", "explicacion": "Pregunta informativa, no solicitud de análisis de desafío"}
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario solicita explícitamente un ejemplo o trabajo con errores basado en el contenido del curso para practicar identificación y corrección de errores dentro del contexto académico del estudiante.",
+        "coincidentes": [
+          {"mensaje": "Basado en el contenido de mi curso, ¿me puedes presentar un trabajo con errores de [tema]?", "explicacion": "Solicita práctica contextualizada de análisis de errores"}
+        ],
+        "no_coincidentes": []
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar en los materiales del curso ejemplos con errores comunes, ejercicios de debugging, problemas de muestra con errores intencionales, o desafíos de análisis crítico. Si el usuario solicitó análisis basado en contenido del curso, recuperar ejemplos relevantes del tema específico mencionado.",
+      "estilo_respuesta": "Estructura como un desafío de análisis de errores:\n- Presenta claramente el ejemplo, código, cálculo o argumento que tiene errores\n- Explica específicamente qué tipo de error(es) contiene (lógica, sintaxis, conceptual, matemático, etc.)\n- Guía al estudiante con preguntas sobre dónde podrían estar los errores en lugar de señalar todos directamente\n- Si el estudiante debe identificarlos, pregunta: '¿Puedes encontrar los 3 errores en este código?' \n- Una vez identificados los errores, explica por qué cada uno es incorrecto y cómo se corregiría\n- Mantén un tono de desafío amable y educativo - esto es práctica de pensamiento crítico\n- Si hay múltiples tipos de errores, destácalos por categoría (sintaxis vs. lógica, etc.)",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow que proporciona desafíos de análisis de errores para que los estudiantes practiquen pensamiento crítico. Similar a 'Error Analysis' pero con tres contextos específicos. Basado completamente en búsqueda de conocimientos."
+}
