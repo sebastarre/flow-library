@@ -1,0 +1,40 @@
+{
+  "nombre": "Explicación de Concepto Fundamental",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El estudiante solicita una explicación clara de un concepto fundamental del curso. El tutor proporciona una explicación estructurada usando el contenido del curso.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está pidiendo una explicación clara de un concepto, término, o idea del curso. No está pidiendo ayuda para resolver un problema específico.",
+        "coincidentes": [
+          {"mensaje": "¿Qué significa [concepto]?", "explicacion": "Solicita definición de un concepto"},
+          {"mensaje": "Explícame cómo funciona [tema]", "explicacion": "Pide explicación de un tema"},
+          {"mensaje": "No entiendo este concepto, ayúdame a entenderlo", "explicacion": "Solicita aclaración conceptual"},
+          {"mensaje": "¿Cuál es la diferencia entre X y Y?", "explicacion": "Pide comparación de conceptos"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Ayúdame a resolver este problema", "explicacion": "Solicitud de ayuda para resolver, no explicación"},
+          {"mensaje": "¿Es correcto mi enfoque?", "explicacion": "Pide validación de solución"},
+          {"mensaje": "Dame un ejemplo de [concepto]", "explicacion": "Solicita ejemplo, no explicación conceptual"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar en los materiales del curso explicaciones, definiciones, teoría fundamental, y ejemplos relacionados al concepto específico que el estudiante preguntó.",
+      "estilo_respuesta": "Estructura como explicación pedagógica:\n- Comienza con una definición clara y concisa\n- Explica por qué este concepto es importante\n- Proporciona ejemplos prácticos o cotidianos para facilitar comprensión\n- Conecta con conceptos previos que el estudiante probablemente conozca\n- Si es complejo, divide en partes más pequeñas\n- Usa analogías cuando sea apropiado\n- Termina verificando comprensión sin hacer sentir al estudiante examinado",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow para explicaciones claras de conceptos fundamentales del curso. Basado en búsqueda de conocimientos."
+}

@@ -1,0 +1,40 @@
+{
+  "nombre": "Análisis de Logs y Diagnóstico",
+  "idioma": "es",
+  "categoria": "AI Ops",
+  "descripcion": "El usuario solicita análisis de logs del sistema, diagnóstico de problemas operacionales, o identificación de patrones de error en infraestructura o procesos automatizados.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está compartiendo logs del sistema, pidiendo ayuda para diagnosticar problemas operacionales, o solicitando análisis de errores en procesos automatizados.",
+        "coincidentes": [
+          {"mensaje": "¿Puedes analizar estos logs para encontrar el problema?", "explicacion": "Solicita análisis de logs"},
+          {"mensaje": "El servicio no responde, ¿cómo diagnostico?", "explicacion": "Pide ayuda con diagnóstico operacional"},
+          {"mensaje": "Hay patrones de error que no entiendo", "explicacion": "Solicita identificación de patrones"},
+          {"mensaje": "¿Qué significa este error en los logs?", "explicacion": "Pide interpretación de logs"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Cómo configuro el servidor?", "explicacion": "Pregunta de configuración, no diagnóstico"},
+          {"mensaje": "¿Cuál es la mejor práctica para monitoreo?", "explicacion": "Pregunta conceptual, no análisis específico"},
+          {"mensaje": "Mi código no funciona", "explicacion": "Problema de desarrollo, no operacional"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar en la base de conocimientos guías de diagnóstico, interpretaciones de mensajes de error, patrones comunes de problemas operacionales, y procedimientos de resolución de incidentes.",
+      "estilo_respuesta": "Estructura como diagnóstico técnico:\n- Analiza los logs o síntomas presentados\n- Identifica la causa raíz probable\n- Sugiere pasos de diagnóstico adicionales si es necesario\n- Proporciona soluciones o escalamiento según la severidad\n- Incluye comandos o procedimientos específicos cuando sea aplicable\n- Mantén el análisis enfocado y técnico",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow para análisis y diagnóstico de problemas operacionales en sistemas AI. Basado en búsqueda de conocimientos."
+}

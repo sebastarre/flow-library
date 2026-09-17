@@ -1,0 +1,40 @@
+{
+  "nombre": "Práctica de Preguntas y Respuestas",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El estudiante solicita práctica, quiere ser puesto a prueba, o pide desafíos de preguntas relacionadas con el contenido del curso.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario solicita practicar con preguntas, ser puesto a prueba sobre el contenido del curso, o pide desafíos de preguntas-respuestas.",
+        "coincidentes": [
+          {"mensaje": "Ponme a prueba sobre este tema", "explicacion": "Solicita quiz o prueba"},
+          {"mensaje": "Dame algunas preguntas para practicar", "explicacion": "Pide preguntas de práctica"},
+          {"mensaje": "Quiero practicar respondiendo preguntas", "explicacion": "Solicita ejercicios de preguntas"},
+          {"mensaje": "¿Tienes preguntas sobre [tema] para que practique?", "explicacion": "Pide desafío de preguntas"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Cuál es la respuesta a esta pregunta?", "explicacion": "Solicitud directa de respuesta"},
+          {"mensaje": "Explícame cómo se resuelve esto", "explicacion": "Pide explicación o guía de solución"},
+          {"mensaje": "Necesito estudiar para un examen", "explicacion": "Solicitud general de estudio"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar en los materiales del curso preguntas de práctica, cuestionarios, ejercicios de autoevaluación, o bancos de preguntas relacionados con los temas que el estudiante quiere practicar.",
+      "estilo_respuesta": "Estructura como sesión de práctica interactiva:\n- Presenta una pregunta clara sin dar la respuesta\n- Adapta el nivel de dificultad al progreso del estudiante\n- Cuando el estudiante responda, proporciona retroalimentación inmediata\n- Si es correcta, explica por qué y ofrece siguiente pregunta o pregunta de profundización\n- Si es incorrecta, guía sin dar la respuesta directa, ofrece pistas\n- Después de varios intentos, si el estudiante sigue atascado, explica el concepto\n- Mantén un tono de desafío amistoso y motivador\n- Ofrece más preguntas o cambio de tema según preferencia",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow para práctica interactiva con preguntas sobre los materiales del curso. Basado en búsqueda de conocimientos."
+}

@@ -1,0 +1,40 @@
+{
+  "nombre": "Configuración y Monitoreo de Sistemas",
+  "idioma": "es",
+  "categoria": "AI Ops",
+  "descripcion": "El usuario solicita orientación sobre configuración de sistemas, configuración de monitoreo, mejores prácticas operacionales, o métricas de rendimiento para infraestructura de AI.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está pidiendo consejo sobre cómo configurar sistemas, establecer monitoreo, implementar alertas, o seguir mejores prácticas operacionales.",
+        "coincidentes": [
+          {"mensaje": "¿Cuál es la mejor forma de configurar monitoreo?", "explicacion": "Solicita orientación sobre monitoreo"},
+          {"mensaje": "¿Cómo debería configurar alertas para este servicio?", "explicacion": "Pide recomendaciones de alertas"},
+          {"mensaje": "¿Cuáles son las métricas clave que debería monitorear?", "explicacion": "Solicita recomendaciones de métricas"},
+          {"mensaje": "¿Cuál es la configuración recomendada para este tipo de workload?", "explicacion": "Pide recomendación de configuración"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Hay un error en los logs", "explicacion": "Reporte de problema, no solicitud de configuración"},
+          {"mensaje": "¿Cómo instalo esto?", "explicacion": "Pregunta de instalación, no configuración"},
+          {"mensaje": "¿Qué es la observabilidad?", "explicacion": "Pregunta conceptual general"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar en la base de conocimientos guías de configuración, mejores prácticas operacionales, configuraciones recomendadas para diferentes tipos de workloads, y procedimientos de establecimiento de monitoreo.",
+      "estilo_respuesta": "Estructura como guía de configuración:\n- Proporciona recomendaciones específicas basadas en el escenario\n- Explica el razonamiento detrás de cada recomendación\n- Incluye pasos concretos o ejemplos de configuración\n- Destaca consideraciones de seguridad y rendimiento\n- Menciona alternativas según el tipo de infraestructura\n- Proporciona referencias a procedimientos estándar",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow para recomendaciones de configuración y monitoreo de sistemas AI. Basado en búsqueda de conocimientos."
+}
