@@ -1,0 +1,59 @@
+{
+  "nombre": "Extensiones de Trabajos - Solicitud o Elegibilidad",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "El usuario pregunta si puede obtener una extensión, entregar tarde, o recibir más tiempo en una fecha límite. Esto incluye solicitudes explícitas de extensiones y preguntas sobre elegibilidad.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario pregunta explícitamente si puede obtener una extensión de tiempo para entregar un trabajo.",
+        "coincidentes": [
+          {"mensaje": "¿Puedo tener más tiempo para mi ensayo?", "explicacion": "Solicitud directa de extensión"},
+          {"mensaje": "Necesito una extensión para la entrega de mi examen parcial (o final)", "explicacion": "Solicitud de extensión para examen"},
+          {"mensaje": "¿Es posible entregar mi proyecto tarde?", "explicacion": "Pregunta sobre entrega tardía"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Cuál es la fecha final de entrega de mi trabajo?", "explicacion": "Pregunta sobre fechas, no sobre extensión"},
+          {"mensaje": "¿Qué sucede si no entrego mi trabajo a tiempo?", "explicacion": "Pregunta sobre consecuencias, no solicitud"}
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario reporta circunstancias atenuantes que justificarían una extensión: enfermedad, emergencia, o abrumamiento.",
+        "coincidentes": [
+          {"mensaje": "He estado enfermo esta semana; ¿qué puedo hacer respecto a mi próxima fecha límite", "explicacion": "Enfermedad como justificación"},
+          {"mensaje": "Tuve una emergencia familiar y me perdí las fechas de entrega", "explicacion": "Emergencia familiar"},
+          {"mensaje": "Estoy realmente abrumado en este momento, ¿se puede hacer algo respecto a mis fechas", "explicacion": "Abrumamiento extremo"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Estoy estresado con estas fechas de entrega", "explicacion": "Estrés general, no circunstancia atenuante"},
+          {"mensaje": "¿Cómo solicito una extensión por razones médicas?", "explicacion": "Pregunta sobre proceso, no solicitud directa"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Solicitud API",
+      "metodo": "POST",
+      "url": "",
+      "autenticacion": "No Authentication",
+      "encabezados": [],
+      "parametros": [],
+      "mapeo_json": [],
+      "cuerpo_json": "{}",
+      "informar_usuario": true,
+      "mensaje_espera": "Procesando tu solicitud de extensión...",
+      "exito_instruir_ia": false,
+      "mensaje_exito": "Tu solicitud de extensión ha sido registrada.",
+      "error_instruir_ia": false,
+      "mensaje_error": "Hubo un problema procesando tu solicitud. Por favor intenta de nuevo."
+    }
+  ],
+  "notas": "Flow que usa API para registrar solicitudes de extensión. URL y autenticación están vacías: configurar según el sistema de académico/LMS de la institución. El método es POST para registrar la solicitud en la base de datos de extensiones."
+}

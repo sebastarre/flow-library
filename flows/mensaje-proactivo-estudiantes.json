@@ -1,0 +1,30 @@
+{
+  "nombre": "Mensaje proactivo: involucrando a los estudiantes",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Un mensaje proactivo que se muestra cuando la página carga en ciertas URLs, para involucrar a los estudiantes y mantenerlos informados.",
+  "activadores": [
+    {"tipo": "Al cargar la página"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "URL",
+        "operador": "Coincide",
+        "url": "/courses"
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Notificación",
+      "titulo": "",
+      "contenido": "",
+      "regla_entrega": "",
+      "eliminar_automaticamente": "",
+      "permitir_respuestas": true
+    }
+  ],
+  "notas": "Flow proactivo que se dispara al cargar la página si la URL contiene '/courses'. La notificación se entrega automáticamente. Completar título, contenido y regla de entrega según la institución."
+}

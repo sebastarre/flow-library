@@ -1,0 +1,70 @@
+{
+  "nombre": "Soporte de IT - Hardware, Software y Conectividad",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "El usuario está teniendo dificultades para conectarse al Wi-Fi de la universidad, la red, la VPN, o problemas de hardware/software en su computadora personal.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está reportando problemas de conectividad de red: Wi-Fi de la universidad, eduroam, VPN, o conexión a internet intermitente en el campus.",
+        "coincidentes": [
+          {"mensaje": "No puedo conectarme al Wi-Fi de la universidad", "explicacion": "Problema de conectividad Wi-Fi"},
+          {"mensaje": "La red eduroam no funciona en mi portátil", "explicacion": "Problema con eduroam"},
+          {"mensaje": "Sigo perdiendo la conexión a internet en el campus", "explicacion": "Conexión intermitente"},
+          {"mensaje": "No puedo acceder a la VPN desde casa", "explicacion": "Problema de VPN"},
+          {"mensaje": "Mi conexión a internet se corta cada vez que intento entregar un trabajo", "explicacion": "Conexión crítica intermitente"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Me puedes ayudar a encontrar investigaciones sobre infraestructura de red?", "explicacion": "Pregunta académica sobre redes"},
+          {"mensaje": "Mi internet en casa está lento", "explicacion": "Problema de ISP personal, no de campus"}
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está reportando problemas de autenticación o acceso a credenciales de la universidad: contraseña olvidada, cuenta bloqueada, o 2FA no funciona.",
+        "coincidentes": [
+          {"mensaje": "Olvidé mi contraseña del portal de la universidad", "explicacion": "Contraseña olvidada"},
+          {"mensaje": "Mi cuenta está bloqueada y no puedo restablecerla", "explicacion": "Cuenta bloqueada"},
+          {"mensaje": "No puedo iniciar sesión en mi correo electrónico de la universidad", "explicacion": "Problema de acceso email"},
+          {"mensaje": "La autenticación de dos factores no está funcionando", "explicacion": "Problema 2FA"},
+          {"mensaje": "Nunca recibí mis credenciales de inicio de sesión", "explicacion": "Credenciales no recibidas"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Cómo cambio mi entrega de ensayo en el portal?", "explicacion": "Pregunta sobre funcionalidad del portal"},
+          {"mensaje": "Se me olvidó guardar mi trabajo", "explicacion": "Problema de usuario, no técnico"}
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está reportando problemas de hardware o software en su computadora personal: instalación de programas, dispositivos no funcionan, malware, o problemas de software.",
+        "coincidentes": [
+          {"mensaje": "No puedo instalar los programas que requiere mi curso", "explicacion": "Problema de instalación de software"},
+          {"mensaje": "Mi laptop no enciende", "explicacion": "Problema de hardware"},
+          {"mensaje": "El antivirus de la universidad está bloqueando una aplicación que necesito", "explicacion": "Bloqueo de antivirus"},
+          {"mensaje": "Necesito ayuda para configurar Microsoft Office con mi licencia de estudiante", "explicacion": "Configuración de software"},
+          {"mensaje": "Mi cámara web no funciona para los exámenes en línea", "explicacion": "Problema de dispositivo periférico"},
+          {"mensaje": "Tengo un virus en mi computadora", "explicacion": "Problema de malware"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Qué laptop debería comprar?", "explicacion": "Pregunta de consumerismo"},
+          {"mensaje": "¿Cómo uso Excel?", "explicacion": "Pregunta de tutoriales de software"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Botón",
+      "nombre": "Contactar con Soporte Técnico",
+      "tipo_boton": "Enlace externo",
+      "url": "",
+      "mostrar_icono": false
+    }
+  ],
+  "notas": "Flow integrado para IT Support. El botón no tiene URL: cada institución debe agregar el enlace a su help desk de IT. Las tres condiciones son específicas de tipos de problemas técnicos comunes."
+}

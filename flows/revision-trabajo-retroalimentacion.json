@@ -1,0 +1,39 @@
+{
+  "nombre": "Revisión de Trabajo - Retroalimentación sobre la Entrega del Estudiante",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El estudiante está compartiendo un trabajo que ha producido por sí mismo (código, cálculo, ensayo, etc.) y pide retroalimentación o revisión antes de entregar.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está compartiendo un trabajo que ha producido por sí mismo (código, cálculo, un párrafo de ensayo, un diagrama, etc.) y pide retroalimentación, revisión o validación antes de entregarlo.",
+        "coincidentes": [
+          {"mensaje": "¿Puedes revisar mi código antes de que lo entregue?", "explicacion": "Estudiante pide revisión de su trabajo"},
+          {"mensaje": "Aquí está mi ensayo, ¿hay algo que mejorar?", "explicacion": "Comparte trabajo y pide retroalimentación"},
+          {"mensaje": "¿Ves algún error en mi cálculo?", "explicacion": "Comparte trabajo y solicita revisión"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Ayúdame a resolver este problema", "explicacion": "Solicitud de ayuda para resolver, no revisión de trabajo completado"},
+          {"mensaje": "¿Cómo escribo un ensayo?", "explicacion": "Pregunta sobre proceso, no revisión de trabajo específico"},
+          {"mensaje": "Verifica si mi respuesta es correcta", "explicacion": "Veredicto sí/no simple, no retroalimentación constructiva"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar en los materiales del curso rúbricas de evaluación, criterios de calidad y pautas de retroalimentación para el tipo de trabajo que el estudiante está compartiendo. Recupera solamente del contenido del curso.",
+      "estilo_respuesta": "Estructura como retroalimentación constructiva:\n- Comienza reconociendo lo que el estudiante hizo bien — sé específico\n- Identifica áreas de mejora basadas en los criterios del curso\n- Proporciona sugerencias concretas para mejorar\n- Si hay errores significativos, explícalos y guía al estudiante sobre cómo corregirlos\n- Siempre mantenga un tono de apoyo y reconozca el esfuerzo",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow que proporciona retroalimentación constructiva sobre el trabajo del estudiante basada en criterios del curso. Basado en búsqueda de conocimientos."
+}

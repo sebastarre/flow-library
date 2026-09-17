@@ -1,0 +1,39 @@
+{
+  "nombre": "Ejemplo Resuelto - Demostración Modelada y Desafío para el Estudiante",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El estudiante está pidiendo ver un problema de un tipo particular resuelto de principio a fin, o quiere una demostración de un método antes de intentar su propio problema.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está pidiendo ver un problema de un tipo particular resuelto completamente de inicio a fin, o quiere ver cómo se resuelve un tipo específico de problema o ejercicio.",
+        "coincidentes": [
+          {"mensaje": "¿Puedes mostrarme cómo resolver este tipo de problema?", "explicacion": "Estudiante pide ejemplo resuelto/demostración"},
+          {"mensaje": "Me gustaría ver un ejemplo completo de cómo hacer esto", "explicacion": "Solicitud de demostración paso a paso"},
+          {"mensaje": "¿Cuál es el proceso para resolver problemas como este?", "explicacion": "Pide ver método en acción"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Estoy atrapado en mi propio problema, ayúdame", "explicacion": "Solicitud de ayuda con su trabajo, no demostración"},
+          {"mensaje": "¿Qué significa este concepto?", "explicacion": "Pregunta conceptual, no pedido de ejemplo resuelto"},
+          {"mensaje": "Verifica mi respuesta", "explicacion": "Revisión de trabajo, no demostración"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar en los materiales del curso ejemplos resueltos, trabajos modelo o demostraciones del proceso paso a paso para el tipo de problema que el estudiante solicita. Recupera solamente del contenido del curso.",
+      "estilo_respuesta": "Estructura como una demostración modelada:\n- Presenta el problema o desafío claramente\n- Trabaja a través de él paso a paso, explicando el razonamiento en cada punto\n- Destaca las decisiones clave y por qué se hacen de esa manera\n- Muestra el trabajo completo hasta la solución final\n- Después de la demostración, presenta un desafío similar para que el estudiante lo intente: \"Ahora intentá esto: [problema similar]\"",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow que proporciona demostraciones modeladas de problemas resueltos, seguido de un desafío para que el estudiante intente uno similar. Basado en búsqueda de conocimientos."
+}

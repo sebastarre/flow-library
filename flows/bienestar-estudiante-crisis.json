@@ -1,0 +1,87 @@
+{
+  "nombre": "Bienestar del Estudiante - Crisis o Angustia Grave",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "El usuario expresa pensamientos de autolesión, suicidio, o un deseo de ya no seguir viviendo. Esto incluye depresión severa, desesperanza completa, o crisis de salud mental aguda.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario expresa pensamientos de autolesión, suicidio, o un deseo de ya no seguir viviendo.",
+        "coincidentes": [
+          {"mensaje": "He estado pensando en hacerme daño", "explicacion": "Usuario expresa ideación suicida"},
+          {"mensaje": "No le veo sentido a seguir adelante", "explicacion": "Usuario expresa desesperanza"},
+          {"mensaje": "A veces pienso que todos estarían mejor sin mí", "explicacion": "Usuario expresa ideación suicida indirecta"},
+          {"mensaje": "Quiero desaparecer", "explicacion": "Usuario expresa deseo de autolesión"},
+          {"mensaje": "He estado cortándome de nuevo", "explicacion": "Usuario admite autolesión"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Esta materia me está matando", "explicacion": "Expresión figurada de estrés"},
+          {"mensaje": "Me lastimé accidentalmente haciendo gimnasia", "explicacion": "Lesión accidental, no autolesión"}
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario muestra signos de depresión severa: inmovilidad, falta de esperanza, incapacidad de funcionar.",
+        "coincidentes": [
+          {"mensaje": "No he podido levantarme de la cama en semanas", "explicacion": "Inmovilidad extrema"},
+          {"mensaje": "Me siento adormecido y no se bien por qué", "explicacion": "Síntoma depresivo severo"},
+          {"mensaje": "He dejado de ir a clase porque no puedo enfrentar nada", "explicacion": "Incapacidad de funcionar"},
+          {"mensaje": "He estado llorando todos los días y no sé cómo parar", "explicacion": "Depresión severa"},
+          {"mensaje": "Me siento completamente sin esperanza sobre todo en mi vida", "explicacion": "Desesperanza total"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Estoy muy cansado, solo dormí 4 horas", "explicacion": "Cansancio normal"},
+          {"mensaje": "Últimamente me he sentido algo abrumado con todos los plazos de entrega", "explicacion": "Estrés normal académico"},
+          {"mensaje": "Estoy estresado por mis exámenes", "explicacion": "Estrés situacional"},
+          {"mensaje": "Me siendo agotado este semestre", "explicacion": "Cansancio temporal"}
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está en crisis y necesita ayuda inmediata: expresan que están en peligro o necesitan intervención urgente.",
+        "coincidentes": [
+          {"mensaje": "Creo que necesito hablar con alguien sobre mi salud mental", "explicacion": "Pedido de ayuda mental"},
+          {"mensaje": "Estoy en crisis y no sé qué hacer", "explicacion": "Estado de crisis"},
+          {"mensaje": "He estado pasando por un momento muy oscuro y necesito ayuda", "explicacion": "Pedido de ayuda urgente"},
+          {"mensaje": "Fui hospitalizado por mi salud mental el mes pasado y estoy sufriendo de nuevo", "explicacion": "Antecedente de crisis"},
+          {"mensaje": "Creo que estoy teniendo una crisis nerviosa", "explicacion": "Crisis nerviosa"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Tienes algún consejo para manejar el estrés?", "explicacion": "Pedido de consejos"},
+          {"mensaje": "¿Dónde puedo encontrar recursos de mindfulness?", "explicacion": "Búsqueda de recursos"},
+          {"mensaje": "Necesito ayuda con mi ensayo", "explicacion": "Pedido académico"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "instruir_ia": true,
+      "seguir_instrucciones_globales": false,
+      "instruccion": "Reconoce el sufrimiento del usuario con compasión. Asegúrele que no está solo. Proporciona información sobre recursos de crisis disponibles. Enfatiza que la ayuda profesional es importante. Mantén un tono supportivo y no minimices sus sentimientos."
+    },
+    {
+      "tipo": "Botón",
+      "nombre": "Contacta con nuestro equipo de bienestar",
+      "tipo_boton": "Enlace externo",
+      "url": "https://google.com",
+      "mostrar_icono": true,
+      "icono": "Mail"
+    },
+    {
+      "tipo": "Enviar correo electrónico",
+      "para": "wellbeing@learnwise.ai",
+      "asunto": "Emergency well-being situation",
+      "cuerpo": "Hi Team,\n\n** {{user.name}} has made contact with the well-being team and may need emergency help. **\n\nYou can reach out to: {{user.email}}\n\n**Below you can find a {{conversation.summary}} as well as some information that may be useful **\n\n** {{conversation.metadata.ip_address}} **\n\n{{conversation.metadata.browser}}\n\n{{conversation.metadata.city}}\n\n**Please reach out to them as soon as possible. **",
+      "responder_a": "Correo electrónico específico",
+      "responder_a_correo": "wellbeing@learnwise.ai"
+    }
+  ],
+  "notas": "Flow crítico de crisis de salud mental. Activado cuando el usuario expresa ideación suicida o autolesión severa. El botón redirige a https://google.com (actualizar URL según institución)."
+}

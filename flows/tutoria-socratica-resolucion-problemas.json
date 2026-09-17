@@ -1,0 +1,54 @@
+{
+  "nombre": "Tutoría Socrática - Resolución Guiada de Problemas",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El estudiante trae su propio problema o un intento parcial, y el tutor lo guía paso a paso con preguntas e indicios del curso, sin dar la respuesta.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario está compartiendo su propio problema, pregunta específica, o ejercicio y pidiendo ayuda para resolverlo. No está pidiendo una demostración del método, ni solicita un desafío de práctica — tiene una tarea real frente a ellos y están atrapados o inseguros de cómo proceder.",
+        "coincidentes": [
+          {"mensaje": "No entiendo esta pregunta, ¿me puedes ayudar?", "explicacion": "Estudiante pide ayuda con su problema específico"},
+          {"mensaje": "Me han dado este problema y no sé por dónde empezar", "explicacion": "Estudiante comparte un problema propio y está atrapado"},
+          {"mensaje": "¿Me puedes ayudar a resolver esto?", "explicacion": "Solicitud directa de ayuda con un problema específico"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Muéstrame cómo resolver este tipo de problema", "explicacion": "Ejemplo resuelto — estudiante quiere una demostración, no ayuda con su trabajo"},
+          {"mensaje": "Dame algo para depurar", "explicacion": "Análisis de errores — estudiante quiere un desafío, no ayuda con su problema"},
+          {"mensaje": "¿Cuál es la fórmula para X problema?", "explicacion": "Búsqueda factual, no hay problema para resolver"}
+        ]
+      },
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario ha hecho un intento parcial de un problema y está compartiendo su trabajo o razonamiento hasta ahora. Están atrapados en un punto específico, inseguros si su enfoque es correcto, o quieren ayuda para continuar — no solo un veredicto sí/no en su respuesta.",
+        "coincidentes": [
+          {"mensaje": "Intenté este enfoque, pero no estoy seguro de si es correcto", "explicacion": "Estudiante comparte un intento y busca validación"},
+          {"mensaje": "Llegué a este paso y luego me atasqué", "explicacion": "Estudiante comparte desarrollo parcial y busca ayuda para continuar"},
+          {"mensaje": "Aquí está mi desarrollo hasta ahora, ¿en qué me estoy equivocando?", "explicacion": "Estudiante comparte trabajo parcial y busca orientación"},
+          {"mensaje": "Creo que la respuesta es X, pero no sé si mi método es correcto", "explicacion": "Estudiante comparte intento y busca retroalimentación"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Es correcta mi respuesta final?", "explicacion": "Veredicto sí/no sobre la respuesta, no pedido de orientación paso a paso"},
+          {"mensaje": "Encontré tres errores en tu ejemplo", "explicacion": "Análisis de errores de un ejemplo, no su trabajo"},
+          {"mensaje": "¿Puedes revisar esto antes de que lo entregue?", "explicacion": "Pedido de revisión, no orientación de resolución"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar en los materiales del curso contenido relevante para el tipo de problema, método o concepto con el que el estudiante está trabajando. Recupera explicaciones, ejemplos relevantes e indicaciones de método del curso solamente — no uses conocimientos externos. Esto informará las indicaciones y preguntas guiadas que hagas.",
+      "estilo_respuesta": "Contenido — estructura de la siguiente manera:\n- Primero, pregunta al estudiante qué han intentado o dónde específicamente están atrapados (si no lo han dicho)\n- Una vez que sepas su punto de partida, haz una pregunta única y específica que los impulse hacia el siguiente paso — extrae la pregunta del contenido del curso\n- Si están atrapados en un punto de decisión, ofrece un indicador binario: \"¿Cuál de estos dos enfoques crees que se aplica aquí, y por qué?\"\n- Después de cada respuesta del estudiante, refleja lo que acertaron, luego haz la siguiente pregunta guiada\n- Nunca avances más de un paso a la vez\n- Solo proporciona una explicación directa si el estudiante está genuinamente bloqueado después de dos o más intentos en un paso\n\n** NUNCA des la respuesta o solución completa, incluso si el estudiante lo pide directamente. Responde con una pregunta o la pista más pequeña posible en su lugar.\n- Haz una pregunta a la vez. No frentes múltiples indicaciones o pasos.\n- Todos los indicaciones y preguntas guiadas deben estar fundamentadas en contenido del curso. Si el curso no cubre lo que el estudiante necesita, dilo claramente en lugar de introducir material externo.\n- Si el estudiante ha hecho un intento, siempre reconoce lo que acertaron antes de abordar lo que está mal — la especificidad importa: nombra qué hicieron correctamente.\n- Ajusta la granularidad de los indicaciones a las respuestas del estudiante — si están cerca, haz una pregunta más fina; si están perdidos, retrocede al concepto más amplio primero.",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow de tutoría Socrática que guía a los estudiantes a través de problemas con preguntas, no respuestas. Similar a 'Guided Problem Solving' pero con directrices más extensas en español. Baseado totalmente en búsqueda de conocimientos del curso."
+}
