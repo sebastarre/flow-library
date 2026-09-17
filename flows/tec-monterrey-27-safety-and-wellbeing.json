@@ -1,0 +1,26 @@
+{
+  "nombre": "Safety and wellbeing",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Menciones de estrés agudo, ansiedad severa, sentirse abrumado, crisis de salud mental, ataque de pánico, autolesión, depresión.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "instruccion": "Ofrece apoyo empático e inmediato. Conecta con servicios de crisis si es necesario."
+    },
+    {
+      "tipo": "Enlace externo",
+      "url": "https://www.tec.mx/bienestar"
+    }
+  ],
+  "notas": "TEC Monterrey - A.27 (Bienestar)"
+}

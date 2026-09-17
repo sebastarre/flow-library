@@ -1,0 +1,21 @@
+{
+  "nombre": "Evaluación Formativa - Retroalimentación",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Flow para proporcionar retroalimentación formativa a estudiantes sobre su desempeño.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Eval.1"
+}

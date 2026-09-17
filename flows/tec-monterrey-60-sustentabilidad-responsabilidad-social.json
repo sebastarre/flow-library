@@ -1,0 +1,21 @@
+{
+  "nombre": "Sustentabilidad - Responsabilidad Social",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para integración de temas de sostenibilidad y responsabilidad social en la formación.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Sosteni.1"
+}

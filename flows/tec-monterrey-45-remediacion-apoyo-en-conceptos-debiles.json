@@ -1,0 +1,21 @@
+{
+  "nombre": "Remediación - Apoyo en Conceptos Débiles",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Flow para proporcionar remediación en áreas donde el estudiante muestra debilidades conceptuales.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Remed.1"
+}

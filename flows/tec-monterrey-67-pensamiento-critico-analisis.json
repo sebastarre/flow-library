@@ -1,0 +1,21 @@
+{
+  "nombre": "Pensamiento Crítico - Análisis",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Flow para desarrollo del pensamiento crítico y capacidad analítica.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Crítico.1"
+}

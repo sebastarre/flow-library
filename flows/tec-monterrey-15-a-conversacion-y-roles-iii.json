@@ -1,0 +1,21 @@
+{
+  "nombre": "A. Conversación y roles III",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Detectar cuando el estudiante envía su respuesta dentro del roleplay, argumenta ante la contraparte.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.15"
+}

@@ -1,0 +1,24 @@
+{
+  "nombre": "B. Resolución y lógica con ejemplos",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario proporciona o hace referencia clara a un problema, cálculo, código o procedimiento propio y solicita que la IA lo resuelva, calcule o corrija.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    },
+    {
+      "tipo": "Pregunta(s) de seguimiento"
+    }
+  ],
+  "notas": "TEC Monterrey - B.4"
+}

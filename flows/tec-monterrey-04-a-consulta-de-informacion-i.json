@@ -1,0 +1,21 @@
+{
+  "nombre": "A. Consulta de información I",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario realiza una consulta teórica, pide una definición, solicita una fórmula, un dato histórico o la explicación de un concepto técnico desde cero.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.4"
+}

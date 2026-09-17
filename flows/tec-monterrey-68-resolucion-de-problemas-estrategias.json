@@ -1,0 +1,21 @@
+{
+  "nombre": "Resolución de Problemas - Estrategias",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Flow para enseñanza de estrategias avanzadas de resolución de problemas complejos.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Problemas.1"
+}

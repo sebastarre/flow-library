@@ -1,0 +1,24 @@
+{
+  "nombre": "B2. Consulta e información",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Activa este flujo cuando el estudiante solicita información operativa del curso o plantea una consulta académica.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    },
+    {
+      "tipo": "Enviar texto al chat"
+    }
+  ],
+  "notas": "TEC Monterrey - B.6"
+}

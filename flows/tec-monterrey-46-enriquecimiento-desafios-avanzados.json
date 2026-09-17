@@ -1,0 +1,21 @@
+{
+  "nombre": "Enriquecimiento - Desafíos Avanzados",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Flow para ofrecer desafíos y contenido enriquecedor a estudiantes con desempeño sobresaliente.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Enrich.1"
+}

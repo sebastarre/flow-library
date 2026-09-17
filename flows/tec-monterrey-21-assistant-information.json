@@ -1,0 +1,22 @@
+{
+  "nombre": "Assistant Information",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "El usuario pregunta sobre las capacidades, características, identidad, propósito o servicios del asistente.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "instruccion": "Describe los servicios y características disponibles del asistente de TEC Monterrey."
+    }
+  ],
+  "notas": "TEC Monterrey - A.21 (Built-in)"
+}

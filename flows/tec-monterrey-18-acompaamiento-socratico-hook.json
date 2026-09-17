@@ -1,0 +1,21 @@
+{
+  "nombre": "Acompañamiento socrático (Hook)",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El estudiante está pidiendo aclaración o ejemplos aplicados de la información, situación o concepto.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.18"
+}

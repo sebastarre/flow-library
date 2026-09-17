@@ -1,0 +1,21 @@
+{
+  "nombre": "A. Resolución de lógica I",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Detectar solicitudes de resolución de ejercicios matemáticos, cálculo de fórmulas, depuración de errores de código o análisis de lógica algorítmica.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.10"
+}

@@ -1,0 +1,21 @@
+{
+  "nombre": "A. Conversación y roles II",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario ha respondido a la delimitación inicial seleccionando el tipo de simulación.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.14"
+}

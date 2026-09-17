@@ -1,0 +1,21 @@
+{
+  "nombre": "Comunicación - Presentaciones",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Flow para apoyo en desarrollo de habilidades de presentación oral y visual.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Comunicación.2"
+}

@@ -1,0 +1,21 @@
+{
+  "nombre": "A. Resolución y lógica III",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario comparte un procedimiento resuelto, una respuesta matemática parcial/final, o un fragmento de código corregido.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.12"
+}

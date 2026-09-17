@@ -1,0 +1,24 @@
+{
+  "nombre": "B. Transformación y análisis",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario proporciona, pega o hace referencia a un material ya existente y solicita que la IA lo resuma, traduzca, edite, corrija o analice.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    },
+    {
+      "tipo": "Pregunta(s) de seguimiento"
+    }
+  ],
+  "notas": "TEC Monterrey - B.2"
+}

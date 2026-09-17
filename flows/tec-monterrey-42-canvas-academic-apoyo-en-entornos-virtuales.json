@@ -1,0 +1,21 @@
+{
+  "nombre": "Canvas Academic - Apoyo en Entornos Virtuales",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Flow para apoyo en navegación y uso de plataforma Canvas Academic.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Canvas.2"
+}

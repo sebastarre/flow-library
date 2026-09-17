@@ -1,0 +1,25 @@
+{
+  "nombre": "B2. Transformación y análisis",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Activa este flujo cuando exista un material previo (texto, documento, respuesta, tabla, datos o borrador) y se solicite transformarlo.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    },
+    {
+      "tipo": "Mensaje personalizado",
+      "instruccion": "Proporciona análisis, resumen, correcciones o mejoras del material presentado."
+    }
+  ],
+  "notas": "TEC Monterrey - B.10"
+}

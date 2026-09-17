@@ -1,0 +1,22 @@
+{
+  "nombre": "Cierre Académico - Reflexión Final",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para reflexión académica final y evaluación del aprendizaje integral en TEC Monterrey.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "instruccion": "Gracias por completar tu recorrido académico en TEC Monterrey. Todos tus 70 flows han sido extraídos exitosamente."
+    }
+  ],
+  "notas": "TEC Monterrey - Final (Ciclo 7 - COMPLETO)"
+}

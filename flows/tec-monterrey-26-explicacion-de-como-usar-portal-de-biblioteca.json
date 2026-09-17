@@ -1,0 +1,24 @@
+{
+  "nombre": "Explicacion de como usar portal de Biblioteca",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "El usuario denota un deseo de utilizar el portal de Biblioteca y solicita una explicación de cómo usarlo.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Enlace externo"
+    },
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.26"
+}

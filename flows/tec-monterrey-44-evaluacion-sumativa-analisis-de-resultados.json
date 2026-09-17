@@ -1,0 +1,21 @@
+{
+  "nombre": "Evaluación Sumativa - Análisis de Resultados",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Flow para análisis de evaluaciones sumativas y resultados académicos.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Eval.2"
+}

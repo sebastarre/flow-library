@@ -1,0 +1,22 @@
+{
+  "nombre": "Tutor de IA",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Modo de estudio interactivo con el asistente como tutor.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "instruccion": "Ingresar al modo de estudio"
+    }
+  ],
+  "notas": "TEC Monterrey - A.19"
+}

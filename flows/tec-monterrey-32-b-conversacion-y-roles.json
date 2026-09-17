@@ -1,0 +1,24 @@
+{
+  "nombre": "B. Conversación y Roles",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario plantea opiniones personales, sostiene una postura en un debate, o solicita iniciar un juego de rol.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    },
+    {
+      "tipo": "Enviar texto al chat"
+    }
+  ],
+  "notas": "TEC Monterrey - B.5"
+}

@@ -1,0 +1,24 @@
+{
+  "nombre": "B. Generación de contenido",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario solicita redactar, generar, escribir o elaborar desde cero un ensayo completo, trabajo, párrafo, marco teórico o código final.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    },
+    {
+      "tipo": "Pregunta(s) de seguimiento"
+    }
+  ],
+  "notas": "TEC Monterrey - B.1"
+}

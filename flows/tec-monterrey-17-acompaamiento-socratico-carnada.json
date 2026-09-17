@@ -1,0 +1,24 @@
+{
+  "nombre": "Acompañamiento socrático (Carnada)",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario expresa la intención de recibir una respuesta rápida, un concepto resuelto, una fórmula aislada o una definición.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    },
+    {
+      "tipo": "Pregunta(s) de seguimiento"
+    }
+  ],
+  "notas": "TEC Monterrey - A.17"
+}

@@ -1,0 +1,21 @@
+{
+  "nombre": "B2. Conversación y roles",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Activa este flujo cuando el usuario solicita explícitamente una simulación, negociación, entrevista o ejercicio dialéctico.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - B.7 (Deshabilitado)"
+}

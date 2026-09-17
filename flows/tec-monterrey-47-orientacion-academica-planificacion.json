@@ -1,0 +1,21 @@
+{
+  "nombre": "Orientación Académica - Planificación",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para asesoramiento en planificación académica, selección de cursos y trayectorias.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Orientación.1"
+}

@@ -1,0 +1,22 @@
+{
+  "nombre": "Human Help Needed",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "El usuario pide explícitamente hablar con un humano, contactar con soporte, o escalarse a una persona.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "instruccion": "Conectando con soporte humano..."
+    }
+  ],
+  "notas": "TEC Monterrey - A.20 (Built-in)"
+}

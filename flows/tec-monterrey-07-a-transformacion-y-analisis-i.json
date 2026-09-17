@@ -1,0 +1,21 @@
+{
+  "nombre": "A. Transformación y análisis I",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario solicita por primera vez resumir, parafrasear, analizar un texto propio o crear la estructura de un organizador visual.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.7"
+}

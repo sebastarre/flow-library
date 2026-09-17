@@ -1,0 +1,21 @@
+{
+  "nombre": "Empleabilidad - Desarrollo de Competencias",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para apoyo en desarrollo de habilidades blandas y competencias profesionales.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Empleabilidad.1"
+}

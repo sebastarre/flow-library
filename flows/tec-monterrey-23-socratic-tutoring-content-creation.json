@@ -1,0 +1,21 @@
+{
+  "nombre": "Socratic tutoring: content creation",
+  "idioma": "en",
+  "categoria": "Tutor",
+  "descripcion": "Un estudiante solicita al asistente que cree contenido para ellos.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.23"
+}

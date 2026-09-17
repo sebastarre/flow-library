@@ -1,0 +1,21 @@
+{
+  "nombre": "Investigación - Metodología",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Flow para apoyo en metodologías de investigación y diseño de estudios.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Investig.2"
+}

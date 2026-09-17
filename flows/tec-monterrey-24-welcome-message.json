@@ -1,0 +1,21 @@
+{
+  "nombre": "Welcome message",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Mensaje de bienvenida del asistente.",
+  "activadores": [
+    {
+      "tipo": "Al cargar la página"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Notificación"
+    }
+  ],
+  "notas": "TEC Monterrey - A.24"
+}

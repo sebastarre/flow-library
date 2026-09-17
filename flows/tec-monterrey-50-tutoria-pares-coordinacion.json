@@ -1,0 +1,21 @@
+{
+  "nombre": "Tutoría Pares - Coordinación",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para coordinación de sesiones de tutoría entre pares en TEC Monterrey.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Pares.1"
+}

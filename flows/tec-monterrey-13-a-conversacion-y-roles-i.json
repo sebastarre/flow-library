@@ -1,0 +1,21 @@
+{
+  "nombre": "A. Conversación y roles I",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario solicita iniciar un roleplay, simulación de entrevista, debate interactivo, negociación o ejercicio de toma de decisiones.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.13"
+}

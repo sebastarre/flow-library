@@ -1,0 +1,21 @@
+{
+  "nombre": "Comportamiento predeterminado",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Respuesta predeterminada cuando ningún otro flujo coincide con la consulta del usuario.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Default"
+}

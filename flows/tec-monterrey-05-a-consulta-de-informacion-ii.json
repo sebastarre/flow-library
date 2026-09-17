@@ -1,0 +1,21 @@
+{
+  "nombre": "A. Consulta de información II",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Detectar cuando el alumno selecciona una ruta de profundización conceptual, solicita un caso aplicado o pide el desglose de variables.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.5"
+}

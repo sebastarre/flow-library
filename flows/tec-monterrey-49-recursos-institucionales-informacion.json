@@ -1,0 +1,21 @@
+{
+  "nombre": "Recursos Institucionales - Información",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para proporcionar información sobre recursos institucionales disponibles.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Recursos.1"
+}

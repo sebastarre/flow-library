@@ -1,0 +1,21 @@
+{
+  "nombre": "Canvas Academic - Orientación Pedagógica",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Flow de orientación pedagógica para estudiantes de Canvas Académico en TEC Monterrey.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Canvas.1"
+}

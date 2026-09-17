@@ -1,0 +1,21 @@
+{
+  "nombre": "A. Consulta de información III",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario responde, elige un camino de aprendizaje, comparte su propia explicación del concepto.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.6"
+}

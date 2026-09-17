@@ -1,0 +1,21 @@
+{
+  "nombre": "Apoyo Administrativo - Trámites",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para asistencia en trámites administrativos y procedimientos estudiantiles.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Admin.1"
+}

@@ -1,0 +1,21 @@
+{
+  "nombre": "Tecnología - Competencias Digitales",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para desarrollo de competencias digitales y alfabetización tecnológica.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Tech.1"
+}

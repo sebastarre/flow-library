@@ -1,0 +1,21 @@
+{
+  "nombre": "Ética Profesional - Valores",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para reflexión y formación en ética profesional y valores institucionales.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Ética.1"
+}

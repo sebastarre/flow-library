@@ -1,0 +1,21 @@
+{
+  "nombre": "Comunicación - Escritura Académica",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Flow especializado en mejora de habilidades de escritura académica y comunicación.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Comunicación.1"
+}

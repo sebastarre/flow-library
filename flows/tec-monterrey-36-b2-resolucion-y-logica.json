@@ -1,0 +1,21 @@
+{
+  "nombre": "B2. Resolución y lógica",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Activa este flujo ante problemas, cálculos, procedimientos, planes, algoritmos, código, errores o resolución de ejercicios.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - B.9 (Deshabilitado)"
+}

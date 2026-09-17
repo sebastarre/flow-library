@@ -1,0 +1,21 @@
+{
+  "nombre": "Bienestar Mental - Apoyo Preventivo",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para proporcionar recursos de bienestar mental preventivo y apoyo emocional.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Bienestar.2"
+}

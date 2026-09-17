@@ -1,0 +1,21 @@
+{
+  "nombre": "B. Consulta e información",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario realiza preguntas sobre conceptos base, definiciones, datos históricos, fórmulas, teorías o hechos científicos.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - B.3"
+}

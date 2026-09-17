@@ -1,0 +1,21 @@
+{
+  "nombre": "Socratic Tutoring: Guided Problem Solving",
+  "idioma": "en",
+  "categoria": "Tutor",
+  "descripcion": "El usuario comparte su propio problema, pregunta o ejercicio específico y pide ayuda para resolverlo.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.22"
+}

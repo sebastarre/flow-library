@@ -1,0 +1,21 @@
+{
+  "nombre": "A. Transformación y análisis III",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "Detectar cuando el estudiante comparte su propuesta de ramas, nodos, conectores o texto resumido.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - A.9"
+}

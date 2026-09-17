@@ -1,0 +1,31 @@
+{
+  "nombre": "Recomendación de Recursos de Biblioteca",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "El usuario solicita un recurso de biblioteca. Este flow debe activarse cuando el usuario solicite explícitamente un recurso de la Biblioteca Digital.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Solicitud API",
+      "metodo": "GET",
+      "url": "https://api.biblioteca.tec.mx/recursos",
+      "autenticacion": "No Authentication",
+      "cuerpo_json": "{}",
+      "informar_usuario": true,
+      "mensaje_espera": "Buscando recursos en la Biblioteca Digital...",
+      "exito_instruir_ia": false,
+      "mensaje_exito": "Recursos encontrados exitosamente. Aquí están los resultados disponibles.",
+      "error_instruir_ia": false,
+      "mensaje_error": "No se pudieron recuperar los recursos en este momento. Por favor, intenta más tarde."
+    }
+  ],
+  "notas": "TEC Monterrey - A.25"
+}

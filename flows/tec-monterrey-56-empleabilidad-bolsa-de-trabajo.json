@@ -1,0 +1,21 @@
+{
+  "nombre": "Empleabilidad - Bolsa de Trabajo",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para conectar estudiantes con oportunidades de empleo y prácticas profesionales.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos"
+    }
+  ],
+  "notas": "TEC Monterrey - Empleabilidad.2"
+}

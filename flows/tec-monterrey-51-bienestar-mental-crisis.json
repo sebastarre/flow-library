@@ -1,0 +1,25 @@
+{
+  "nombre": "Bienestar Mental - Crisis",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para atención de crisis de salud mental y situaciones de riesgo psicosocial.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "instruccion": "Conectar con servicios de crisis"
+    },
+    {
+      "tipo": "Enlace externo"
+    }
+  ],
+  "notas": "TEC Monterrey - Bienestar.1"
+}

@@ -1,0 +1,22 @@
+{
+  "nombre": "A. Generación de contenido I",
+  "idioma": "es",
+  "categoria": "Tutor",
+  "descripcion": "El usuario solicita por primera vez redactar, escribir, programar o estructurar un ensayo, código o texto desde cero.",
+  "activadores": [
+    {
+      "tipo": "El usuario envía un mensaje"
+    }
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": []
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "directrices_busqueda": "Andamiaje para redacción inicial"
+    }
+  ],
+  "notas": "TEC Monterrey - A.1"
+}
