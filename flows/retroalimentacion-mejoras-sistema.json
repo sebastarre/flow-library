@@ -1,0 +1,36 @@
+{
+  "nombre": "Feedback y Sugerencias de Mejora",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para recopilar feedback y sugerencias de mejora del usuario sobre el sistema o las características.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario proporciona feedback, una sugerencia de mejora, o un comentario sobre cómo mejorar el sistema.",
+        "coincidentes": [
+          {"mensaje": "Tengo una sugerencia para mejorar esto", "explicacion": "Propuesta de mejora"},
+          {"mensaje": "Me gustaría que agregaran esta característica", "explicacion": "Solicitud de feature"},
+          {"mensaje": "Esto podría ser mejor si...", "explicacion": "Feedback constructivo"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Esto no funciona", "explicacion": "Reporte de bug, no feedback"},
+          {"mensaje": "¿Cómo se usa esto?", "explicacion": "Pregunta de uso"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "instruccion": "¡Gracias por tu feedback! Apreciamos tus sugerencias para mejorar el sistema. Tu opinión nos ayuda a hacer una plataforma mejor para todos.\n\nTus comentarios han sido registrados y serán considerados por nuestro equipo de desarrollo.",
+      "instruir_ia": false,
+      "seguir_instrucciones_globales": false
+    }
+  ],
+  "notas": "Flow para recopilar feedback y sugerencias de mejora del usuario."
+}

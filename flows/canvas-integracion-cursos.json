@@ -1,0 +1,38 @@
+{
+  "nombre": "Integración Canvas - Gestión de Cursos",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para Canvas LMS. Ayuda a estudiantes con navegación de cursos, tareas y entregas en Canvas.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario tiene preguntas sobre cómo navegar Canvas, encontrar cursos, ver tareas o enviar entregas.",
+        "coincidentes": [
+          {"mensaje": "¿Cómo veo mis tareas en Canvas?", "explicacion": "Pregunta sobre navegación de tareas"},
+          {"mensaje": "¿Dónde envío mi trabajo?", "explicacion": "Pregunta sobre entrega de tareas"},
+          {"mensaje": "No encuentro mi curso", "explicacion": "Problema de navegación"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "No puedo iniciar sesión", "explicacion": "Problema de acceso, no de Canvas"},
+          {"mensaje": "¿Cuál es mi calificación?", "explicacion": "Pregunta de calificaciones"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar guías de Canvas, tutoriales sobre navegación de cursos, y procedimientos de entrega de tareas.",
+      "estilo_respuesta": "Proporciona instrucciones paso a paso claras para navegar Canvas.",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow para soporte de Canvas LMS. Enfocado en navegación y gestión de cursos."
+}

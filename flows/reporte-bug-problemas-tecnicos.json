@@ -1,0 +1,36 @@
+{
+  "nombre": "Reporte de Bugs - Problemas Técnicos",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para reportar bugs y problemas técnicos del sistema. Captura detalles del problema y genera ticket de soporte.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario reporta un comportamiento inesperado, un error, o algo que no funciona correctamente en el sistema.",
+        "coincidentes": [
+          {"mensaje": "Encontré un bug en el sistema", "explicacion": "Reporte directo de bug"},
+          {"mensaje": "Algo no funciona bien aquí", "explicacion": "Problema técnico vago"},
+          {"mensaje": "Me aparece un error cuando hago X", "explicacion": "Reporte de error específico"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Cómo funciona esta característica?", "explicacion": "Pregunta de uso, no bug"},
+          {"mensaje": "El sitio es lento", "explicacion": "Queja de rendimiento general"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "instruccion": "Gracias por reportar este problema. Para ayudarte mejor, necesito algunos detalles:\n\n1. ¿Qué navegador estás usando?\n2. ¿Qué sistema operativo?\n3. ¿Cuáles son los pasos exactos para reproducir el problema?\n4. ¿Qué error ves?\n\nCon esta información podré crear un ticket de soporte técnico.",
+      "instruir_ia": false,
+      "seguir_instrucciones_globales": false
+    }
+  ],
+  "notas": "Flow para captura de bugs y problemas técnicos. Recopila información necesaria para ticket de soporte."
+}

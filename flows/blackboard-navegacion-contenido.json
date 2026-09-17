@@ -1,0 +1,38 @@
+{
+  "nombre": "Blackboard - Navegación y Contenido",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para Blackboard Learn. Ayuda a estudiantes con navegación del sitio y acceso a contenido del curso.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario necesita ayuda navegando Blackboard o encontrando contenido del curso.",
+        "coincidentes": [
+          {"mensaje": "¿Cómo accedo al contenido de mi curso?", "explicacion": "Pregunta sobre navegación"},
+          {"mensaje": "No encuentro el material del curso", "explicacion": "Problema localizando recursos"},
+          {"mensaje": "¿Dónde están las lecturas?", "explicacion": "Pregunta sobre ubicación de contenido"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Cuál es el tema de la semana?", "explicacion": "Pregunta académica"},
+          {"mensaje": "La página está lenta", "explicacion": "Problema de rendimiento"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar guías de Blackboard Learn, estructura de cursos, y ubicación de contenido.",
+      "estilo_respuesta": "Proporciona instrucciones paso a paso para navegar la interfaz de Blackboard.",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow para soporte de Blackboard Learn. Enfocado en navegación y acceso a contenido."
+}

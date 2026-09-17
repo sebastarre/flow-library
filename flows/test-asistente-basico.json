@@ -1,0 +1,38 @@
+{
+  "nombre": "Asistente de Prueba - Soporte Básico",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow de prueba básico para asistentes de testing. Proporciona soporte general y direccionamiento a recursos.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario necesita ayuda general o tiene una pregunta básica sobre el sistema.",
+        "coincidentes": [
+          {"mensaje": "¿Cómo funciona esto?", "explicacion": "Pregunta sobre funcionamiento general"},
+          {"mensaje": "Necesito ayuda", "explicacion": "Solicitud de asistencia"},
+          {"mensaje": "¿Qué puedo hacer aquí?", "explicacion": "Pregunta sobre capacidades"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "Esto está roto", "explicacion": "Reporte de bug específico"},
+          {"mensaje": "No puedo continuar", "explicacion": "Problema técnico crítico"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar en la base de conocimientos información general sobre el sistema, guías de inicio rápido, y preguntas frecuentes.",
+      "estilo_respuesta": "Proporciona ayuda clara y directa con ejemplos prácticos cuando sea posible.",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow básico de prueba para assistentes de testing. Proporciona soporte general del sistema."
+}

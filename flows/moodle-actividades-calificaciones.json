@@ -1,0 +1,38 @@
+{
+  "nombre": "Moodle - Actividades y Calificaciones",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para Moodle LMS. Ayuda a estudiantes con actividades, envíos y seguimiento de calificaciones.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario tiene preguntas sobre actividades en Moodle, cómo completarlas, o ver calificaciones.",
+        "coincidentes": [
+          {"mensaje": "¿Cómo hago una actividad en Moodle?", "explicacion": "Pregunta sobre cómo completar actividades"},
+          {"mensaje": "¿Dónde veo mis calificaciones?", "explicacion": "Pregunta sobre libro de calificaciones"},
+          {"mensaje": "¿Cómo envío un archivo?", "explicacion": "Pregunta sobre envío de tareas"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "No entiendo el tema", "explicacion": "Pregunta académica, no técnica"},
+          {"mensaje": "El sitio no carga", "explicacion": "Problema técnico de servidor"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar documentación de Moodle, guías de actividades, y procedimientos de calificación.",
+      "estilo_respuesta": "Proporciona instrucciones claras con capturas de pantalla o ejemplos cuando sea posible.",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow para soporte de Moodle LMS. Enfocado en actividades y calificaciones."
+}
