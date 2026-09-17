@@ -1,0 +1,38 @@
+{
+  "nombre": "AI Ops - Monitoreo de Sistemas",
+  "idioma": "es",
+  "categoria": "AI Ops",
+  "descripcion": "Flow para AI Ops. Ayuda con monitoreo de infraestructura, métricas de rendimiento y alertas.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario pregunta sobre el estado del sistema, métricas de rendimiento, o alertas activas.",
+        "coincidentes": [
+          {"mensaje": "¿Cuál es el estado del sistema?", "explicacion": "Pregunta sobre salud del sistema"},
+          {"mensaje": "¿Cómo están las métricas de rendimiento?", "explicacion": "Solicitud de métricas"},
+          {"mensaje": "¿Hay alertas activas?", "explicacion": "Pregunta sobre alertas"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Cómo configuro el monitoreo?", "explicacion": "Pregunta de configuración"},
+          {"mensaje": "Hay un error en los logs", "explicacion": "Reporte de problema"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar información sobre estado del sistema, métricas de rendimiento, y alertas configuradas.",
+      "estilo_respuesta": "Proporciona resumen claro del estado actual con métricas clave.",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow para monitoreo y estado de sistemas en AI Ops."
+}

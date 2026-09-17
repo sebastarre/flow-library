@@ -1,0 +1,38 @@
+{
+  "nombre": "D2L Brightspace - Navegación de Cursos",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para D2L Brightspace LMS. Ayuda a estudiantes con navegación, entregas y acceso a contenido.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario tiene preguntas sobre navegación en D2L, entregas de tareas, o acceso a contenido del curso.",
+        "coincidentes": [
+          {"mensaje": "¿Cómo navego D2L?", "explicacion": "Pregunta de navegación"},
+          {"mensaje": "¿Dónde envío la tarea en Brightspace?", "explicacion": "Pregunta sobre entregas"},
+          {"mensaje": "No encuentro el contenido del curso", "explicacion": "Problema localizando material"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "No puedo iniciar sesión", "explicacion": "Problema de acceso"},
+          {"mensaje": "¿Cuál es mi nota?", "explicacion": "Pregunta de calificaciones"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar guías de D2L Brightspace, navegación de cursos, y procedimientos de entrega.",
+      "estilo_respuesta": "Proporciona instrucciones paso a paso para usar D2L.",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow para soporte de D2L Brightspace LMS."
+}

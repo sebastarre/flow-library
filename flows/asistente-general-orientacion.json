@@ -1,0 +1,38 @@
+{
+  "nombre": "Asistente General - Orientación e Información",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow general para orientación de estudiantes, información institucional, y direccionamiento a recursos.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario busca información general, orientación, o recursos de la institución.",
+        "coincidentes": [
+          {"mensaje": "¿Dónde puedo obtener ayuda?", "explicacion": "Solicitud de recursos"},
+          {"mensaje": "¿Cuál es la política sobre X?", "explicacion": "Pregunta sobre políticas"},
+          {"mensaje": "¿Cómo contacto a X departamento?", "explicacion": "Solicitud de contacto"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "No entiendo el contenido del curso", "explicacion": "Pregunta académica"},
+          {"mensaje": "Hay un error en el sistema", "explicacion": "Reporte técnico"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Buscar en conocimientos",
+      "escalar_no_resueltas": false,
+      "crear_mejoras": false,
+      "directrices_busqueda": "Buscar información institucional, políticas estudiantiles, contactos de departamentos, y recursos disponibles.",
+      "estilo_respuesta": "Proporciona información clara y referencias a recursos apropiados.",
+      "anular_estilo": false
+    }
+  ],
+  "notas": "Flow general de orientación e información institucional."
+}

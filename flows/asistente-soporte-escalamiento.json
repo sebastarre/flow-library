@@ -1,0 +1,36 @@
+{
+  "nombre": "Soporte - Escalamiento de Problemas",
+  "idioma": "es",
+  "categoria": "Chat",
+  "descripcion": "Flow para escalamiento de problemas complejos que requieren atención de soporte de nivel superior.",
+  "activadores": [
+    {"tipo": "El usuario envía un mensaje"}
+  ],
+  "condiciones": {
+    "logica": "Cualquier condición coincide",
+    "lista": [
+      {
+        "tipo": "Contexto de la conversación",
+        "contexto": "El usuario tiene un problema que requiere escalamiento a soporte de nivel superior o especialista.",
+        "coincidentes": [
+          {"mensaje": "Necesito hablar con un especialista", "explicacion": "Solicitud de escalamiento"},
+          {"mensaje": "Esto es más complejo de lo que pensé", "explicacion": "Problema que necesita especialista"},
+          {"mensaje": "El soporte básico no pudo resolver esto", "explicacion": "Escalamiento después de intento inicial"}
+        ],
+        "no_coincidentes": [
+          {"mensaje": "¿Puedes ayudarme con esto?", "explicacion": "Solicitud general de ayuda"},
+          {"mensaje": "¿Cuál es el procedimiento?", "explicacion": "Pregunta procedural"}
+        ]
+      }
+    ]
+  },
+  "respuesta": [
+    {
+      "tipo": "Mensaje personalizado",
+      "instruccion": "Entiendo que necesitas soporte de nivel superior. Voy a escalarte con un especialista que pueda atender tu caso con más profundidad.",
+      "instruir_ia": false,
+      "seguir_instrucciones_globales": false
+    }
+  ],
+  "notas": "Flow para escalamiento de problemas complejos."
+}
