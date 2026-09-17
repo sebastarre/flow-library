@@ -5,7 +5,7 @@
 **Date:** 2026-09-17  
 **Source:** admin.learnwise.ai/CX University  
 **Total Asistentes:** ~15+  
-**Flows Extracted:** 7  
+**Flows Extracted:** 13 (7 Chat + 5 Tutor + 1 Built-in)
 **Estimated Total:** 90+  
 
 ## Extracted Flows (by Assistant)
@@ -40,6 +40,48 @@
 
 ---
 
+### Tutor Assisstany Flows (Spanish) - `o2paPcpm7r_Q`
+**Category:** Tutor  
+**Language:** Spanish  
+**Flows:**
+- ✅ `tutoria-socratica-resolucion-problemas.json` - Tutoría Socrática - Resolución Guiada de Problemas
+  - Trigger: User message
+  - Conditions: 2 conversation contexts (own problem request, partial attempt)
+  - Actions: Knowledge search with Socratic guidance
+  - **Status:** COMPLETE
+
+- ✅ `ejemplo-resuelto-demostracion.json` - Ejemplo Resuelto - Demostración Modelada y Desafío para el Estudiante
+  - Trigger: User message
+  - Conditions: 1 conversation context (request for solved example)
+  - Actions: Knowledge search with step-by-step demonstration + student challenge
+  - **Status:** COMPLETE
+
+- ✅ `analisis-errores-encuentra-corrige.json` - Análisis de Errores - Encuentra y Corrige los Errores
+  - Trigger: User message
+  - Conditions: 3 conversation contexts (error practice, error challenge, course-based error)
+  - Actions: Knowledge search with error analysis guidance
+  - **Status:** COMPLETE
+
+- ✅ `revision-trabajo-retroalimentacion.json` - Revisión de Trabajo - Retroalimentación sobre la Entrega del Estudiante
+  - Trigger: User message
+  - Conditions: 1 conversation context (student sharing own work for review)
+  - Actions: Knowledge search with constructive feedback guidance
+  - **Status:** COMPLETE
+
+- ✅ `soporte-humano-solicitado.json` - Soporte Humano Solicitado
+  - Trigger: User message
+  - Conditions: 1 conversation context (explicit human support request)
+  - Actions: Custom message + External link to support
+  - **Status:** COMPLETE (Support URL needs configuration)
+
+- ✅ `escenario-juego-rol-simulacion.json` - Escenario de Juego de Rol/Simulación
+  - Trigger: User message
+  - Conditions: 2 conversation contexts (roleplay request, practical scenario request)
+  - Actions: Knowledge search with immersive scenario guidance
+  - **Status:** COMPLETE
+
+---
+
 ### Standard/Existing Flows (Already in Repo)
 - ✅ `human-help-needed.json` - Human Help Needed (Built-in)
 - ✅ `guided-problem-solving.json` - Guided Problem Solving (Tutor)
@@ -49,18 +91,10 @@
 
 ## Pending Asistentes
 
-### High Priority (Tutor Flows)
-- **Tutor Assisstany Flows (Spanish)** - `o2paPcpm7r_Q`
-  - Flows: 9 total (7 custom)
-    - Tutoría Socrática - Resolución Guiada de Problemas
-    - Ejemplo Resuelto - Demostración Modelada y Desafío para el Estudiante
-    - Análisis de Errores - Encuentra y Corrige los Errores
-    - Revisión de Trabajo - Retroalimentación sobre la Entrega del Estudiante
-    - Soporte Humano Solicitado
-    - Información del Asistente
-    - Escenario de Juego de Rol/Simulación
+### High Priority (Completed)
+- ✅ **Tutor Assisstany Flows (Spanish)** - `o2paPcpm7r_Q` - **COMPLETE** (6 custom flows extracted)
 
-### Other Asistentes
+### Other Asistentes (Estimated ~60-70 flows remaining)
 - Giota's Test Assistant - `t_p8XQHJLd4w`
 - Lumi tutor Test - `b7BThyCF9gJs`
 - M Tutor - `nFfN9ysbtcoM`
@@ -114,11 +148,12 @@ Each flow JSON follows this structure:
 
 ## Next Steps
 
-1. **Extract Tutor Assisstany Flows** - The most comprehensive tutor-based flows (7 custom)
-2. **Extract AI Ops Flows** - From Giota's AI Ops assistant
-3. **Extract Test Assistants** - Quick sampling from test/sandbox assistants
-4. **Fill in Missing Details** - Add titles, content, and API endpoints for flows that need configuration
-5. **Validate All JSONs** - Run through `assets/validate.js` to ensure schema compliance
+1. ✅ **Extract Tutor Assisstany Flows** - COMPLETE (6 custom flows extracted)
+2. **Extract Giota's AI Ops** - Estimated 2-3 flows
+3. **Extract M Tutor & Lumi tutor Test** - Estimated 4-6 flows
+4. **Extract Other Assistants** - Test assistants, Canvas, Blackboard integrations (Brendan's suite, etc.)
+5. **Fill in Missing Details** - Add URLs, API endpoints, and institution-specific content for configuration fields
+6. **Validate All JSONs** - Run through `assets/validate.js` to ensure schema compliance
 
 ---
 
